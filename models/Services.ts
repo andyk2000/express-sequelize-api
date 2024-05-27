@@ -1,5 +1,4 @@
 import { DataTypes, Deferrable } from 'sequelize';
-import Store from "./Stores";
 
 const Service = {
     id: {

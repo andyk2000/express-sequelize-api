@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 
 const User = {
     id: {
@@ -25,4 +25,6 @@ const User = {
     }
 };
 
-export {User}
+export {
+    
+}
