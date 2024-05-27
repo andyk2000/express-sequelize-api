@@ -1,5 +1,5 @@
 import { DataTypes, Deferrable } from 'sequelize';
-import { Store } from "./Stores";
+import Store from "./Stores";
 
 const Service = {
     id: {
@@ -17,12 +17,8 @@ const Service = {
     },
     store_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: Store,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE,
-        },
+        allowNull: false,
     }
 }
 
-export { Service };
+export default Service;

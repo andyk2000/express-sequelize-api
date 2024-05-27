@@ -1,16 +1,35 @@
 import express, { Express, Request, Response } from "express";
-const bodyParser = require("body-parser");
 import dotenv from "dotenv";
+import { Sequelize } from "sequelize";
+import { db } from "../app.config";
+import { request } from "http";
+import { User } from "../models/Users";
+import Store from "../models/Stores";
+import Service from "../models/Services";
 
+const bodyParser = require("body-parser");
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
+app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
+
+const sequelize = new Sequelize('urubuto', 'postgres', 'Ny@bibuye30', {
+  host: 'localhost',
+  dialect: 'postgres'
 });
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+sequelize.define("User", User);
+sequelize.define("Store", Store);
+sequelize.define("Service", Service);
+
+app.listen(port, async () => {
+  await sequelize.sync({alter: true})
+  console.log("Server Listening on PORT:", port);
 });

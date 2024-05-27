@@ -21,12 +21,8 @@ const Store = {
     },
     owner_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE,
-        },
+        allowNull: false,
     }
 }
 
-export { Store }
+export default Store;
