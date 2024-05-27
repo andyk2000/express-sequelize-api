@@ -25,6 +25,4 @@ const User = {
     }
 };
 
-export {
-    
-}
+export {User}
