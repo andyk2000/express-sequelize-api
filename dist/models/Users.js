@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.deleteUser = exports.getUserID = exports.getUsers = exports.createUser = exports.initialize = void 0;
+exports.updateUser = exports.deleteUser = exports.getUserID = exports.getUsers = exports.createUser = exports.initializeUser = void 0;
 const sequelize_1 = require("sequelize");
 // Define the User model class
 class User extends sequelize_1.Model {
@@ -39,14 +39,14 @@ const userSchema = {
         defaultValue: "customer",
     }
 };
-const initialize = (sequelize) => {
+const initializeUser = (sequelize) => {
     User.init(userSchema, {
         sequelize,
         modelName: 'user',
         timestamps: false,
     });
 };
-exports.initialize = initialize;
+exports.initializeUser = initializeUser;
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     return yield User.create(user);
 });

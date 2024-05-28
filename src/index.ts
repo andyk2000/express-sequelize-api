@@ -1,9 +1,10 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-import {initialize} from "../models/Users";
+import {initializeUser} from "../models/Users";
 import { createNewUser, getAllUsers, getUserByID, deleteUserData, updateUserData } from "../controllers/UserController";
-// import Store from "../models/Stores";
+import { createNewStore, getAllStores, getStoreByID, deleteStoreData, updateStoreData } from "../controllers/StoreController";
+import {initializeStore} from "../models/Stores";
 // import Service from "../models/Services";
 
 const bodyParser = require("body-parser");
@@ -24,15 +25,23 @@ const sequelize = new Sequelize('urubuto', 'postgres', 'Ny@bibuye30', {
   dialect: 'postgres'
 });
 
-initialize(sequelize);
-// sequelize.define("Store", Store);
+initializeUser(sequelize);
+initializeStore(sequelize);
 // sequelize.define("Service", Service);
 
-app.post("/", createNewUser);
-app.get("/", getAllUsers);
-app.get("/:id", getUserByID);
-app.delete("/:id", deleteUserData);
-app.put("/:id", updateUserData);
+//crud operations for users
+app.post("/user", createNewUser);
+app.get("/user", getAllUsers);
+app.get("/user/:id", getUserByID);
+app.delete("/user/:id", deleteUserData);
+app.put("/user/:id", updateUserData);
+
+//crud operations for user
+app.post("/store", createNewStore);
+app.get("/store", getAllStores);
+app.get("/store/:id", getStoreByID);
+app.delete("/store/:id", deleteStoreData);
+app.put("/store/:id", updateStoreData);
 
 app.listen(port, async () => {
   await sequelize.sync({alter: true})

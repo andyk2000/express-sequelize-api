@@ -47,7 +47,7 @@ const userSchema = {
     }
 };
 
-const initialize = (sequelize: Sequelize) => {
+const initializeUser = (sequelize: Sequelize) => {
     User.init(userSchema, {
         sequelize,
         modelName: 'user',
@@ -83,7 +83,7 @@ const updateUser = async (data: {}, query: {}) => {
     })
 }
 export {
-    initialize,
+    initializeUser,
     createUser,
     getUsers,
     getUserID,
