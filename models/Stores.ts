@@ -1,5 +1,4 @@
 import { DataTypes, Deferrable } from 'sequelize';
-import { User } from "./Users";
 
 const Store = {
     id: {

@@ -1,11 +1,10 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-import { db } from "../app.config";
-import { request } from "http";
-import { User } from "../models/Users";
-import Store from "../models/Stores";
-import Service from "../models/Services";
+import {initialize} from "../models/Users";
+import { createNewUser, getAllUsers, getUserByID, deleteUserData, updateUserData } from "../controllers/UserController";
+// import Store from "../models/Stores";
+// import Service from "../models/Services";
 
 const bodyParser = require("body-parser");
 dotenv.config();
@@ -25,9 +24,15 @@ const sequelize = new Sequelize('urubuto', 'postgres', 'Ny@bibuye30', {
   dialect: 'postgres'
 });
 
-sequelize.define("User", User);
-sequelize.define("Store", Store);
-sequelize.define("Service", Service);
+initialize(sequelize);
+// sequelize.define("Store", Store);
+// sequelize.define("Service", Service);
+
+app.post("/", createNewUser);
+app.get("/", getAllUsers);
+app.get("/:id", getUserByID);
+app.delete("/:id", deleteUserData);
+app.put("/:id", updateUserData);
 
 app.listen(port, async () => {
   await sequelize.sync({alter: true})
