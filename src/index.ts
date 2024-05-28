@@ -43,9 +43,16 @@ app.get("/login", logIn);
 // app.delete("/user/:id", check, deleteUserData);
 // app.put("/user/:id", check, updateUserData);
 
-//get data by id
+//get data by user id
 app.get("/store", [check, ownerCheck] , getStoreByOwner);
 app.post("/store", [check, ownerCheck] , createNewStore);
+app.delete("/store/:id", [check, ownerCheck] , deleteStoreData);
+app.put("/store/:id", [check, ownerCheck] , updateStoreData);
+app.post("/store/service", [check, ownerCheck] , createNewService);
+app.get("/store/service", [check, ownerCheck] , getAllServices);
+app.get("/store/service/:id", [check, ownerCheck] , getServiceByID);
+app.delete("/store/service/:id", [check, ownerCheck] , deleteServiceData);
+app.put("/store/service/:id", [check, ownerCheck] , updateServiceData);
 
 //crud operations for stores
 // app.post("/store", createNewStore);
@@ -55,11 +62,11 @@ app.post("/store", [check, ownerCheck] , createNewStore);
 // app.put("/store/:id", updateStoreData);
 
 //crud operations for services
-app.post("/service", createNewService);
-app.get("/service", getAllServices);
-app.get("/service/:id", getServiceByID);
-app.delete("/service/:id", deleteServiceData);
-app.put("/service/:id", updateServiceData);
+// app.post("/service", createNewService);
+// app.get("/service", getAllServices);
+// app.get("/service/:id", getServiceByID);
+// app.delete("/service/:id", deleteServiceData);
+// app.put("/service/:id", updateServiceData);
 
 app.listen(port, async () => {
   await sequelize.sync({alter: true})

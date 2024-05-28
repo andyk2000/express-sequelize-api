@@ -47,9 +47,16 @@ app.get("/login", UserController_1.logIn);
 // app.get("/user/:id", check, getUserByID);
 // app.delete("/user/:id", check, deleteUserData);
 // app.put("/user/:id", check, updateUserData);
-//get data by id
+//get data by user id
 app.get("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.getStoreByOwner);
 app.post("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.createNewStore);
+app.delete("/store/:id", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.deleteStoreData);
+app.put("/store/:id", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.updateStoreData);
+app.post("/store/service", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.createNewService);
+app.get("/store/service", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getAllServices);
+app.get("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getServiceByID);
+app.delete("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.deleteServiceData);
+app.put("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.updateServiceData);
 //crud operations for stores
 // app.post("/store", createNewStore);
 // app.get("/store", getAllStores);
@@ -57,11 +64,11 @@ app.post("/store", [authentication_1.default, ownerAuthorization_1.default], Sto
 // app.delete("/store/:id", deleteStoreData);
 // app.put("/store/:id", updateStoreData);
 //crud operations for services
-app.post("/service", ServiceController_1.createNewService);
-app.get("/service", ServiceController_1.getAllServices);
-app.get("/service/:id", ServiceController_1.getServiceByID);
-app.delete("/service/:id", ServiceController_1.deleteServiceData);
-app.put("/service/:id", ServiceController_1.updateServiceData);
+// app.post("/service", createNewService);
+// app.get("/service", getAllServices);
+// app.get("/service/:id", getServiceByID);
+// app.delete("/service/:id", deleteServiceData);
+// app.put("/service/:id", updateServiceData);
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield sequelize.sync({ alter: true });
     console.log("Server Listening on PORT:", port);

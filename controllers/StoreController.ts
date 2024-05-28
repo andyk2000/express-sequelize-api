@@ -48,9 +48,9 @@ const deleteStoreData = async (request: Request, response: Response) => {
 
 const updateStoreData = async (request: Request, response: Response) => {
     const id =parseInt(request.params.id);
-    const {names, address, description, owner_id} = request.body;
+    const {names, address, description} = request.body;
     try {
-        const updatedStore = await updateStore({names, address, description, owner_id}, {id: id});
+        const updatedStore = await updateStore({names, address, description}, {id: id});
         return response.status(200).json(updatedStore);
     } catch (error) {
         console.log(error);

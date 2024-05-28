@@ -61,9 +61,9 @@ const deleteStoreData = (request, response) => __awaiter(void 0, void 0, void 0,
 exports.deleteStoreData = deleteStoreData;
 const updateStoreData = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(request.params.id);
-    const { names, address, description, owner_id } = request.body;
+    const { names, address, description } = request.body;
     try {
-        const updatedStore = yield (0, Stores_1.updateStore)({ names, address, description, owner_id }, { id: id });
+        const updatedStore = yield (0, Stores_1.updateStore)({ names, address, description }, { id: id });
         return response.status(200).json(updatedStore);
     }
     catch (error) {
