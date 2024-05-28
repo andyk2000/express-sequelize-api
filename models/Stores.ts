@@ -21,7 +21,7 @@ class Store extends Model<StoreAttributes, StoreCreationAttributes> implements S
     public owner_id!: string;
 }
 
-const userSchema = {
+const storeSchema = {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -46,7 +46,7 @@ const userSchema = {
 }
 
 const initializeStore = (sequelize: Sequelize) => {
-    Store.init(userSchema, {
+    Store.init(storeSchema, {
         sequelize,
         modelName: 'store',
         timestamps: false,

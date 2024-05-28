@@ -14,7 +14,7 @@ const sequelize_1 = require("sequelize");
 // Define the User model class
 class Store extends sequelize_1.Model {
 }
-const userSchema = {
+const storeSchema = {
     id: {
         type: sequelize_1.DataTypes.INTEGER,
         autoIncrement: true,
@@ -38,7 +38,7 @@ const userSchema = {
     }
 };
 const initializeStore = (sequelize) => {
-    Store.init(userSchema, {
+    Store.init(storeSchema, {
         sequelize,
         modelName: 'store',
         timestamps: false,
