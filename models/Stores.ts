@@ -81,6 +81,13 @@ const updateStore = async (data: {}, query: {}) => {
     })
 }
 
+const getStoreOwner = async (query: {}) => {
+    const stores = await Store.findAll({
+        where: query
+    });
+    return stores;
+}
+
 export {
     initializeStore,
     getStores,
@@ -88,4 +95,5 @@ export {
     createStore,
     deleteStore,
     updateStore,
+    getStoreOwner
 };

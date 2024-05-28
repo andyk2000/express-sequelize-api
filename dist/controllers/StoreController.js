@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStoreData = exports.deleteStoreData = exports.getStoreByID = exports.getAllStores = exports.createNewStore = void 0;
+exports.getStoreByOwner = exports.updateStoreData = exports.deleteStoreData = exports.getStoreByID = exports.getAllStores = exports.createNewStore = void 0;
 const Stores_1 = require("../models/Stores");
 const createNewStore = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, address, description, owner_id } = request.body;
+    const { name, address, description } = request.body;
+    const owner_id = String(request.headers["id"]);
     try {
         const data = yield (0, Stores_1.createStore)({ name, address, description, owner_id });
         return response.status(201).json(data);
@@ -71,3 +72,14 @@ const updateStoreData = (request, response) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.updateStoreData = updateStoreData;
+const getStoreByOwner = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(request.headers["id"]);
+    try {
+        const storeByowner = yield (0, Stores_1.getStoreOwner)({ owner_id: id });
+        console.log(storeByowner);
+        return response.status(200).json(storeByowner);
+    }
+    catch (error) {
+    }
+});
+exports.getStoreByOwner = getStoreByOwner;

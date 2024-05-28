@@ -71,16 +71,23 @@ const getUserID = async (query: {}) => {
     return userData;
 }
 
+const getUserEmail = async (query: {}) => {
+    const userData = await User.findOne({
+        where: query
+    });
+    return userData;
+}
+
 const deleteUser = async (query: {}) => {
     return await User.destroy({
         where: query
-    })
+    });
 }
 
 const updateUser = async (data: {}, query: {}) => {
     return await User.update(data, {
         where: query
-    })
+    });
 }
 export {
     initializeUser,
@@ -88,5 +95,6 @@ export {
     getUsers,
     getUserID,
     deleteUser,
-    updateUser
+    updateUser,
+    getUserEmail
 };

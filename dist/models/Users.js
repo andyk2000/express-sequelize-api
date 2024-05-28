@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.deleteUser = exports.getUserID = exports.getUsers = exports.createUser = exports.initializeUser = void 0;
+exports.getUserEmail = exports.updateUser = exports.deleteUser = exports.getUserID = exports.getUsers = exports.createUser = exports.initializeUser = void 0;
 const sequelize_1 = require("sequelize");
 // Define the User model class
 class User extends sequelize_1.Model {
@@ -63,6 +63,13 @@ const getUserID = (query) => __awaiter(void 0, void 0, void 0, function* () {
     return userData;
 });
 exports.getUserID = getUserID;
+const getUserEmail = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield User.findOne({
+        where: query
+    });
+    return userData;
+});
+exports.getUserEmail = getUserEmail;
 const deleteUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
     return yield User.destroy({
         where: query

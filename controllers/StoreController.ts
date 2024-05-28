@@ -1,8 +1,9 @@
-import {createStore, getStores, getStoreID, deleteStore, updateStore} from "../models/Stores";
+import {createStore, getStores, getStoreID, deleteStore, updateStore, getStoreOwner} from "../models/Stores";
 import { Request , Response} from "express";
 
 const createNewStore = async (request: Request, response: Response) => {
-    const {name, address, description, owner_id} = request.body;
+    const {name, address, description} = request.body;
+    const owner_id = String(request.headers["id"]);
     try {
         const data = await createStore({ name, address, description, owner_id });
         return response.status(201).json(data);
@@ -57,10 +58,22 @@ const updateStoreData = async (request: Request, response: Response) => {
     }
 }
 
+const  getStoreByOwner = async (request: Request, response: Response) => {
+    
+    const id = Number(request.headers["id"]);
+    try {
+        const storeByowner = await getStoreOwner({owner_id: id});
+        console.log(storeByowner);
+        return response.status(200).json(storeByowner);
+    } catch (error) {  
+    }
+}
+
 export {
     createNewStore,
     getAllStores,
     getStoreByID,
     deleteStoreData,
-    updateStoreData
+    updateStoreData,
+    getStoreByOwner
 }

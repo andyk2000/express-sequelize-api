@@ -1,10 +1,28 @@
-import {createUser, getUsers, getUserID, deleteUser, updateUser} from "../models/Users";
+import {createUser, getUsers, getUserID, deleteUser, updateUser, getUserEmail} from "../models/Users";
 import { Request , Response} from "express";
+import Crypto from "crypto";
+import { request } from "http";
+const jwt = require("jsonwebtoken");
+
+const generateAccessToken = (email: string, id: number) => {
+    return jwt.sign(
+      {
+        id,
+        email,
+      },
+      "muu",
+      {
+        expiresIn: 3600,
+      }
+    );
+};
 
 const createNewUser = async (request: Request, response: Response) => {
     const {names, email, password, role} = request.body;
+    console.log({names, email, password, role})
     try {
         const data = await createUser({ names, email, password, role });
+        console.log(data);
         return response.status(201).json(data);
     } catch (error) {
         console.error(error);
@@ -57,10 +75,51 @@ const updateUserData = async (request: Request, response: Response) => {
     }
 }
 
+const encryptPassword = (password: string) => {
+    const hash = Crypto.createHash("sha256");
+    hash.update(password);
+    return hash.digest("hex");
+};
+
+const signUp = async (request: Request, response: Response) => {
+    let {names, email, password, role} = request.body;
+    password = encryptPassword(password);
+    try {
+        const newUser = await createUser({names, email, password, role});
+        return response.status(200).json(newUser);
+    } catch (error) {
+        console.log(error);
+        return response.status(200).send("could not creat the new user");
+    }
+}
+
+const logIn = async (request: Request, response: Response) => {
+    const {email, password} = request.body;
+    const encrypted = encryptPassword(password);
+    try {
+        const user = await getUserEmail({email: email})
+        if(user === null){
+            return response.status(404).send("login failed try again");
+        }
+        if(user.password !== encrypted){
+            return response.status(404).send("login failed try again");
+        }
+        const token = generateAccessToken(user.email, user.id);
+
+        return response.status(200).send(token);
+
+    } catch (error) {
+        console.log(error);
+        return response.status(500).send("failed to login");
+    }
+}
+
 export {
     createNewUser,
     getAllUsers,
     getUserByID,
     deleteUserData,
-    updateUserData
+    updateUserData,
+    signUp,
+    logIn
 }

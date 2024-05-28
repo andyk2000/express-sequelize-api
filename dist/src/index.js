@@ -21,6 +21,8 @@ const Services_1 = require("../models/Services");
 const UserController_1 = require("../controllers/UserController");
 const StoreController_1 = require("../controllers/StoreController");
 const ServiceController_1 = require("../controllers/ServiceController");
+const authentication_1 = __importDefault(require("../middlewares/authentication"));
+const ownerAuthorization_1 = __importDefault(require("../middlewares/ownerAuthorization"));
 const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -36,18 +38,24 @@ const sequelize = new sequelize_1.Sequelize('urubuto', 'postgres', 'Ny@bibuye30'
 (0, Users_1.initializeUser)(sequelize);
 (0, Stores_1.initializeStore)(sequelize);
 (0, Services_1.initializeService)(sequelize);
+//login & signup
+app.post("/signup", UserController_1.signUp);
+app.get("/login", UserController_1.logIn);
 //crud operations for users
-app.post("/user", UserController_1.createNewUser);
-app.get("/user", UserController_1.getAllUsers);
-app.get("/user/:id", UserController_1.getUserByID);
-app.delete("/user/:id", UserController_1.deleteUserData);
-app.put("/user/:id", UserController_1.updateUserData);
+// app.post("/user", createNewUser);
+// app.get("/user", check, getAllUsers);
+// app.get("/user/:id", check, getUserByID);
+// app.delete("/user/:id", check, deleteUserData);
+// app.put("/user/:id", check, updateUserData);
+//get data by id
+app.get("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.getStoreByOwner);
+app.post("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.createNewStore);
 //crud operations for stores
-app.post("/store", StoreController_1.createNewStore);
-app.get("/store", StoreController_1.getAllStores);
-app.get("/store/:id", StoreController_1.getStoreByID);
-app.delete("/store/:id", StoreController_1.deleteStoreData);
-app.put("/store/:id", StoreController_1.updateStoreData);
+// app.post("/store", createNewStore);
+// app.get("/store", getAllStores);
+// app.get("/store/:id", getStoreByID);
+// app.delete("/store/:id", deleteStoreData);
+// app.put("/store/:id", updateStoreData);
 //crud operations for services
 app.post("/service", ServiceController_1.createNewService);
 app.get("/service", ServiceController_1.getAllServices);

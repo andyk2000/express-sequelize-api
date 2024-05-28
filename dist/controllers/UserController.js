@@ -8,13 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserData = exports.deleteUserData = exports.getUserByID = exports.getAllUsers = exports.createNewUser = void 0;
+exports.logIn = exports.signUp = exports.updateUserData = exports.deleteUserData = exports.getUserByID = exports.getAllUsers = exports.createNewUser = void 0;
 const Users_1 = require("../models/Users");
+const crypto_1 = __importDefault(require("crypto"));
+const jwt = require("jsonwebtoken");
+const generateAccessToken = (email, id) => {
+    return jwt.sign({
+        id,
+        email,
+    }, "muu", {
+        expiresIn: 3600,
+    });
+};
 const createNewUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { names, email, password, role } = request.body;
+    console.log({ names, email, password, role });
     try {
         const data = yield (0, Users_1.createUser)({ names, email, password, role });
+        console.log(data);
         return response.status(201).json(data);
     }
     catch (error) {
@@ -71,3 +86,41 @@ const updateUserData = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.updateUserData = updateUserData;
+const encryptPassword = (password) => {
+    const hash = crypto_1.default.createHash("sha256");
+    hash.update(password);
+    return hash.digest("hex");
+};
+const signUp = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let { names, email, password, role } = request.body;
+    password = encryptPassword(password);
+    try {
+        const newUser = yield (0, Users_1.createUser)({ names, email, password, role });
+        return response.status(200).json(newUser);
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(200).send("could not creat the new user");
+    }
+});
+exports.signUp = signUp;
+const logIn = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = request.body;
+    const encrypted = encryptPassword(password);
+    try {
+        const user = yield (0, Users_1.getUserEmail)({ email: email });
+        if (user === null) {
+            return response.status(404).send("login failed try again");
+        }
+        if (user.password !== encrypted) {
+            return response.status(404).send("login failed try again");
+        }
+        const token = generateAccessToken(user.email, user.id);
+        return response.status(200).send(token);
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(500).send("failed to login");
+    }
+});
+exports.logIn = logIn;
