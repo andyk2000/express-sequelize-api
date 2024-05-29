@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logIn = exports.signUp = exports.updateUserData = exports.deleteUserData = exports.getUserByID = exports.getAllUsers = exports.createNewUser = void 0;
 const Users_1 = require("../models/Users");
 const crypto_1 = __importDefault(require("crypto"));
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const generateAccessToken = (email, id) => {
     return jwt.sign({
@@ -22,6 +23,24 @@ const generateAccessToken = (email, id) => {
         email,
     }, "muu", {
         expiresIn: 3600,
+    });
+};
+const confirmationEmail = (email) => {
+    const sender = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'youremail@gmail.com',
+            pass: '**********'
+        }
+    });
+    var newMail = {
+        from: 'andyirimbere@gmail.com',
+        to: email,
+        subject: `welcome to urubuto`,
+        text: 'Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda'
+    };
+    sender.sendMail(newMail, function () {
+        console.log('Email sent: ');
     });
 };
 const createNewUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,6 +115,7 @@ const signUp = (request, response) => __awaiter(void 0, void 0, void 0, function
     password = encryptPassword(password);
     try {
         const newUser = yield (0, Users_1.createUser)({ names, email, password, role });
+        confirmationEmail(email);
         return response.status(200).json(newUser);
     }
     catch (error) {

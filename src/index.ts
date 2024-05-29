@@ -58,6 +58,8 @@ app.get("/store/service/:id", [check, ownerCheck] , getServiceByID);
 app.delete("/store/service/:id", [check, ownerCheck] , deleteServiceData);
 app.put("/store/service/:id", [check, ownerCheck] , updateServiceData);
 
+//customer access
+
 //crud operations for stores
 // app.post("/store", createNewStore);
 // app.get("/store", getAllStores);

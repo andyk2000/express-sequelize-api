@@ -1,7 +1,7 @@
 import {createUser, getUsers, getUserID, deleteUser, updateUser, getUserEmail} from "../models/Users";
 import { Request , Response} from "express";
 import Crypto from "crypto";
-import { request } from "http";
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
 const generateAccessToken = (email: string, id: number) => {
@@ -16,6 +16,29 @@ const generateAccessToken = (email: string, id: number) => {
       }
     );
 };
+
+const confirmationEmail = (email: string) => {
+    const sender = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'youremail@gmail.com',
+          pass: '**********'
+        }
+    });
+
+    var newMail = {
+        from: 'andyirimbere@gmail.com',
+        to: email,
+        subject: `welcome to urubuto`,
+        text: 'Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda'
+      };
+
+      sender.sendMail(newMail, function(){
+        console.log('Email sent: ');
+      });
+      
+
+}
 
 const createNewUser = async (request: Request, response: Response) => {
     const {names, email, password, role} = request.body;
@@ -86,6 +109,7 @@ const signUp = async (request: Request, response: Response) => {
     password = encryptPassword(password);
     try {
         const newUser = await createUser({names, email, password, role});
+        confirmationEmail(email);
         return response.status(200).json(newUser);
     } catch (error) {
         console.log(error);

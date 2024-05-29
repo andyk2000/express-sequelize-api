@@ -6,7 +6,6 @@ const loginValidation = (0, celebrate_1.celebrate)({
     [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
         email: celebrate_1.Joi.string().required().email(),
         password: celebrate_1.Joi.string()
-            .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
             .required()
             .min(6),
     }),

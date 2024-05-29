@@ -60,6 +60,7 @@ app.get("/store/service", [authentication_1.default, ownerAuthorization_1.defaul
 app.get("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getServiceByID);
 app.delete("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.deleteServiceData);
 app.put("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.updateServiceData);
+//customer access
 //crud operations for stores
 // app.post("/store", createNewStore);
 // app.get("/store", getAllStores);
