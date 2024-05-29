@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {getUserID} from "../models/Users"
+import {getUserID} from "../models/Users";
 
 const ownerCheck = async (request: Request, response: Response, next: any) => {
     const ownerId = Number(request.headers["id"]);

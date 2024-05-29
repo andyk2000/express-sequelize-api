@@ -75,6 +75,12 @@ const updateService = async (data: {}, query: {}) => {
     })
 }
 
+const getServicesByStore = async (query: {}) => {
+    return await Service.findAll({
+        where: query
+    })
+}
+
 export {
     initializeService,
     getServices,
@@ -82,4 +88,5 @@ export {
     createService,
     deleteService,
     updateService,
+    getServicesByStore
 };

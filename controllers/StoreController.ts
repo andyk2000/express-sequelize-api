@@ -1,11 +1,18 @@
-import {createStore, getStores, getStoreID, deleteStore, updateStore, getStoreOwner} from "../models/Stores";
+import {createStore, getStores, getStoreID, deleteStore, updateStore, getStoreOwner, getstoresForCustomer} from "../models/Stores";
 import { Request , Response} from "express";
+const slugify = require('slugify');
+
+const storeURLGenration = (name: string,) => {
+    const store_name = slugify(name, {lower: true, strict: true,})
+    return `localhost:3000/urubuto-store/${store_name}&123456789`;
+}
 
 const createNewStore = async (request: Request, response: Response) => {
     const {name, address, description} = request.body;
     const owner_id = String(request.headers["id"]);
+    const storeUrl = storeURLGenration(name);
     try {
-        const data = await createStore({ name, address, description, owner_id });
+        const data = await createStore({ name, address, description, owner_id, storeUrl });
         return response.status(201).json(data);
     } catch (error) {
         console.error(error);
@@ -69,11 +76,22 @@ const  getStoreByOwner = async (request: Request, response: Response) => {
     }
 }
 
+const showAvailableShops = async (request: Request, response: Response) => {
+    try {
+        const availablestores = await getstoresForCustomer();
+        return response.status(200).json(availablestores);
+    } catch(error){
+        console.log(error);
+        return response.status(500).send("there is a problem with the server");
+    }
+}
+
 export {
     createNewStore,
     getAllStores,
     getStoreByID,
     deleteStoreData,
     updateStoreData,
-    getStoreByOwner
+    getStoreByOwner,
+    showAvailableShops,
 }

@@ -5,13 +5,14 @@ import {initializeUser} from "../models/Users";
 import {initializeStore} from "../models/Stores";
 import {initializeService} from "../models/Services";
 import { getAllUsers, getUserByID, deleteUserData, updateUserData, signUp, logIn } from "../controllers/UserController";
-import { createNewStore, getAllStores, getStoreByID, deleteStoreData, updateStoreData, getStoreByOwner } from "../controllers/StoreController";
-import { createNewService, getAllServices, getServiceByID, deleteServiceData, updateServiceData } from "../controllers/ServiceController";
+import { createNewStore, getAllStores, getStoreByID, deleteStoreData, updateStoreData, getStoreByOwner, showAvailableShops } from "../controllers/StoreController";
+import { createNewService, getAllServices, getServiceByID, deleteServiceData, updateServiceData, getStoreService } from "../controllers/ServiceController";
 import check from "../middlewares/authentication";
 import ownerCheck from "../middlewares/ownerAuthorization";
 import { loginValidation,signupValidation } from "../middlewares/userValidation";
 import { errors } from "celebrate";
-import { storeDataValidation, serviceDataValidation } from "../middlewares/dataValidation"
+import { storeDataValidation, serviceDataValidation } from "../middlewares/dataValidation";
+import { customerCheck } from "../middlewares/customerAuth";
 
 const bodyParser = require("body-parser");
 dotenv.config();
@@ -59,6 +60,8 @@ app.delete("/store/service/:id", [check, ownerCheck] , deleteServiceData);
 app.put("/store/service/:id", [check, ownerCheck] , updateServiceData);
 
 //customer access
+app.get("/home", customerCheck, showAvailableShops);
+app.post("/urubuto-store/:store_name", getStoreService);
 
 //crud operations for stores
 // app.post("/store", createNewStore);

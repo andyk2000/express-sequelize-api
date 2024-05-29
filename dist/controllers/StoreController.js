@@ -9,13 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStoreByOwner = exports.updateStoreData = exports.deleteStoreData = exports.getStoreByID = exports.getAllStores = exports.createNewStore = void 0;
+exports.showAvailableShops = exports.getStoreByOwner = exports.updateStoreData = exports.deleteStoreData = exports.getStoreByID = exports.getAllStores = exports.createNewStore = void 0;
 const Stores_1 = require("../models/Stores");
+const slugify = require('slugify');
+const storeURLGenration = (name) => {
+    const store_name = slugify(name, { lower: true, strict: true, });
+    return `localhost:3000/urubuto-store/${store_name}&123456789`;
+};
 const createNewStore = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, address, description } = request.body;
     const owner_id = String(request.headers["id"]);
+    const storeUrl = storeURLGenration(name);
     try {
-        const data = yield (0, Stores_1.createStore)({ name, address, description, owner_id });
+        const data = yield (0, Stores_1.createStore)({ name, address, description, owner_id, storeUrl });
         return response.status(201).json(data);
     }
     catch (error) {
@@ -83,3 +89,14 @@ const getStoreByOwner = (request, response) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.getStoreByOwner = getStoreByOwner;
+const showAvailableShops = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const availablestores = yield (0, Stores_1.getstoresForCustomer)();
+        return response.status(200).json(availablestores);
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(500).send("there is a problem with the server");
+    }
+});
+exports.showAvailableShops = showAvailableShops;

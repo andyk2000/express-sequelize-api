@@ -1,4 +1,5 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
+import { AllowNull } from 'sequelize-typescript';
 
 // Define the attributes for the User model
 interface StoreAttributes {
@@ -7,6 +8,7 @@ interface StoreAttributes {
     address: string;
     description: string;
     owner_id: string;
+    storeUrl: string;
 }
 
 // Define the attributes for creating a User (id is optional)
@@ -19,6 +21,7 @@ class Store extends Model<StoreAttributes, StoreCreationAttributes> implements S
     public address!: string;
     public description!: string;
     public owner_id!: string;
+    public storeUrl!: string;
 }
 
 const storeSchema = {
@@ -30,6 +33,7 @@ const storeSchema = {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true
     },
     address: {
         type: DataTypes.STRING,
@@ -41,6 +45,11 @@ const storeSchema = {
     },
     owner_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    storeUrl: {
+        type: DataTypes.STRING,
+        unique: true,
         allowNull: false,
     }
 }
@@ -88,6 +97,20 @@ const getStoreOwner = async (query: {}) => {
     return stores;
 }
 
+const getstoresForCustomer = async () => {
+    const stores = await Store.findAll({
+        attributes: ['name', 'address', 'description', 'storeUrl']
+    })
+    return stores;
+}
+
+const getStoreInfo = async () => {
+    const stores = await Store.findAll({
+        attributes: ['id', 'storeUrl']
+    })
+    return stores;
+}
+
 export {
     initializeStore,
     getStores,
@@ -95,5 +118,7 @@ export {
     createStore,
     deleteStore,
     updateStore,
-    getStoreOwner
+    getStoreOwner,
+    getstoresForCustomer,
+    getStoreInfo
 };

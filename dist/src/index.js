@@ -26,6 +26,7 @@ const ownerAuthorization_1 = __importDefault(require("../middlewares/ownerAuthor
 const userValidation_1 = require("../middlewares/userValidation");
 const celebrate_1 = require("celebrate");
 const dataValidation_1 = require("../middlewares/dataValidation");
+const customerAuth_1 = require("../middlewares/customerAuth");
 const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -61,6 +62,8 @@ app.get("/store/service/:id", [authentication_1.default, ownerAuthorization_1.de
 app.delete("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.deleteServiceData);
 app.put("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.updateServiceData);
 //customer access
+app.get("/home", customerAuth_1.customerCheck, StoreController_1.showAvailableShops);
+app.post("/urubuto-store/:store_name", ServiceController_1.getStoreService);
 //crud operations for stores
 // app.post("/store", createNewStore);
 // app.get("/store", getAllStores);
