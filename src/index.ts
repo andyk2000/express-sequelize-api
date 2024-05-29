@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-import {createUser, initializeUser} from "../models/Users";
+import {initializeUser} from "../models/Users";
 import {initializeStore} from "../models/Stores";
 import {initializeService} from "../models/Services";
 import { getAllUsers, getUserByID, deleteUserData, updateUserData, signUp, logIn } from "../controllers/UserController";
@@ -9,6 +9,9 @@ import { createNewStore, getAllStores, getStoreByID, deleteStoreData, updateStor
 import { createNewService, getAllServices, getServiceByID, deleteServiceData, updateServiceData } from "../controllers/ServiceController";
 import check from "../middlewares/authentication";
 import ownerCheck from "../middlewares/ownerAuthorization";
+import { loginValidation,signupValidation } from "../middlewares/userValidation";
+import { errors } from "celebrate";
+import { storeDataValidation, serviceDataValidation } from "../middlewares/dataValidation"
 
 const bodyParser = require("body-parser");
 dotenv.config();
@@ -28,13 +31,14 @@ const sequelize = new Sequelize('urubuto', 'postgres', 'Ny@bibuye30', {
   dialect: 'postgres'
 });
 
+
 initializeUser(sequelize);
 initializeStore(sequelize);
 initializeService(sequelize);
 
 //login & signup
-app.post("/signup", signUp);
-app.get("/login", logIn);
+app.post("/signup", signupValidation , signUp);
+app.post("/login" , loginValidation , logIn);
 
 //crud operations for users
 // app.post("/user", createNewUser);
@@ -45,10 +49,10 @@ app.get("/login", logIn);
 
 //get data by user id
 app.get("/store", [check, ownerCheck] , getStoreByOwner);
-app.post("/store", [check, ownerCheck] , createNewStore);
+app.post("/store", [check, ownerCheck, storeDataValidation] , createNewStore);
 app.delete("/store/:id", [check, ownerCheck] , deleteStoreData);
 app.put("/store/:id", [check, ownerCheck] , updateStoreData);
-app.post("/store/service", [check, ownerCheck] , createNewService);
+app.post("/store/service", [check, ownerCheck, serviceDataValidation] , createNewService);
 app.get("/store/service", [check, ownerCheck] , getAllServices);
 app.get("/store/service/:id", [check, ownerCheck] , getServiceByID);
 app.delete("/store/service/:id", [check, ownerCheck] , deleteServiceData);
@@ -68,6 +72,7 @@ app.put("/store/service/:id", [check, ownerCheck] , updateServiceData);
 // app.delete("/service/:id", deleteServiceData);
 // app.put("/service/:id", updateServiceData);
 
+app.use(errors());
 app.listen(port, async () => {
   await sequelize.sync({alter: true})
   console.log("Server Listening on PORT:", port);

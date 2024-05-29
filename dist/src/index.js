@@ -23,6 +23,9 @@ const StoreController_1 = require("../controllers/StoreController");
 const ServiceController_1 = require("../controllers/ServiceController");
 const authentication_1 = __importDefault(require("../middlewares/authentication"));
 const ownerAuthorization_1 = __importDefault(require("../middlewares/ownerAuthorization"));
+const userValidation_1 = require("../middlewares/userValidation");
+const celebrate_1 = require("celebrate");
+const dataValidation_1 = require("../middlewares/dataValidation");
 const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -39,8 +42,8 @@ const sequelize = new sequelize_1.Sequelize('urubuto', 'postgres', 'Ny@bibuye30'
 (0, Stores_1.initializeStore)(sequelize);
 (0, Services_1.initializeService)(sequelize);
 //login & signup
-app.post("/signup", UserController_1.signUp);
-app.get("/login", UserController_1.logIn);
+app.post("/signup", userValidation_1.signupValidation, UserController_1.signUp);
+app.post("/login", userValidation_1.loginValidation, UserController_1.logIn);
 //crud operations for users
 // app.post("/user", createNewUser);
 // app.get("/user", check, getAllUsers);
@@ -49,10 +52,10 @@ app.get("/login", UserController_1.logIn);
 // app.put("/user/:id", check, updateUserData);
 //get data by user id
 app.get("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.getStoreByOwner);
-app.post("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.createNewStore);
+app.post("/store", [authentication_1.default, ownerAuthorization_1.default, dataValidation_1.storeDataValidation], StoreController_1.createNewStore);
 app.delete("/store/:id", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.deleteStoreData);
 app.put("/store/:id", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.updateStoreData);
-app.post("/store/service", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.createNewService);
+app.post("/store/service", [authentication_1.default, ownerAuthorization_1.default, dataValidation_1.serviceDataValidation], ServiceController_1.createNewService);
 app.get("/store/service", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getAllServices);
 app.get("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getServiceByID);
 app.delete("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.deleteServiceData);
@@ -69,6 +72,7 @@ app.put("/store/service/:id", [authentication_1.default, ownerAuthorization_1.de
 // app.get("/service/:id", getServiceByID);
 // app.delete("/service/:id", deleteServiceData);
 // app.put("/service/:id", updateServiceData);
+app.use((0, celebrate_1.errors)());
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield sequelize.sync({ alter: true });
     console.log("Server Listening on PORT:", port);
