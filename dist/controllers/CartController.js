@@ -12,18 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addItemToCart = void 0;
 const cart_1 = require("../models/cart");
 const CartItemController_1 = require("./CartItemController");
+const Services_1 = require("../models/Services");
 const createNewCart = (data, item) => __awaiter(void 0, void 0, void 0, function* () {
     const firstPurchase = data;
     try {
-        console.log(firstPurchase);
         const results = yield (0, cart_1.createCart)(firstPurchase);
-        console.log(results);
         const newCartData = yield (0, CartItemController_1.createNewCartItem)({ cart_id: results.id, price: data.total_price, item_name: item });
-        console.log(results, newCartData);
         return results;
     }
     catch (error) {
         console.error(error);
+        throw error;
     }
 });
 // const getAllCarts = async (request: Request, response: Response) => {
@@ -60,41 +59,55 @@ const updateCartData = (data, cart) => __awaiter(void 0, void 0, void 0, functio
     try {
         const finalCart = yield (0, cart_1.updateCartTotalPrice)(total_price, { id: cart.id });
         const newItem = yield (0, CartItemController_1.createNewCartItem)({ cart_id: cart.id, item_name: data.item, price: data.price });
-        console.log(newItem);
-        console.log(finalCart);
         return finalCart;
     }
     catch (error) {
-        console.error(error);
-        throw new Error("Failed to update cart");
+        console.log("couldn't update the cart", error);
+        throw error;
     }
 });
 const findCartByCustomer = (customerId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield (0, cart_1.findCartOwner)({ customerId: customerId });
 });
 const addItemToCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { item, price, customer } = request.body;
-    let total_price = parseInt(price);
+    const { serviceId, customer } = request.body;
+    const sId = parseInt(serviceId);
+    const itemInfo = yield findStoreItem(sId);
     let customerId = parseInt(customer);
-    console.log(customerId);
     if (!customerId) {
         return response.status(400).send("Customer ID is required");
     }
-    try {
-        let cart = yield findCartByCustomer(customerId);
-        console.log(cart);
-        if (cart === null || cart === undefined) {
-            cart = yield createNewCart({ customerId, total_price }, item);
-        }
-        else {
-            cart.total_price = cart.total_price + total_price;
-            cart = yield updateCartData({ item, price }, cart);
-        }
-        return response.status(200).json(cart);
+    if (!itemInfo) {
+        return response.status(500).send("service not found");
     }
-    catch (error) {
-        console.error(error);
-        return response.status(500).send("Failed to add item to cart");
+    else {
+        try {
+            let cart = yield findCartByCustomer(customerId);
+            if (cart === null) {
+                const total_price = itemInfo.dataValues.price;
+                cart = yield createNewCart({ customerId, total_price }, itemInfo.dataValues.name);
+            }
+            else {
+                const item = itemInfo.dataValues.name;
+                const price = itemInfo.dataValues.price;
+                cart = yield updateCartData({ item, price }, cart);
+            }
+            return response.status(200).json(cart);
+        }
+        catch (error) {
+            console.error(error);
+            return response.status(500).send("Failed to add item to cart");
+        }
     }
 });
 exports.addItemToCart = addItemToCart;
+const findStoreItem = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const service = yield (0, Services_1.getServiceID)({ id: id });
+        return service;
+    }
+    catch (error) {
+        console.log(error);
+        throw error;
+    }
+});

@@ -3,18 +3,17 @@ import {createCart, updateCart, deleteCart, getCartID, getCarts, findCartOwner, 
 import { createNewCartItem } from "./CartItemController";
 import { Request , Response} from "express";
 import { CartItem, updateCartItem } from "../models/CartItem";
+import { getServiceID } from "../models/Services";
 
 const createNewCart = async (data: {total_price: number, customerId: number}, item: string) => {
     const firstPurchase = data;
     try {
-        console.log(firstPurchase)
         const results = await createCart(firstPurchase);
-        console.log(results);
         const newCartData = await createNewCartItem({cart_id: results.id, price: data.total_price, item_name: item});
-        console.log(results, newCartData);
         return results;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 
@@ -56,12 +55,10 @@ const updateCartData = async (data: { item: string, price: number }, cart: Cart)
     try {
         const finalCart = await updateCartTotalPrice(total_price, { id: cart.id });
         const newItem = await createNewCartItem({cart_id: cart.id, item_name: data.item, price: data.price})
-        console.log(newItem);
-        console.log(finalCart);
         return finalCart;
     } catch (error) {
-        console.error(error);
-        throw new Error("Failed to update cart");
+        console.log("couldn't update the cart", error);
+        throw error;
     }
 };
 
@@ -70,29 +67,43 @@ const findCartByCustomer = async (customerId: any) => {
 }
 
 const addItemToCart = async (request: Request, response: Response) => {
-    const { item, price, customer } = request.body;
-    let total_price = parseInt(price);
+    const { serviceId, customer } = request.body;
+    const sId = parseInt(serviceId);
+    const itemInfo = await findStoreItem(sId);
     let customerId =parseInt(customer);
-    console.log(customerId)
     if (!customerId) {
         return response.status(400).send("Customer ID is required");
     }
-
-    try {
-        let cart : any = await findCartByCustomer(customerId);
-        console.log(cart);
-        if (cart === null || cart === undefined) {
-            cart = await createNewCart({ customerId, total_price}, item);
-        } else {
-            cart.total_price = cart.total_price + total_price;
-            cart = await updateCartData({ item, price }, cart);
+    if(!itemInfo){
+        return response.status(500).send("service not found");
+    }else {
+        try {
+            let cart = await findCartByCustomer(customerId);
+            if (cart === null) {
+                const total_price = itemInfo.dataValues.price;
+                cart = await createNewCart({ customerId, total_price}, itemInfo.dataValues.name);
+            } else {
+                const item = itemInfo.dataValues.name;
+                const price = itemInfo.dataValues.price;
+                cart = await updateCartData({ item, price }, cart);
+            }
+            return response.status(200).json(cart);
+        } catch (error) {
+            console.error(error);
+            return response.status(500).send("Failed to add item to cart");
         }
-        return response.status(200).json(cart);
-    } catch (error) {
-        console.error(error);
-        return response.status(500).send("Failed to add item to cart");
     }
 };
+
+const findStoreItem = async (id: number) => {
+    try {
+        const service = await getServiceID({id: id});
+        return service;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 
 export {
     addItemToCart

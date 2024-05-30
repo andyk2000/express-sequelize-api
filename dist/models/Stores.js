@@ -35,7 +35,10 @@ const storeSchema = {
     },
     owner_id: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
+        references: {
+            model: "users",
+            key: "id",
+        }
     },
     storeUrl: {
         type: sequelize_1.DataTypes.STRING,

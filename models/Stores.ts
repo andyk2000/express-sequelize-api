@@ -7,7 +7,7 @@ interface StoreAttributes {
     name: string;
     address: string;
     description: string;
-    owner_id: string;
+    owner_id: number;
     storeUrl: string;
 }
 
@@ -20,7 +20,7 @@ class Store extends Model<StoreAttributes, StoreCreationAttributes> implements S
     public name!: string;
     public address!: string;
     public description!: string;
-    public owner_id!: string;
+    public owner_id!: number;
     public storeUrl!: string;
 }
 
@@ -45,7 +45,10 @@ const storeSchema = {
     },
     owner_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        references: {
+            model: "users",
+            key: "id",
+        }
     },
     storeUrl: {
         type: DataTypes.STRING,

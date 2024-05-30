@@ -5,7 +5,7 @@ const storeDataValidation = celebrate({
         name: Joi.string().required(),
         address: Joi.string().required(),
         description: Joi.string().required(),
-        owner_id: Joi.string().required(),
+        owner: Joi.string().required(),
     })
 });
 

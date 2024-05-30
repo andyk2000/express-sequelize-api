@@ -16,6 +16,10 @@ import { errors } from "celebrate";
 import { storeDataValidation, serviceDataValidation } from "../middlewares/dataValidation";
 import { customerCheck } from "../middlewares/customerAuth";
 import { initializeCartItem} from "../models/CartItem";
+import { userRoutes } from "../routes/usersRoutes";
+import { storeRoutes } from "../routes/storeRoutes";
+import { serviceRoutes } from "../routes/serviceRoutes";
+import { cartRoutes } from "../routes/cartRoutes";
 
 const bodyParser = require("body-parser");
 dotenv.config();
@@ -43,31 +47,23 @@ initializeCart(sequelize);
 initializeCartItem(sequelize);
 
 //login & signup
-app.post("/signup", signupValidation , signUp);
-app.post("/login" , loginValidation , logIn);
-
-//crud operations for users
-// app.post("/user", createNewUser);
-// app.get("/user", check, getAllUsers);
-// app.get("/user/:id", check, getUserByID);
-// app.delete("/user/:id", check, deleteUserData);
-// app.put("/user/:id", check, updateUserData);
+app.post(userRoutes.signup, signUp);
+app.post(userRoutes.login, loginValidation , logIn);
 
 //get data by user id
-app.get("/store", [check, ownerCheck] , getStoreByOwner);
-app.post("/store", [check, ownerCheck, storeDataValidation] , createNewStore);
-app.delete("/store/:id", [check, ownerCheck] , deleteStoreData);
-app.put("/store/:id", [check, ownerCheck] , updateStoreData);
-app.post("/store/service", [check, ownerCheck, serviceDataValidation] , createNewService);
-app.get("/store/service", [check, ownerCheck] , getAllServices);
-app.get("/store/service/:id", [check, ownerCheck] , getServiceByID);
-app.delete("/store/service/:id", [check, ownerCheck] , deleteServiceData);
-app.put("/store/service/:id", [check, ownerCheck] , updateServiceData);
+app.get(storeRoutes.stores, [check, ownerCheck] , getStoreByOwner);
+app.post(storeRoutes.stores, [check, ownerCheck, storeDataValidation] , createNewStore);
+app.delete(storeRoutes.deleteStore, [check, ownerCheck] , deleteStoreData);
+app.put(storeRoutes.updateStore, [check, ownerCheck] , updateStoreData);
+app.post(serviceRoutes.createService, [check, ownerCheck, serviceDataValidation] , createNewService);
+app.get(serviceRoutes.getServiceById, [check, ownerCheck] , getServiceByID);
+app.delete(serviceRoutes.deleteService, [check, ownerCheck] , deleteServiceData);
+app.put(serviceRoutes.updateService, [check, ownerCheck] , updateServiceData);
 
 //customer access
-app.get("/home", customerCheck, showAvailableShops);
-app.post("/urubuto-store/:store_name/", getStoreService);
-app.post("/addItem", addItemToCart);
+app.get(userRoutes.home, customerCheck, showAvailableShops);
+app.get(serviceRoutes.getService, getStoreService);
+app.post(cartRoutes.addtoCart, addItemToCart);
 
 //crud operations for stores
 // app.post("/store", createNewStore);

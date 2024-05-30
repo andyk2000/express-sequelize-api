@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
+import { DataTypes, Sequelize, Model, Optional, FindOptions, WhereOptions } from 'sequelize';
 
 // Define the attributes for the User model
 interface CartAttributes {
@@ -79,12 +79,14 @@ const updateCart = async (data: {}, query: {}) => {
     });
 }
 
-const updateCartTotalPrice = async (data: number, query: {}) => {
-    return await Cart.update({
+const updateCartTotalPrice = async (data: number, query: WhereOptions<Cart>) => {
+    const updated = await Cart.update({
         total_price: data
     }, {
-        where: query
+        where: query,
+        returning: true
     })
+    return updated[1][0];
 }
 
 const findCartOwner = async (query: {}) => {

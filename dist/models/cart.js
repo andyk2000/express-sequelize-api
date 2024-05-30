@@ -73,11 +73,13 @@ const updateCart = (data, query) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.updateCart = updateCart;
 const updateCartTotalPrice = (data, query) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield Cart.update({
+    const updated = yield Cart.update({
         total_price: data
     }, {
-        where: query
+        where: query,
+        returning: true
     });
+    return updated[1][0];
 });
 exports.updateCartTotalPrice = updateCartTotalPrice;
 const findCartOwner = (query) => __awaiter(void 0, void 0, void 0, function* () {

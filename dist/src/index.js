@@ -30,6 +30,10 @@ const celebrate_1 = require("celebrate");
 const dataValidation_1 = require("../middlewares/dataValidation");
 const customerAuth_1 = require("../middlewares/customerAuth");
 const CartItem_1 = require("../models/CartItem");
+const usersRoutes_1 = require("../routes/usersRoutes");
+const storeRoutes_1 = require("../routes/storeRoutes");
+const serviceRoutes_1 = require("../routes/serviceRoutes");
+const cartRoutes_1 = require("../routes/cartRoutes");
 const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -48,28 +52,21 @@ const sequelize = new sequelize_1.Sequelize('urubuto', 'postgres', 'Ny@bibuye30'
 (0, cart_1.initializeCart)(sequelize);
 (0, CartItem_1.initializeCartItem)(sequelize);
 //login & signup
-app.post("/signup", userValidation_1.signupValidation, UserController_1.signUp);
-app.post("/login", userValidation_1.loginValidation, UserController_1.logIn);
-//crud operations for users
-// app.post("/user", createNewUser);
-// app.get("/user", check, getAllUsers);
-// app.get("/user/:id", check, getUserByID);
-// app.delete("/user/:id", check, deleteUserData);
-// app.put("/user/:id", check, updateUserData);
+app.post(usersRoutes_1.userRoutes.signup, UserController_1.signUp);
+app.post(usersRoutes_1.userRoutes.login, userValidation_1.loginValidation, UserController_1.logIn);
 //get data by user id
-app.get("/store", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.getStoreByOwner);
-app.post("/store", [authentication_1.default, ownerAuthorization_1.default, dataValidation_1.storeDataValidation], StoreController_1.createNewStore);
-app.delete("/store/:id", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.deleteStoreData);
-app.put("/store/:id", [authentication_1.default, ownerAuthorization_1.default], StoreController_1.updateStoreData);
-app.post("/store/service", [authentication_1.default, ownerAuthorization_1.default, dataValidation_1.serviceDataValidation], ServiceController_1.createNewService);
-app.get("/store/service", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getAllServices);
-app.get("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getServiceByID);
-app.delete("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.deleteServiceData);
-app.put("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.updateServiceData);
+app.get(storeRoutes_1.storeRoutes.stores, [authentication_1.default, ownerAuthorization_1.default], StoreController_1.getStoreByOwner);
+app.post(storeRoutes_1.storeRoutes.stores, [authentication_1.default, ownerAuthorization_1.default, dataValidation_1.storeDataValidation], StoreController_1.createNewStore);
+app.delete(storeRoutes_1.storeRoutes.deleteStore, [authentication_1.default, ownerAuthorization_1.default], StoreController_1.deleteStoreData);
+app.put(storeRoutes_1.storeRoutes.updateStore, [authentication_1.default, ownerAuthorization_1.default], StoreController_1.updateStoreData);
+app.post(serviceRoutes_1.serviceRoutes.createService, [authentication_1.default, ownerAuthorization_1.default, dataValidation_1.serviceDataValidation], ServiceController_1.createNewService);
+app.get(serviceRoutes_1.serviceRoutes.getServiceById, [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.getServiceByID);
+app.delete(serviceRoutes_1.serviceRoutes.deleteService, [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.deleteServiceData);
+app.put(serviceRoutes_1.serviceRoutes.updateService, [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.updateServiceData);
 //customer access
-app.get("/home", customerAuth_1.customerCheck, StoreController_1.showAvailableShops);
-app.post("/urubuto-store/:store_name/", ServiceController_1.getStoreService);
-app.post("/addItem", CartController_1.addItemToCart);
+app.get(usersRoutes_1.userRoutes.home, customerAuth_1.customerCheck, StoreController_1.showAvailableShops);
+app.get(serviceRoutes_1.serviceRoutes.getService, ServiceController_1.getStoreService);
+app.post(cartRoutes_1.cartRoutes.addtoCart, CartController_1.addItemToCart);
 //crud operations for stores
 // app.post("/store", createNewStore);
 // app.get("/store", getAllStores);

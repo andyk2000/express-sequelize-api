@@ -17,8 +17,8 @@ const storeURLGenration = (name) => {
     return `localhost:3000/urubuto-store/${store_name}&123456789`;
 };
 const createNewStore = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, address, description } = request.body;
-    const owner_id = String(request.headers["id"]);
+    const { name, address, description, owner } = request.body;
+    const owner_id = parseInt(owner);
     const storeUrl = storeURLGenration(name);
     try {
         const data = yield (0, Stores_1.createStore)({ name, address, description, owner_id, storeUrl });

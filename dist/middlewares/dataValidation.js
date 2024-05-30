@@ -7,7 +7,7 @@ const storeDataValidation = (0, celebrate_1.celebrate)({
         name: celebrate_1.Joi.string().required(),
         address: celebrate_1.Joi.string().required(),
         description: celebrate_1.Joi.string().required(),
-        owner_id: celebrate_1.Joi.string().required(),
+        owner: celebrate_1.Joi.string().required(),
     })
 });
 exports.storeDataValidation = storeDataValidation;
