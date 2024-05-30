@@ -1,13 +1,18 @@
-import {createCart, updateCart, deleteCart, getCartID, getCarts, findCartOwner, Cart} from "../models/cart";
+import { number } from "joi";
+import {createCart, updateCart, deleteCart, getCartID, getCarts, findCartOwner, Cart, updateCartTotalPrice} from "../models/cart";
+import { createNewCartItem } from "./CartItemController";
 import { Request , Response} from "express";
+import { CartItem, updateCartItem } from "../models/CartItem";
 
-const createNewCart = async (data: any) => {
+const createNewCart = async (data: {total_price: number, customerId: number}, item: string) => {
     const firstPurchase = data;
     try {
         console.log(firstPurchase)
         const results = await createCart(firstPurchase);
         console.log(results);
-        return firstPurchase;
+        const newCartData = await createNewCartItem({cart_id: results.id, price: data.total_price, item_name: item});
+        console.log(results, newCartData);
+        return results;
     } catch (error) {
         console.error(error);
     }
@@ -46,13 +51,13 @@ const createNewCart = async (data: any) => {
 //     }
 // }
 
-const updateCartData = async (data: { item: object, price: number }, cart: Cart) => {
-    const items = [...cart.items, data.item];
+const updateCartData = async (data: { item: string, price: number }, cart: Cart) => {
     const total_price = cart.total_price + data.price;
-    const updatedCart = { items, total_price };
-
     try {
-        const finalCart = await updateCart(updatedCart, { id: cart.id });
+        const finalCart = await updateCartTotalPrice(total_price, { id: cart.id });
+        const newItem = await createNewCartItem({cart_id: cart.id, item_name: data.item, price: data.price})
+        console.log(newItem);
+        console.log(finalCart);
         return finalCart;
     } catch (error) {
         console.error(error);
@@ -60,27 +65,28 @@ const updateCartData = async (data: { item: object, price: number }, cart: Cart)
     }
 };
 
-const findCartByCustomer = async (customer_id: any) => {
-    return await findCartOwner({customer_id: customer_id})
+const findCartByCustomer = async (customerId: any) => {
+    return await findCartOwner({customerId: customerId})
 }
 
 const addItemToCart = async (request: Request, response: Response) => {
-    const customer_id = request.headers["customerid"] as string;
-    const { item, price } = request.body;
-    console.log(customer_id)
-    if (!customer_id) {
+    const { item, price, customer } = request.body;
+    let total_price = parseInt(price);
+    let customerId =parseInt(customer);
+    console.log(customerId)
+    if (!customerId) {
         return response.status(400).send("Customer ID is required");
     }
 
     try {
-        let cart = await findCartByCustomer(customer_id);
-
-        if (!cart) {
-            cart = await createNewCart({ customer_id, items: [item], total_price: price });
+        let cart : any = await findCartByCustomer(customerId);
+        console.log(cart);
+        if (cart === null || cart === undefined) {
+            cart = await createNewCart({ customerId, total_price}, item);
         } else {
-            await updateCartData({ item, price }, cart);
+            cart.total_price = cart.total_price + total_price;
+            cart = await updateCartData({ item, price }, cart);
         }
-
         return response.status(200).json(cart);
     } catch (error) {
         console.error(error);

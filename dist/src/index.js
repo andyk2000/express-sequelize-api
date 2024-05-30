@@ -29,6 +29,7 @@ const userValidation_1 = require("../middlewares/userValidation");
 const celebrate_1 = require("celebrate");
 const dataValidation_1 = require("../middlewares/dataValidation");
 const customerAuth_1 = require("../middlewares/customerAuth");
+const CartItem_1 = require("../models/CartItem");
 const bodyParser = require("body-parser");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -45,6 +46,7 @@ const sequelize = new sequelize_1.Sequelize('urubuto', 'postgres', 'Ny@bibuye30'
 (0, Stores_1.initializeStore)(sequelize);
 (0, Services_1.initializeService)(sequelize);
 (0, cart_1.initializeCart)(sequelize);
+(0, CartItem_1.initializeCartItem)(sequelize);
 //login & signup
 app.post("/signup", userValidation_1.signupValidation, UserController_1.signUp);
 app.post("/login", userValidation_1.loginValidation, UserController_1.logIn);

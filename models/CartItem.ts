@@ -1,4 +1,5 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
+import { AllowNull } from 'sequelize-typescript';
 
 // Define the attributes for the User model
 interface CartItemAttributes {
@@ -33,6 +34,10 @@ const cartItemSchema = {
     cart_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: "carts",
+            key: "id"
+        }
     },
     item_name: {
         type: DataTypes.STRING,
@@ -80,12 +85,6 @@ const updateCartItem = async (data: {}, query: {}) => {
     });
 }
 
-// const findCartOwner = async (query: {}) => {
-//     return await Cart.findOne({
-//         where: query
-//     })
-// }
-
 export {
     initializeCartItem,
     createCartItem,
@@ -93,4 +92,5 @@ export {
     getCartItemID,
     deleteCartItem,
     updateCartItem,
+    CartItem
 };

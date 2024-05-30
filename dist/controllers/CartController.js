@@ -11,13 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addItemToCart = void 0;
 const cart_1 = require("../models/cart");
-const createNewCart = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const CartItemController_1 = require("./CartItemController");
+const createNewCart = (data, item) => __awaiter(void 0, void 0, void 0, function* () {
     const firstPurchase = data;
     try {
         console.log(firstPurchase);
         const results = yield (0, cart_1.createCart)(firstPurchase);
         console.log(results);
-        return firstPurchase;
+        const newCartData = yield (0, CartItemController_1.createNewCartItem)({ cart_id: results.id, price: data.total_price, item_name: item });
+        console.log(results, newCartData);
+        return results;
     }
     catch (error) {
         console.error(error);
@@ -53,11 +56,12 @@ const createNewCart = (data) => __awaiter(void 0, void 0, void 0, function* () {
 //     }
 // }
 const updateCartData = (data, cart) => __awaiter(void 0, void 0, void 0, function* () {
-    const items = [...cart.items, data.item];
     const total_price = cart.total_price + data.price;
-    const updatedCart = { items, total_price };
     try {
-        const finalCart = yield (0, cart_1.updateCart)(updatedCart, { id: cart.id });
+        const finalCart = yield (0, cart_1.updateCartTotalPrice)(total_price, { id: cart.id });
+        const newItem = yield (0, CartItemController_1.createNewCartItem)({ cart_id: cart.id, item_name: data.item, price: data.price });
+        console.log(newItem);
+        console.log(finalCart);
         return finalCart;
     }
     catch (error) {
@@ -65,23 +69,26 @@ const updateCartData = (data, cart) => __awaiter(void 0, void 0, void 0, functio
         throw new Error("Failed to update cart");
     }
 });
-const findCartByCustomer = (customer_id) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, cart_1.findCartOwner)({ customer_id: customer_id });
+const findCartByCustomer = (customerId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield (0, cart_1.findCartOwner)({ customerId: customerId });
 });
 const addItemToCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const customer_id = request.headers["customerid"];
-    const { item, price } = request.body;
-    console.log(customer_id);
-    if (!customer_id) {
+    const { item, price, customer } = request.body;
+    let total_price = parseInt(price);
+    let customerId = parseInt(customer);
+    console.log(customerId);
+    if (!customerId) {
         return response.status(400).send("Customer ID is required");
     }
     try {
-        let cart = yield findCartByCustomer(customer_id);
-        if (!cart) {
-            cart = yield createNewCart({ customer_id, items: [item], total_price: price });
+        let cart = yield findCartByCustomer(customerId);
+        console.log(cart);
+        if (cart === null || cart === undefined) {
+            cart = yield createNewCart({ customerId, total_price }, item);
         }
         else {
-            yield updateCartData({ item, price }, cart);
+            cart.total_price = cart.total_price + total_price;
+            cart = yield updateCartData({ item, price }, cart);
         }
         return response.status(200).json(cart);
     }

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Cart = exports.findCartOwner = exports.updateCart = exports.deleteCart = exports.getCartID = exports.getCarts = exports.createCart = exports.initializeCart = void 0;
+exports.Cart = exports.updateCartTotalPrice = exports.findCartOwner = exports.updateCart = exports.deleteCart = exports.getCartID = exports.getCarts = exports.createCart = exports.initializeCart = void 0;
 const sequelize_1 = require("sequelize");
 // Define the User model class
 class Cart extends sequelize_1.Model {
@@ -22,14 +22,14 @@ const cartSchema = {
         autoIncrement: true,
         primaryKey: true,
     },
-    customer_id: {
-        type: sequelize_1.DataTypes.STRING,
+    customerId: {
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
-        unique: true
-    },
-    items: {
-        type: sequelize_1.DataTypes.JSONB,
-        allowNull: false,
+        unique: true,
+        references: {
+            model: "users",
+            key: "id"
+        }
     },
     total_price: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -72,6 +72,14 @@ const updateCart = (data, query) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.updateCart = updateCart;
+const updateCartTotalPrice = (data, query) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield Cart.update({
+        total_price: data
+    }, {
+        where: query
+    });
+});
+exports.updateCartTotalPrice = updateCartTotalPrice;
 const findCartOwner = (query) => __awaiter(void 0, void 0, void 0, function* () {
     return yield Cart.findOne({
         where: query

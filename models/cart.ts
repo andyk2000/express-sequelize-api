@@ -3,8 +3,7 @@ import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 // Define the attributes for the User model
 interface CartAttributes {
     id: number;
-    customer_id: string;
-    items: object;
+    customerId: number;
     total_price: number;
 }
 
@@ -18,8 +17,7 @@ interface CartCreationAttributes extends Optional<CartAttributes, 'id'> {}
 // Define the User model class
 class Cart extends Model<CartAttributes, CartCreationAttributes> implements CartAttributes {
     public id!: number;
-    public customer_id!: string;
-    public items!: Item[];
+    public customerId!: number;
     public total_price!: number;
 }
 
@@ -30,14 +28,14 @@ const cartSchema = {
         autoIncrement: true,
         primaryKey: true,
     },
-    customer_id: {
-        type: DataTypes.STRING,
+    customerId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true
-    },
-    items: {
-        type: DataTypes.JSONB,
-        allowNull: false,
+        unique: true,
+        references: {
+            model: "users",
+            key: "id"
+        }
     },
     total_price: {
         type: DataTypes.INTEGER,
@@ -81,6 +79,14 @@ const updateCart = async (data: {}, query: {}) => {
     });
 }
 
+const updateCartTotalPrice = async (data: number, query: {}) => {
+    return await Cart.update({
+        total_price: data
+    }, {
+        where: query
+    })
+}
+
 const findCartOwner = async (query: {}) => {
     return await Cart.findOne({
         where: query
@@ -95,5 +101,6 @@ export {
     deleteCart,
     updateCart,
     findCartOwner,
+    updateCartTotalPrice,
     Cart
 };

@@ -15,6 +15,7 @@ import { loginValidation,signupValidation } from "../middlewares/userValidation"
 import { errors } from "celebrate";
 import { storeDataValidation, serviceDataValidation } from "../middlewares/dataValidation";
 import { customerCheck } from "../middlewares/customerAuth";
+import { initializeCartItem} from "../models/CartItem";
 
 const bodyParser = require("body-parser");
 dotenv.config();
@@ -39,6 +40,7 @@ initializeUser(sequelize);
 initializeStore(sequelize);
 initializeService(sequelize);
 initializeCart(sequelize);
+initializeCartItem(sequelize);
 
 //login & signup
 app.post("/signup", signupValidation , signUp);
