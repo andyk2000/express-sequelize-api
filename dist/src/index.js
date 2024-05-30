@@ -18,9 +18,11 @@ const sequelize_1 = require("sequelize");
 const Users_1 = require("../models/Users");
 const Stores_1 = require("../models/Stores");
 const Services_1 = require("../models/Services");
+const cart_1 = require("../models/cart");
 const UserController_1 = require("../controllers/UserController");
 const StoreController_1 = require("../controllers/StoreController");
 const ServiceController_1 = require("../controllers/ServiceController");
+const CartController_1 = require("../controllers/CartController");
 const authentication_1 = __importDefault(require("../middlewares/authentication"));
 const ownerAuthorization_1 = __importDefault(require("../middlewares/ownerAuthorization"));
 const userValidation_1 = require("../middlewares/userValidation");
@@ -42,6 +44,7 @@ const sequelize = new sequelize_1.Sequelize('urubuto', 'postgres', 'Ny@bibuye30'
 (0, Users_1.initializeUser)(sequelize);
 (0, Stores_1.initializeStore)(sequelize);
 (0, Services_1.initializeService)(sequelize);
+(0, cart_1.initializeCart)(sequelize);
 //login & signup
 app.post("/signup", userValidation_1.signupValidation, UserController_1.signUp);
 app.post("/login", userValidation_1.loginValidation, UserController_1.logIn);
@@ -63,7 +66,8 @@ app.delete("/store/service/:id", [authentication_1.default, ownerAuthorization_1
 app.put("/store/service/:id", [authentication_1.default, ownerAuthorization_1.default], ServiceController_1.updateServiceData);
 //customer access
 app.get("/home", customerAuth_1.customerCheck, StoreController_1.showAvailableShops);
-app.post("/urubuto-store/:store_name", ServiceController_1.getStoreService);
+app.post("/urubuto-store/:store_name/", ServiceController_1.getStoreService);
+app.post("/addItem", CartController_1.addItemToCart);
 //crud operations for stores
 // app.post("/store", createNewStore);
 // app.get("/store", getAllStores);

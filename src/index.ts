@@ -4,9 +4,11 @@ import { Sequelize } from "sequelize";
 import {initializeUser} from "../models/Users";
 import {initializeStore} from "../models/Stores";
 import {initializeService} from "../models/Services";
+import { initializeCart } from "../models/cart";
 import { getAllUsers, getUserByID, deleteUserData, updateUserData, signUp, logIn } from "../controllers/UserController";
 import { createNewStore, getAllStores, getStoreByID, deleteStoreData, updateStoreData, getStoreByOwner, showAvailableShops } from "../controllers/StoreController";
 import { createNewService, getAllServices, getServiceByID, deleteServiceData, updateServiceData, getStoreService } from "../controllers/ServiceController";
+import { addItemToCart } from "../controllers/CartController";
 import check from "../middlewares/authentication";
 import ownerCheck from "../middlewares/ownerAuthorization";
 import { loginValidation,signupValidation } from "../middlewares/userValidation";
@@ -36,6 +38,7 @@ const sequelize = new Sequelize('urubuto', 'postgres', 'Ny@bibuye30', {
 initializeUser(sequelize);
 initializeStore(sequelize);
 initializeService(sequelize);
+initializeCart(sequelize);
 
 //login & signup
 app.post("/signup", signupValidation , signUp);
@@ -61,7 +64,8 @@ app.put("/store/service/:id", [check, ownerCheck] , updateServiceData);
 
 //customer access
 app.get("/home", customerCheck, showAvailableShops);
-app.post("/urubuto-store/:store_name", getStoreService);
+app.post("/urubuto-store/:store_name/", getStoreService);
+app.post("/addItem", addItemToCart);
 
 //crud operations for stores
 // app.post("/store", createNewStore);

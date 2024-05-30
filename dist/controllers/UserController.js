@@ -64,7 +64,7 @@ const getAllUsers = (request, response) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("faild to get the data");
+        return response.status(500).send("failed to get the data");
     }
 });
 exports.getAllUsers = getAllUsers;

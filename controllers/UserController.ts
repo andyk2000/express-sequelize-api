@@ -59,7 +59,7 @@ const getAllUsers = async (request: Request, response: Response) => {
         return response.status(200).json(data);
     }catch(error){
         console.log(error);
-        return response.status(500).send("faild to get the data");
+        return response.status(500).send("failed to get the data");
     }
 }
 
