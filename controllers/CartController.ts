@@ -17,38 +17,38 @@ const createNewCart = async (data: {total_price: number, customerId: number}, it
     }
 }
 
-// const getAllCarts = async (request: Request, response: Response) => {
-//     try{
-//         const data = await getCarts();
-//         return response.status(200).json(data);
-//     }catch(error){
-//         console.log(error);
-//         return response.status(500).send("failed to get the data");
-//     }
-// }
+const getAllCarts = async (request: Request, response: Response) => {
+    try{
+        const data = await getCarts();
+        return response.status(200).json(data);
+    }catch(error){
+        console.log(error);
+        return response.status(500).json({error: "failed to get the data"});
+    }
+}
 
-// const getCartByID = async (request: Request, response: Response) => {
-//     const id = parseInt(request.params.id);
-//     try{
-//         const cartData = await getCartID({id: id});
-//         return response.status(200).json(cartData);
+const getCartByID = async (request: Request, response: Response) => {
+    const id = parseInt(request.params.id);
+    try{
+        const cartData = await getCartID({id: id});
+        return response.status(200).json(cartData);
 
-//     }catch(err){
-//         console.log(err);
-//         response.status(500).send(`failed to get cart with id${id}`)
-//     }
-// }
+    }catch(err){
+        console.log(err);
+        response.status(500).json({error: `failed to get cart with id${id}`})
+    }
+}
 
-// const deleteCartData = async (request: Request, response: Response) => {
-//     const id = parseInt(request.params.id);
-//     try {
-//         const deletedCart = await deleteCart({id: id});
-//         return response.status(200).json(deletedCart);
-//     } catch (error) {
-//         console.log(error);
-//         response.status(200).json(`failed to delete cart with id${id}`)
-//     }
-// }
+const deleteCartData = async (request: Request, response: Response) => {
+    const id = parseInt(request.params.id);
+    try {
+        const deletedCart = await deleteCart({id: id});
+        return response.status(200).json(deletedCart);
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({error: `failed to delete cart with id${id}`})
+    }
+}
 
 const updateCartData = async (data: { item: string, price: number }, cart: Cart) => {
     const total_price = cart.total_price + data.price;
@@ -72,10 +72,10 @@ const addItemToCart = async (request: Request, response: Response) => {
     const itemInfo = await findStoreItem(sId);
     let customerId =parseInt(customer);
     if (!customerId) {
-        return response.status(400).send("Customer ID is required");
+        return response.status(400).json({error: "Customer ID is required"});
     }
     if(!itemInfo){
-        return response.status(500).send("service not found");
+        return response.status(500).json({error: "service not found"});
     }else {
         try {
             let cart = await findCartByCustomer(customerId);

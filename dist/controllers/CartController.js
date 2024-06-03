@@ -25,35 +25,38 @@ const createNewCart = (data, item) => __awaiter(void 0, void 0, void 0, function
         throw error;
     }
 });
-// const getAllCarts = async (request: Request, response: Response) => {
-//     try{
-//         const data = await getCarts();
-//         return response.status(200).json(data);
-//     }catch(error){
-//         console.log(error);
-//         return response.status(500).send("failed to get the data");
-//     }
-// }
-// const getCartByID = async (request: Request, response: Response) => {
-//     const id = parseInt(request.params.id);
-//     try{
-//         const cartData = await getCartID({id: id});
-//         return response.status(200).json(cartData);
-//     }catch(err){
-//         console.log(err);
-//         response.status(500).send(`failed to get cart with id${id}`)
-//     }
-// }
-// const deleteCartData = async (request: Request, response: Response) => {
-//     const id = parseInt(request.params.id);
-//     try {
-//         const deletedCart = await deleteCart({id: id});
-//         return response.status(200).json(deletedCart);
-//     } catch (error) {
-//         console.log(error);
-//         response.status(200).json(`failed to delete cart with id${id}`)
-//     }
-// }
+const getAllCarts = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield (0, cart_1.getCarts)();
+        return response.status(200).json(data);
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(500).json({ error: "failed to get the data" });
+    }
+});
+const getCartByID = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = parseInt(request.params.id);
+    try {
+        const cartData = yield (0, cart_1.getCartID)({ id: id });
+        return response.status(200).json(cartData);
+    }
+    catch (err) {
+        console.log(err);
+        response.status(500).json({ error: `failed to get cart with id${id}` });
+    }
+});
+const deleteCartData = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = parseInt(request.params.id);
+    try {
+        const deletedCart = yield (0, cart_1.deleteCart)({ id: id });
+        return response.status(200).json(deletedCart);
+    }
+    catch (error) {
+        console.log(error);
+        response.status(500).json({ error: `failed to delete cart with id${id}` });
+    }
+});
 const updateCartData = (data, cart) => __awaiter(void 0, void 0, void 0, function* () {
     const total_price = cart.total_price + data.price;
     try {
@@ -75,10 +78,10 @@ const addItemToCart = (request, response) => __awaiter(void 0, void 0, void 0, f
     const itemInfo = yield findStoreItem(sId);
     let customerId = parseInt(customer);
     if (!customerId) {
-        return response.status(400).send("Customer ID is required");
+        return response.status(400).json({ error: "Customer ID is required" });
     }
     if (!itemInfo) {
-        return response.status(500).send("service not found");
+        return response.status(500).json({ error: "service not found" });
     }
     else {
         try {

@@ -59,7 +59,7 @@ const getServiceByID = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
     catch (err) {
         console.log(err);
-        response.status(500).send({ error: `failed to get service with id${id}` });
+        response.status(500).json({ error: `failed to get service with id${id}` });
     }
 });
 exports.getServiceByID = getServiceByID;

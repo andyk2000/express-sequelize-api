@@ -37,16 +37,12 @@ initializeService(sequelize);
 initializeCart(sequelize);
 initializeCartItem(sequelize);
 
-//login & signup
 router.use('/home', userRouter);
 
-//get data by user id
 router.use('/store',storeRouter);
 
-//services crud implementation
 router.use('/service', serviceRouter);
 
-//customer access
 router.use('/cart', cartRouter);
 
 app.use(router);

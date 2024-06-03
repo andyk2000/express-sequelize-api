@@ -1,6 +1,5 @@
 import { DataTypes, Sequelize, Model, Optional, FindOptions, WhereOptions } from 'sequelize';
 
-// Define the attributes for the User model
 interface CartAttributes {
     id: number;
     customerId: number;
@@ -11,17 +10,14 @@ interface Item {
     name: string;
 }
 
-// Define the attributes for creating a User (id is optional)
 interface CartCreationAttributes extends Optional<CartAttributes, 'id'> {}
 
-// Define the User model class
 class Cart extends Model<CartAttributes, CartCreationAttributes> implements CartAttributes {
     public id!: number;
     public customerId!: number;
     public total_price!: number;
 }
 
-// Define the user model schema
 const cartSchema = {
     id: {
         type: DataTypes.INTEGER,

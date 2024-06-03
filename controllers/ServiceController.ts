@@ -48,7 +48,7 @@ const getServiceByID = async (request: Request, response: Response) => {
 
     }catch(err){
         console.log(err);
-        response.status(500).send({error: `failed to get service with id${id}`})
+        response.status(500).json({error: `failed to get service with id${id}`})
     }
 }
 

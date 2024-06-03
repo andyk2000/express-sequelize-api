@@ -42,13 +42,9 @@ const sequelize = new sequelize_1.Sequelize('urubuto', 'postgres', 'Ny@bibuye30'
 (0, Services_1.initializeService)(sequelize);
 (0, cart_1.initializeCart)(sequelize);
 (0, CartItem_1.initializeCartItem)(sequelize);
-//login & signup
 router.use('/home', usersRoutes_1.userRouter);
-//get data by user id
 router.use('/store', storeRoutes_1.storeRouter);
-//services crud implementation
 router.use('/service', serviceRoutes_1.serviceRouter);
-//customer access
 router.use('/cart', cartRoutes_1.cartRouter);
 app.use(router);
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {

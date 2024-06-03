@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getStoreInfo = exports.getstoresForCustomer = exports.getStoreOwner = exports.updateStore = exports.deleteStore = exports.createStore = exports.getStoreID = exports.getStores = exports.initializeStore = void 0;
 const sequelize_1 = require("sequelize");
-// Define the User model class
 class Store extends sequelize_1.Model {
 }
 const storeSchema = {

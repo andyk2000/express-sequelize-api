@@ -11,11 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cart = exports.updateCartTotalPrice = exports.findCartOwner = exports.updateCart = exports.deleteCart = exports.getCartID = exports.getCarts = exports.createCart = exports.initializeCart = void 0;
 const sequelize_1 = require("sequelize");
-// Define the User model class
 class Cart extends sequelize_1.Model {
 }
 exports.Cart = Cart;
-// Define the user model schema
 const cartSchema = {
     id: {
         type: sequelize_1.DataTypes.INTEGER,

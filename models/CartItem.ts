@@ -1,7 +1,6 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 import { AllowNull } from 'sequelize-typescript';
 
-// Define the attributes for the User model
 interface CartItemAttributes {
     id: number;
     cart_id: number;
@@ -9,14 +8,9 @@ interface CartItemAttributes {
     price: number;
 }
 
-// interface Item {
-//     name: string;
-// }
 
-// // Define the attributes for creating a User (id is optional)
 interface CartItemCreationAttributes extends Optional<CartItemAttributes, 'id'> {}
 
-// // Define the User model class
 class CartItem extends Model<CartItemAttributes, CartItemCreationAttributes> implements CartItemAttributes {
     public id!: number;
     public cart_id!: number;
@@ -24,7 +18,6 @@ class CartItem extends Model<CartItemAttributes, CartItemCreationAttributes> imp
     public price!: number;
 }
 
-// // Define the user model schema
 const cartItemSchema = {
     id: {
         type: DataTypes.INTEGER,

@@ -1,7 +1,6 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 import { AllowNull } from 'sequelize-typescript';
 
-// Define the attributes for the User model
 interface StoreAttributes {
     id: number;
     name: string;
@@ -11,10 +10,8 @@ interface StoreAttributes {
     storeUrl: string;
 }
 
-// Define the attributes for creating a User (id is optional)
 interface StoreCreationAttributes extends Optional<StoreAttributes, 'id'> {}
 
-// Define the User model class
 class Store extends Model<StoreAttributes, StoreCreationAttributes> implements StoreAttributes {
     public id!: number;
     public name!: string;

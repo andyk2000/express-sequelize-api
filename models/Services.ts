@@ -1,6 +1,5 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 
-// Define the attributes for the User model
 interface ServiceAttributes {
     id: number;
     name: string;
@@ -8,10 +7,8 @@ interface ServiceAttributes {
     store_id: string;
 }
 
-// Define the attributes for creating a User (id is optional)
 interface ServiceCreationAttributes extends Optional<ServiceAttributes, 'id'> {}
 
-// Define the User model class
 class Service extends Model<ServiceAttributes, ServiceCreationAttributes> implements ServiceAttributes {
     public id!: number;
     public name!: string;

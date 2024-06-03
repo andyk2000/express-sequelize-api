@@ -1,6 +1,5 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 
-// Define the attributes for the User model
 interface UserAttributes {
     id: number;
     names: string;
@@ -9,10 +8,8 @@ interface UserAttributes {
     role: string;
 }
 
-// Define the attributes for creating a User (id is optional)
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
-// Define the User model class
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
     public names!: string;
@@ -21,7 +18,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public role!: string;
 }
 
-// Define the user model schema
 const userSchema = {
     id: {
         type: DataTypes.INTEGER,
