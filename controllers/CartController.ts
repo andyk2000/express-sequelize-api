@@ -66,7 +66,7 @@ const findCartByCustomer = async (customerId: any) => {
     return await findCartOwner({customerId: customerId})
 }
 
-const addItemToCart = async (request: Request, response: Response) => {
+const addItemsToCart = async (request: Request, response: Response) => {
     const { serviceId, customer } = request.body;
     const sId = parseInt(serviceId);
     const itemInfo = await findStoreItem(sId);
@@ -106,5 +106,5 @@ const findStoreItem = async (id: number) => {
 }
 
 export {
-    addItemToCart
+    addItemsToCart
 }
