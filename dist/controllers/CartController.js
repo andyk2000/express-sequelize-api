@@ -17,7 +17,7 @@ const createNewCart = (data, item) => __awaiter(void 0, void 0, void 0, function
     const firstPurchase = data;
     try {
         const results = yield (0, cart_1.createCart)(firstPurchase);
-        const newCartData = yield (0, CartItemController_1.createNewCartItem)({ cart_id: results.id, price: data.total_price, item_name: item });
+        yield (0, CartItemController_1.createNewCartItem)({ cart_id: results.id, price: data.total_price, item_name: item });
         return results;
     }
     catch (error) {
@@ -96,7 +96,7 @@ const addItemToCart = (request, response) => __awaiter(void 0, void 0, void 0, f
         }
         catch (error) {
             console.error(error);
-            return response.status(500).send("Failed to add item to cart");
+            return response.status(500).json({ error: "Failed to add item to cart" });
         }
     }
 });

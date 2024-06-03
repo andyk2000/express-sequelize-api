@@ -14,7 +14,7 @@ const Stores_1 = require("../models/Stores");
 const slugify = require('slugify');
 const storeURLGenration = (name) => {
     const store_name = slugify(name, { lower: true, strict: true, });
-    return `localhost:3000/urubuto-store/${store_name}&123456789`;
+    return `${store_name}&123456789`;
 };
 const createNewStore = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, address, description, owner } = request.body;
@@ -37,7 +37,7 @@ const getAllStores = (request, response) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("faild to get the data");
+        return response.status(500).json({ error: "faild to get the data" });
     }
 });
 exports.getAllStores = getAllStores;
@@ -49,7 +49,7 @@ const getStoreByID = (request, response) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (err) {
         console.log(err);
-        response.status(500).send(`failed to get store with id${id}`);
+        return response.status(500).json({ error: `failed to get store with id${id}` });
     }
 });
 exports.getStoreByID = getStoreByID;
@@ -61,7 +61,7 @@ const deleteStoreData = (request, response) => __awaiter(void 0, void 0, void 0,
     }
     catch (error) {
         console.log(error);
-        response.status(200).json(`failed to delete store with id${id}`);
+        response.status(500).json({ error: `failed to delete store with id${id}` });
     }
 });
 exports.deleteStoreData = deleteStoreData;
@@ -74,7 +74,7 @@ const updateStoreData = (request, response) => __awaiter(void 0, void 0, void 0,
     }
     catch (error) {
         console.log(error);
-        response.status(200).json(`failed to update the store with id${id}`);
+        response.status(500).json({ error: `failed to update the store with id${id}` });
     }
 });
 exports.updateStoreData = updateStoreData;
@@ -86,6 +86,8 @@ const getStoreByOwner = (request, response) => __awaiter(void 0, void 0, void 0,
         return response.status(200).json(storeByowner);
     }
     catch (error) {
+        console.log(error);
+        return response.status(500).json({ error: error });
     }
 });
 exports.getStoreByOwner = getStoreByOwner;
@@ -96,7 +98,7 @@ const showAvailableShops = (request, response) => __awaiter(void 0, void 0, void
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("there is a problem with the server");
+        return response.status(500).json({ error: "there is a problem with the server" });
     }
 });
 exports.showAvailableShops = showAvailableShops;

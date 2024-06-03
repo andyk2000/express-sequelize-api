@@ -21,8 +21,8 @@ const confirmationEmail = (email: string) => {
     const sender = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: 'youremail@gmail.com',
-          pass: '**********'
+          user: 'andyirimbere@gmail.com',
+          pass: 'Nyabibuye30'
         }
     });
 
@@ -59,7 +59,7 @@ const getAllUsers = async (request: Request, response: Response) => {
         return response.status(200).json(data);
     }catch(error){
         console.log(error);
-        return response.status(500).send("failed to get the data");
+        return response.status(500).json({error: "failed to get the data"});
     }
 }
 
@@ -71,7 +71,7 @@ const getUserByID = async (request: Request, response: Response) => {
 
     }catch(err){
         console.log(err);
-        response.status(500).send(`failed to get user with id${id}`)
+        response.status(500).json({error: `failed to get user with id${id}`})
     }
 }
 
@@ -82,7 +82,7 @@ const deleteUserData = async (request: Request, response: Response) => {
         return response.status(200).json(deletedUser);
     } catch (error) {
         console.log(error);
-        response.status(200).json(`failed to delete user with id${id}`)
+        response.status(500).json({error: `failed to delete user with id${id}`})
     }
 }
 
@@ -94,7 +94,7 @@ const updateUserData = async (request: Request, response: Response) => {
         return response.status(200).json(updatedUser);
     } catch (error) {
         console.log(error);
-        response.status(200).json(`failed to update the user with id${id}`)
+        response.status(500).json({error: `failed to update the user with id${id}`})
     }
 }
 
@@ -113,7 +113,7 @@ const signUp = async (request: Request, response: Response) => {
         return response.status(200).json(newUser);
     } catch (error) {
         console.log(error);
-        return response.status(200).send("could not creat the new user");
+        return response.status(500).json({error: "could not creat the new user"});
     }
 }
 
@@ -123,18 +123,18 @@ const logIn = async (request: Request, response: Response) => {
     try {
         const user = await getUserEmail({email: email})
         if(user === null){
-            return response.status(404).send("login failed try again");
+            return response.status(404).json({error: "login failed try again"});
         }
         if(user.password !== encrypted){
-            return response.status(404).send("login failed try again");
+            return response.status(404).json({error: "login failed try again"});
         }
         const token = generateAccessToken(user.email, user.id);
 
-        return response.status(200).send(token);
+        return response.status(200).json({token: token});
 
     } catch (error) {
         console.log(error);
-        return response.status(500).send("failed to login");
+        return response.status(500).json({error: "failed to login"});
     }
 }
 

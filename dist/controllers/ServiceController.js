@@ -47,7 +47,7 @@ const getAllServices = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("faild to get the data");
+        return response.status(500).json({ error: "faild to get the data" });
     }
 });
 exports.getAllServices = getAllServices;
@@ -59,7 +59,7 @@ const getServiceByID = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
     catch (err) {
         console.log(err);
-        response.status(500).send(`failed to get service with id${id}`);
+        response.status(500).send({ error: `failed to get service with id${id}` });
     }
 });
 exports.getServiceByID = getServiceByID;
@@ -71,7 +71,7 @@ const deleteServiceData = (request, response) => __awaiter(void 0, void 0, void 
     }
     catch (error) {
         console.log(error);
-        response.status(200).json(`failed to delete service with id${id}`);
+        response.status(500).json({ error: `failed to delete service with id${id}` });
     }
 });
 exports.deleteServiceData = deleteServiceData;
@@ -84,7 +84,7 @@ const updateServiceData = (request, response) => __awaiter(void 0, void 0, void 
     }
     catch (error) {
         console.log(error);
-        response.status(200).json(`failed to update the service with id${id}`);
+        response.status(500).json({ error: `failed to update the service with id${id}` });
     }
 });
 exports.updateServiceData = updateServiceData;
@@ -97,7 +97,7 @@ const getStoreService = (request, response) => __awaiter(void 0, void 0, void 0,
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("failed to load the store requested");
+        return response.status(500).json({ error: "failed to load the store requested" });
     }
 });
 exports.getStoreService = getStoreService;

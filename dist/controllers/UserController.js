@@ -29,8 +29,8 @@ const confirmationEmail = (email) => {
     const sender = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'youremail@gmail.com',
-            pass: '**********'
+            user: 'andyirimbere@gmail.com',
+            pass: 'Nyabibuye30'
         }
     });
     var newMail = {
@@ -64,7 +64,7 @@ const getAllUsers = (request, response) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("failed to get the data");
+        return response.status(500).json({ error: "failed to get the data" });
     }
 });
 exports.getAllUsers = getAllUsers;
@@ -76,7 +76,7 @@ const getUserByID = (request, response) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (err) {
         console.log(err);
-        response.status(500).send(`failed to get user with id${id}`);
+        response.status(500).json({ error: `failed to get user with id${id}` });
     }
 });
 exports.getUserByID = getUserByID;
@@ -88,7 +88,7 @@ const deleteUserData = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
     catch (error) {
         console.log(error);
-        response.status(200).json(`failed to delete user with id${id}`);
+        response.status(500).json({ error: `failed to delete user with id${id}` });
     }
 });
 exports.deleteUserData = deleteUserData;
@@ -101,7 +101,7 @@ const updateUserData = (request, response) => __awaiter(void 0, void 0, void 0, 
     }
     catch (error) {
         console.log(error);
-        response.status(200).json(`failed to update the user with id${id}`);
+        response.status(500).json({ error: `failed to update the user with id${id}` });
     }
 });
 exports.updateUserData = updateUserData;
@@ -120,7 +120,7 @@ const signUp = (request, response) => __awaiter(void 0, void 0, void 0, function
     }
     catch (error) {
         console.log(error);
-        return response.status(200).send("could not creat the new user");
+        return response.status(500).json({ error: "could not creat the new user" });
     }
 });
 exports.signUp = signUp;
@@ -130,17 +130,17 @@ const logIn = (request, response) => __awaiter(void 0, void 0, void 0, function*
     try {
         const user = yield (0, Users_1.getUserEmail)({ email: email });
         if (user === null) {
-            return response.status(404).send("login failed try again");
+            return response.status(404).json({ error: "login failed try again" });
         }
         if (user.password !== encrypted) {
-            return response.status(404).send("login failed try again");
+            return response.status(404).json({ error: "login failed try again" });
         }
         const token = generateAccessToken(user.email, user.id);
-        return response.status(200).send(token);
+        return response.status(200).json({ token: token });
     }
     catch (error) {
         console.log(error);
-        return response.status(500).send("failed to login");
+        return response.status(500).json({ error: "failed to login" });
     }
 });
 exports.logIn = logIn;

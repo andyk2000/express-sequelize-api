@@ -12,20 +12,20 @@ const ownerCheck = async (request: Request, response: Response, next: any) => {
         console.log(ownerId);
         const owner = await getUserID({id: ownerId});
         if(!owner){
-            return response.status(500).send(`there's no user with the id ${owner}`)
+            return response.status(500).json({error: `there's no user with the id ${owner}`})
         }
 
         if(owner.role === "owner"){
             next();
         } else {
-            return response.status(401).send("This user is not allowed to access the page required.");
+            return response.status(401).json({error: "This user is not allowed to access the page required."});
         }
 
 
     } catch (error) {
         console.log(ownerId)
         console.log(error);
-        return response.status(500).send("there was an error with this user");
+        return response.status(500).json({error: "there was an error with this user"});
     }
 
 }

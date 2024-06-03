@@ -9,7 +9,7 @@ const createNewCart = async (data: {total_price: number, customerId: number}, it
     const firstPurchase = data;
     try {
         const results = await createCart(firstPurchase);
-        const newCartData = await createNewCartItem({cart_id: results.id, price: data.total_price, item_name: item});
+        await createNewCartItem({cart_id: results.id, price: data.total_price, item_name: item});
         return results;
     } catch (error) {
         console.error(error);
@@ -90,7 +90,7 @@ const addItemToCart = async (request: Request, response: Response) => {
             return response.status(200).json(cart);
         } catch (error) {
             console.error(error);
-            return response.status(500).send("Failed to add item to cart");
+            return response.status(500).json({error: "Failed to add item to cart"});
         }
     }
 };

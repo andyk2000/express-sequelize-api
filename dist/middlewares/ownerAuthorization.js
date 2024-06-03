@@ -19,19 +19,19 @@ const ownerCheck = (request, response, next) => __awaiter(void 0, void 0, void 0
         console.log(ownerId);
         const owner = yield (0, Users_1.getUserID)({ id: ownerId });
         if (!owner) {
-            return response.status(500).send(`there's no user with the id ${owner}`);
+            return response.status(500).json({ error: `there's no user with the id ${owner}` });
         }
         if (owner.role === "owner") {
             next();
         }
         else {
-            return response.status(401).send("This user is not allowed to access the page required.");
+            return response.status(401).json({ error: "This user is not allowed to access the page required." });
         }
     }
     catch (error) {
         console.log(ownerId);
         console.log(error);
-        return response.status(500).send("there was an error with this user");
+        return response.status(500).json({ error: "there was an error with this user" });
     }
 });
 exports.default = ownerCheck;

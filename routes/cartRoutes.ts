@@ -1,7 +1,11 @@
-const cartRoutes = {
-    addtoCart: "/addItem",
-}
+import { addItemToCart } from "../controllers/CartController";
+import { getStoreService } from "../controllers/ServiceController";
+import express from "express";
+const cartRouter = express.Router();
+
+cartRouter.get("/urubuto-store/:store_name", getStoreService);
+cartRouter.post("/addItem", addItemToCart);
 
 export {
-    cartRoutes
+    cartRouter
 }

@@ -4,7 +4,7 @@ const slugify = require('slugify');
 
 const storeURLGenration = (name: string,) => {
     const store_name = slugify(name, {lower: true, strict: true,})
-    return `localhost:3000/urubuto-store/${store_name}&123456789`;
+    return `${store_name}&123456789`;
 }
 
 const createNewStore = async (request: Request, response: Response) => {
@@ -26,7 +26,7 @@ const getAllStores = async (request: Request, response: Response) => {
         return response.status(200).json(data);
     }catch(error){
         console.log(error);
-        return response.status(500).send("faild to get the data");
+        return response.status(500).json({error: "faild to get the data"});
     }
 }
 
@@ -38,7 +38,7 @@ const getStoreByID = async (request: Request, response: Response) => {
 
     }catch(err){
         console.log(err);
-        response.status(500).send(`failed to get store with id${id}`)
+        return response.status(500).json({error: `failed to get store with id${id}`})
     }
 }
 
@@ -49,7 +49,7 @@ const deleteStoreData = async (request: Request, response: Response) => {
         return response.status(200).json(deletedStore);
     } catch (error) {
         console.log(error);
-        response.status(200).json(`failed to delete store with id${id}`)
+        response.status(500).json({error: `failed to delete store with id${id}`})
     }
 }
 
@@ -61,7 +61,7 @@ const updateStoreData = async (request: Request, response: Response) => {
         return response.status(200).json(updatedStore);
     } catch (error) {
         console.log(error);
-        response.status(200).json(`failed to update the store with id${id}`)
+        response.status(500).json({error: `failed to update the store with id${id}`})
     }
 }
 
@@ -73,6 +73,8 @@ const  getStoreByOwner = async (request: Request, response: Response) => {
         console.log(storeByowner);
         return response.status(200).json(storeByowner);
     } catch (error) {  
+        console.log(error);
+        return response.status(500).json({error: error})
     }
 }
 
@@ -82,7 +84,7 @@ const showAvailableShops = async (request: Request, response: Response) => {
         return response.status(200).json(availablestores);
     } catch(error){
         console.log(error);
-        return response.status(500).send("there is a problem with the server");
+        return response.status(500).json({error: "there is a problem with the server"});
     }
 }
 

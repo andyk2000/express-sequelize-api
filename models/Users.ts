@@ -35,6 +35,7 @@ const userSchema = {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
     password: {
         type: DataTypes.STRING,
@@ -89,6 +90,7 @@ const updateUser = async (data: {}, query: {}) => {
         where: query
     });
 }
+
 export {
     initializeUser,
     createUser,
