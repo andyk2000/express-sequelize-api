@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailVerification = exports.customerCheck = void 0;
 const Users_1 = require("../models/Users");
 const customerCheck = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const customerId = Number(request.headers["id"]);
+    const customerId = response.locals.user.id;
     if (customerId === null) {
         return response.status(500).json({ error: "provide an id" });
     }

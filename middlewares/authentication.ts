@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 import { Request, Response } from "express";
+import { getUserID } from "../models/Users";
 
 const check = (req: Request, res: Response, next: any) => {
     const authHeader = req.headers["authorization"];
@@ -13,13 +14,18 @@ const check = (req: Request, res: Response, next: any) => {
       });
     }
   
-    jwt.verify(authHeader, "muu", (err: any) => {
+    jwt.verify(authHeader, "muu",  async (err: any, data: {email: string, id: number}) => {
         if (err) {
           return res.status(403).json({
             status: false,
             error: 'Invalid access token provided, please login again.'
           });
         }
+        const user = await getUserID({id: data.id});
+        res.locals = {
+          user: user
+        }
+        console.log(res.locals);
         next();
     });
 }

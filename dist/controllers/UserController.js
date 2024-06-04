@@ -40,7 +40,7 @@ const confirmationEmail = (email) => {
         text: 'Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda'
     };
     sender.sendMail(newMail, function () {
-        console.log('Email sent: ');
+        console.log(`Email sent: ${email}`);
     });
 };
 const createNewUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {

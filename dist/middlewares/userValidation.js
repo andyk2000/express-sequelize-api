@@ -15,7 +15,8 @@ const signupValidation = (0, celebrate_1.celebrate)({
     [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
         names: celebrate_1.Joi.string().required(),
         email: celebrate_1.Joi.string().required().email(),
-        password: celebrate_1.Joi.string().required().min(6)
-    })
+        password: celebrate_1.Joi.string().required().min(6),
+        role: celebrate_1.Joi.string().valid('owner', 'customer')
+    }),
 });
 exports.signupValidation = signupValidation;

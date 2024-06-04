@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStoreInfo = exports.getstoresForCustomer = exports.getStoreOwner = exports.updateStore = exports.deleteStore = exports.createStore = exports.getStoreID = exports.getStores = exports.initializeStore = void 0;
+exports.getStoreByName = exports.getStoreInfo = exports.getstoresForCustomer = exports.getStoreOwner = exports.updateStore = exports.deleteStore = exports.createStore = exports.getStoreID = exports.getStores = exports.initializeStore = void 0;
 const sequelize_1 = require("sequelize");
 class Store extends sequelize_1.Model {
 }
@@ -102,3 +102,10 @@ const getStoreInfo = () => __awaiter(void 0, void 0, void 0, function* () {
     return stores;
 });
 exports.getStoreInfo = getStoreInfo;
+const getStoreByName = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const store = yield Store.findOne({
+        where: query
+    });
+    return store;
+});
+exports.getStoreByName = getStoreByName;

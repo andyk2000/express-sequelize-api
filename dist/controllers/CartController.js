@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addItemToCart = void 0;
+exports.getCartByCustomer = exports.addItemsToCart = void 0;
 const cart_1 = require("../models/cart");
 const CartItemController_1 = require("./CartItemController");
 const Services_1 = require("../models/Services");
@@ -72,7 +72,7 @@ const updateCartData = (data, cart) => __awaiter(void 0, void 0, void 0, functio
 const findCartByCustomer = (customerId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield (0, cart_1.findCartOwner)({ customerId: customerId });
 });
-const addItemToCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+const addItemsToCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { serviceId, customer } = request.body;
     const sId = parseInt(serviceId);
     const itemInfo = yield findStoreItem(sId);
@@ -103,7 +103,18 @@ const addItemToCart = (request, response) => __awaiter(void 0, void 0, void 0, f
         }
     }
 });
-exports.addItemToCart = addItemToCart;
+exports.addItemsToCart = addItemsToCart;
+const getCartByCustomer = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const customer = response.locals.user.id;
+    const cart = yield (0, cart_1.findCartOwner)({ customerId: customer });
+    if (!cart) {
+        return response.status(200).json(cart);
+    }
+    const cartItem = yield (0, CartItemController_1.getCartItemBycart)(cart.id);
+    const results = { cart, cartItem };
+    return response.status(200).json(results);
+});
+exports.getCartByCustomer = getCartByCustomer;
 const findStoreItem = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const service = yield (0, Services_1.getServiceID)({ id: id });

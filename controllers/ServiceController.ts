@@ -76,7 +76,6 @@ const updateServiceData = async (request: Request, response: Response) => {
 }
 
 const getStoreService = async (request: Request, response: Response) => {
-    const storeName = request.params.store_name;
 
     try {
         const store_id = await findStore(request.params.store_name);

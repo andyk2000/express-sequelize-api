@@ -78,6 +78,12 @@ const getServicesByStore = async (query: {}) => {
     })
 }
 
+const getServiceBystoreName = async (query: {}) =>{
+    return await Service.findOne({
+        where: query
+    })
+}
+
 export {
     initializeService,
     getServices,
@@ -85,5 +91,6 @@ export {
     createService,
     deleteService,
     updateService,
-    getServicesByStore
+    getServicesByStore,
+    getServiceBystoreName,
 };

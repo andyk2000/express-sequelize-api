@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import {getUserEmail, getUserID} from "../models/Users";
 
 const customerCheck = async (request: Request, response: Response, next: any) => {
-    const customerId = Number(request.headers["id"]);
-    
+    const customerId = response.locals.user.id;
     if(customerId === null) {
         return response.status(500).json({error: "provide an id"});
     }

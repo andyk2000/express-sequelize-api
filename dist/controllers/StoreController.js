@@ -17,8 +17,9 @@ const storeURLGenration = (name) => {
     return `${store_name}&123456789`;
 };
 const createNewStore = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, address, description, owner } = request.body;
-    const owner_id = parseInt(owner);
+    const { name, address, description } = request.body;
+    console.log(response.locals.user.id);
+    const owner_id = response.locals.user.id;
     const storeUrl = storeURLGenration(name);
     try {
         const data = yield (0, Stores_1.createStore)({ name, address, description, owner_id, storeUrl });

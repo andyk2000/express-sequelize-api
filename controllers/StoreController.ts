@@ -1,3 +1,4 @@
+import { number } from "joi";
 import {createStore, getStores, getStoreID, deleteStore, updateStore, getStoreOwner, getstoresForCustomer} from "../models/Stores";
 import { Request , Response} from "express";
 const slugify = require('slugify');
@@ -8,8 +9,9 @@ const storeURLGenration = (name: string,) => {
 }
 
 const createNewStore = async (request: Request, response: Response) => {
-    const {name, address, description, owner} = request.body;
-    const owner_id = parseInt(owner);
+    const {name, address, description} = request.body;
+    console.log(response.locals.user.id);
+    const owner_id = response.locals.user.id;
     const storeUrl = storeURLGenration(name);
     try {
         const data = await createStore({ name, address, description, owner_id, storeUrl });

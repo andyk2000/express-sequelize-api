@@ -9,11 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CartItem = exports.updateCartItem = exports.deleteCartItem = exports.getCartItemID = exports.getCartItems = exports.createCartItem = exports.initializeCartItem = void 0;
+exports.getCartCustomer = exports.updateCartItem = exports.deleteCartItem = exports.getCartItemID = exports.getCartItems = exports.createCartItem = exports.initializeCartItem = void 0;
 const sequelize_1 = require("sequelize");
 class CartItem extends sequelize_1.Model {
 }
-exports.CartItem = CartItem;
 const cartItemSchema = {
     id: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -73,3 +72,9 @@ const updateCartItem = (data, query) => __awaiter(void 0, void 0, void 0, functi
     });
 });
 exports.updateCartItem = updateCartItem;
+const getCartCustomer = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield CartItem.findAll({
+        where: query
+    });
+});
+exports.getCartCustomer = getCartCustomer;

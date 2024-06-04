@@ -4,8 +4,7 @@ const storeDataValidation = celebrate({
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         address: Joi.string().required(),
-        description: Joi.string().required(),
-        owner: Joi.string().required(),
+        description: Joi.string().required()
     })
 });
 
@@ -14,6 +13,12 @@ const serviceDataValidation = celebrate({
         name: Joi.string().required(),
         price: Joi.string().required(),
         store_id: Joi.string().required(),
+    })
+})
+
+const serviceUserVAlidation = celebrate ({
+    [Segments.BODY]: Joi.object().keys({
+        
     })
 })
 

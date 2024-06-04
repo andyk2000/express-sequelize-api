@@ -6,8 +6,7 @@ const storeDataValidation = (0, celebrate_1.celebrate)({
     [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
         name: celebrate_1.Joi.string().required(),
         address: celebrate_1.Joi.string().required(),
-        description: celebrate_1.Joi.string().required(),
-        owner: celebrate_1.Joi.string().required(),
+        description: celebrate_1.Joi.string().required()
     })
 });
 exports.storeDataValidation = storeDataValidation;
@@ -19,3 +18,6 @@ const serviceDataValidation = (0, celebrate_1.celebrate)({
     })
 });
 exports.serviceDataValidation = serviceDataValidation;
+const serviceUserVAlidation = (0, celebrate_1.celebrate)({
+    [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({})
+});

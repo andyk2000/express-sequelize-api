@@ -1,8 +1,8 @@
 import { number } from "joi";
 import {createCart, updateCart, deleteCart, getCartID, getCarts, findCartOwner, Cart, updateCartTotalPrice} from "../models/cart";
-import { createNewCartItem } from "./CartItemController";
+import { createNewCartItem, getCartItemBycart } from "./CartItemController";
 import { Request , Response} from "express";
-import { CartItem, updateCartItem } from "../models/CartItem";
+import { updateCartItem } from "../models/CartItem";
 import { getServiceID } from "../models/Services";
 
 const createNewCart = async (data: {total_price: number, customerId: number}, item: string) => {
@@ -95,6 +95,18 @@ const addItemsToCart = async (request: Request, response: Response) => {
     }
 };
 
+const getCartByCustomer = async (request: Request, response: Response) => {
+    const customer = response.locals.user.id;
+
+    const cart = await findCartOwner({customerId: customer});
+    if ( !cart){
+        return response.status(200).json(cart)
+    }
+    const cartItem = await getCartItemBycart(cart.id);
+    const results = {cart, cartItem}
+    return response.status(200).json(results);
+}
+
 const findStoreItem = async (id: number) => {
     try {
         const service = await getServiceID({id: id});
@@ -106,5 +118,6 @@ const findStoreItem = async (id: number) => {
 }
 
 export {
-    addItemsToCart
+    addItemsToCart,
+    getCartByCustomer
 }

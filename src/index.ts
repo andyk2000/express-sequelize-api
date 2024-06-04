@@ -10,6 +10,7 @@ import { userRouter } from "../routes/usersRoutes";
 import { storeRouter } from "../routes/storeRoutes";
 import { serviceRouter } from "../routes/serviceRoutes";
 import { cartRouter } from "../routes/cartRoutes";
+import { errors } from "celebrate";
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ router.use('/service', serviceRouter);
 router.use('/cart', cartRouter);
 
 app.use(router);
+app.use(errors());
 app.listen(port, async () => {
   await sequelize.sync({alter: true})
   console.log("Server Listening on PORT:", port);

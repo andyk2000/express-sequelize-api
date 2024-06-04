@@ -1,4 +1,4 @@
-import { CartItem } from "../models/CartItem";
+import { getCartCustomer } from "../models/CartItem";
 import {createCartItem} from "../models/CartItem";
 import { getStoreID, getStoreOwner, getStores, getstoresForCustomer, updateStore } from "../models/Stores";
 
@@ -15,6 +15,18 @@ const createNewCartItem = async (newCartItem: any) => {
     }
 }
 
+const getCartItemBycart = async (Cart: any) => {
+    const cart_id = Cart;
+    try{
+        const results = await getCartCustomer({cart_id: cart_id});
+        return results;
+    } catch (error) {
+        console.error(error);
+        throw error
+    }
+} 
+
 export {
     createNewCartItem,
+    getCartItemBycart
 }

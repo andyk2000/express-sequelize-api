@@ -111,6 +111,13 @@ const getStoreInfo = async () => {
     return stores;
 }
 
+const getStoreByName = async (query: {}) => {
+    const store = await Store.findOne({
+        where: query
+    });
+    return store
+}
+
 export {
     initializeStore,
     getStores,
@@ -120,5 +127,6 @@ export {
     updateStore,
     getStoreOwner,
     getstoresForCustomer,
-    getStoreInfo
+    getStoreInfo,
+    getStoreByName
 };

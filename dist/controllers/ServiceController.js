@@ -89,7 +89,6 @@ const updateServiceData = (request, response) => __awaiter(void 0, void 0, void 
 });
 exports.updateServiceData = updateServiceData;
 const getStoreService = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const storeName = request.params.store_name;
     try {
         const store_id = yield findStore(request.params.store_name);
         const services = yield (0, Services_1.getServicesByStore)({ store_id: store_id.toString() });

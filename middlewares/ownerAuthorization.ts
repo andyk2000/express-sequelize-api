@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import {getUserID} from "../models/Users";
 
 const ownerCheck = async (request: Request, response: Response, next: any) => {
-    const ownerId = Number(request.headers["id"]);
-    
-    if(ownerId === null) {
-        return response.status(500).json("provide an id");
+    const ownerId = response.locals.user.id;
+    console.log(response.locals.user.id);
+    if(!ownerId) {
+        return response.status(500).json({error: "provide an id"});
     }
 
     try {
-        console.log(ownerId);
         const owner = await getUserID({id: ownerId});
         if(!owner){
             return response.status(500).json({error: `there's no user with the id ${owner}`})

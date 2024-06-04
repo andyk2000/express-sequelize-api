@@ -34,10 +34,8 @@ const confirmationEmail = (email: string) => {
       };
 
       sender.sendMail(newMail, function(){
-        console.log('Email sent: ');
+        console.log(`Email sent: ${email}`);
       });
-      
-
 }
 
 const createNewUser = async (request: Request, response: Response) => {

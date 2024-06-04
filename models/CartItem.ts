@@ -78,6 +78,12 @@ const updateCartItem = async (data: {}, query: {}) => {
     });
 }
 
+const getCartCustomer = async (query: {}) => {
+    return await CartItem.findAll({
+        where: query
+    })
+}
+
 export {
     initializeCartItem,
     createCartItem,
@@ -85,5 +91,5 @@ export {
     getCartItemID,
     deleteCartItem,
     updateCartItem,
-    CartItem
+    getCartCustomer
 };

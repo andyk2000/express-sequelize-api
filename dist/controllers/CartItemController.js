@@ -9,14 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createNewCartItem = void 0;
+exports.getCartItemBycart = exports.createNewCartItem = void 0;
 const CartItem_1 = require("../models/CartItem");
+const CartItem_2 = require("../models/CartItem");
 const createNewCartItem = (newCartItem) => __awaiter(void 0, void 0, void 0, function* () {
     const cart_id = newCartItem.cart_id;
     const item_name = newCartItem.item_name;
     const price = newCartItem.price;
     try {
-        const data = yield (0, CartItem_1.createCartItem)({ cart_id, item_name, price });
+        const data = yield (0, CartItem_2.createCartItem)({ cart_id, item_name, price });
         return data;
     }
     catch (error) {
@@ -25,3 +26,15 @@ const createNewCartItem = (newCartItem) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.createNewCartItem = createNewCartItem;
+const getCartItemBycart = (Cart) => __awaiter(void 0, void 0, void 0, function* () {
+    const cart_id = Cart;
+    try {
+        const results = yield (0, CartItem_1.getCartCustomer)({ cart_id: cart_id });
+        return results;
+    }
+    catch (error) {
+        console.error(error);
+        throw error;
+    }
+});
+exports.getCartItemBycart = getCartItemBycart;

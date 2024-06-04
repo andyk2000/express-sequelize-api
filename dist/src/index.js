@@ -24,6 +24,7 @@ const usersRoutes_1 = require("../routes/usersRoutes");
 const storeRoutes_1 = require("../routes/storeRoutes");
 const serviceRoutes_1 = require("../routes/serviceRoutes");
 const cartRoutes_1 = require("../routes/cartRoutes");
+const celebrate_1 = require("celebrate");
 const router = express_1.default.Router();
 const bodyParser = require("body-parser");
 dotenv_1.default.config();
@@ -47,6 +48,7 @@ router.use('/store', storeRoutes_1.storeRouter);
 router.use('/service', serviceRoutes_1.serviceRouter);
 router.use('/cart', cartRoutes_1.cartRouter);
 app.use(router);
+app.use((0, celebrate_1.errors)());
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield sequelize.sync({ alter: true });
     console.log("Server Listening on PORT:", port);
