@@ -17,12 +17,12 @@ const generateAccessToken = (email: string, id: number) => {
     );
 };
 
-const confirmationEmail = (email: string) => {
+const confirmationEmail = async (email: string) => {
     const sender = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: 'andyirimbere@gmail.com',
-          pass: 'Nyabibuye30'
+          pass: 'cykvvsvmijvpqxwr'
         }
     });
 
@@ -33,8 +33,12 @@ const confirmationEmail = (email: string) => {
         text: 'Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda'
       };
 
-      sender.sendMail(newMail, function(){
-        console.log(`Email sent: ${email}`);
+      sender.sendMail(newMail, (error: any, info: any) => {
+        if (error) {
+          console.log('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
       });
 }
 
