@@ -1,23 +1,7 @@
 import {createService, getServices, getServiceID, deleteService, updateService, getServicesByStore} from "../models/Services";
-import { getStoreInfo } from "../models/Stores";
+import { getStoreByUrl, getStoreInfo } from "../models/Stores";
 import { Request , Response} from "express";
 const slugify = require('slugify');
-
-const findStore = async (name: string) => {
-    console.log(name);
-    const allStores = await getStoreInfo();
-    const stores = allStores.map(store => ({ url: store.storeUrl, id: store.id }));
-    console.log(stores);
-    let ret: number = 0;
-    stores.forEach(store => {
-        let slug = slugify(store.url, { lower: true, strict: true });
-        console.log(slug);
-        if (slug === name) {
-          ret = store.id;
-        }
-      });
-    return ret;
-}
 
 const createNewService = async (request: Request, response: Response) => {
     const {name, price, store_id} = request.body;
@@ -76,9 +60,13 @@ const updateServiceData = async (request: Request, response: Response) => {
 }
 
 const getStoreService = async (request: Request, response: Response) => {
+    const url = request.params.storeurl;
 
     try {
-        const store_id = await findStore(request.params.store_name);
+        const store_id = await await getStoreByUrl({storeUrl: url});
+        if(!store_id){
+            return response.status(500).json({error: "store not found"});
+        }
         const services = await getServicesByStore({store_id: store_id.toString()});
         return response.status(200).json(services);
     } catch (error) {

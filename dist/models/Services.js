@@ -28,8 +28,12 @@ const serviceSchema = {
         allowNull: false,
     },
     store_id: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        type: sequelize_1.DataTypes.INTEGER,
+        AllowNull: false,
+        references: {
+            model: 'stores',
+            key: 'id'
+        }
     }
 };
 const initializeService = (sequelize) => {

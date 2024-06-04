@@ -1,10 +1,11 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
+import { AllowNull } from 'sequelize-typescript';
 
 interface ServiceAttributes {
     id: number;
     name: string;
     price: number;
-    store_id: string;
+    store_id: number;
 }
 
 interface ServiceCreationAttributes extends Optional<ServiceAttributes, 'id'> {}
@@ -13,7 +14,7 @@ class Service extends Model<ServiceAttributes, ServiceCreationAttributes> implem
     public id!: number;
     public name!: string;
     public price!: number;
-    public store_id!: string;
+    public store_id!: number;
 }
 
 const serviceSchema = {
@@ -31,8 +32,12 @@ const serviceSchema = {
         allowNull: false,
     },
     store_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.INTEGER,
+        AllowNull: false,
+        references: {
+            model: 'stores',
+            key: 'id'
+        }
     }
 }
 

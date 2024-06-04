@@ -9,7 +9,8 @@ import { getStoreService } from "../controllers/ServiceController";
 
 userRouter.post("/signup", signupValidation  ,emailVerification, signUp);
 userRouter.post("/login", loginValidation , logIn);
-userRouter.get("/", check,customerCheck, showAvailableShops);
+userRouter.get("/", [check,customerCheck], showAvailableShops);
+userRouter.get("/:storeurl", check, getStoreService)
 
 export {
     userRouter,

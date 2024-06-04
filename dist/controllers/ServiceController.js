@@ -13,21 +13,6 @@ exports.getStoreService = exports.updateServiceData = exports.deleteServiceData 
 const Services_1 = require("../models/Services");
 const Stores_1 = require("../models/Stores");
 const slugify = require('slugify');
-const findStore = (name) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(name);
-    const allStores = yield (0, Stores_1.getStoreInfo)();
-    const stores = allStores.map(store => ({ url: store.storeUrl, id: store.id }));
-    console.log(stores);
-    let ret = 0;
-    stores.forEach(store => {
-        let slug = slugify(store.url, { lower: true, strict: true });
-        console.log(slug);
-        if (slug === name) {
-            ret = store.id;
-        }
-    });
-    return ret;
-});
 const createNewService = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, price, store_id } = request.body;
     try {
@@ -89,8 +74,12 @@ const updateServiceData = (request, response) => __awaiter(void 0, void 0, void 
 });
 exports.updateServiceData = updateServiceData;
 const getStoreService = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = request.params.storeurl;
     try {
-        const store_id = yield findStore(request.params.store_name);
+        const store_id = yield yield (0, Stores_1.getStoreByUrl)({ storeUrl: url });
+        if (!store_id) {
+            return response.status(500).json({ error: "store not found" });
+        }
         const services = yield (0, Services_1.getServicesByStore)({ store_id: store_id.toString() });
         return response.status(200).json(services);
     }

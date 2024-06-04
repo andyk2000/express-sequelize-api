@@ -118,6 +118,13 @@ const getStoreByName = async (query: {}) => {
     return store
 }
 
+const getStoreByUrl = async (query: {}) => {
+    const store = await Store.findOne({
+        where: query
+    })
+    return store?.id;
+}
+
 export {
     initializeStore,
     getStores,
@@ -128,5 +135,6 @@ export {
     getStoreOwner,
     getstoresForCustomer,
     getStoreInfo,
-    getStoreByName
+    getStoreByName,
+    getStoreByUrl
 };
