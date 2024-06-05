@@ -1,14 +1,10 @@
-import { getCartCustomer } from "../models/CartItem";
-import { createCartItem } from "../models/CartItem";
-import {
-  getStoreID,
-  getStoreOwner,
-  getStores,
-  getstoresForCustomer,
-  updateStore,
-} from "../models/Stores";
+import { getCartCustomer, createCartItem } from "../models/CartItem";
 
-const createNewCartItem = async (newCartItem: any) => {
+const createNewCartItem = async (newCartItem: {
+  cart_id: number;
+  item_name: string;
+  price: number;
+}) => {
   const cart_id = newCartItem.cart_id;
   const item_name = newCartItem.item_name;
   const price = newCartItem.price;
@@ -21,7 +17,7 @@ const createNewCartItem = async (newCartItem: any) => {
   }
 };
 
-const getCartItemBycart = async (Cart: any) => {
+const getCartItemBycart = async (Cart: number) => {
   const cart_id = Cart;
   try {
     const results = await getCartCustomer({ cart_id: cart_id });

@@ -1,17 +1,11 @@
-import { number } from "joi";
 import {
   createCart,
-  updateCart,
-  deleteCart,
-  getCartID,
-  getCarts,
   findCartOwner,
   Cart,
   updateCartTotalPrice,
 } from "../models/cart";
 import { createNewCartItem, getCartItemBycart } from "./CartItemController";
 import { Request, Response } from "express";
-import { updateCartItem } from "../models/CartItem";
 import { getServiceID } from "../models/Services";
 
 const createNewCart = async (
@@ -33,38 +27,6 @@ const createNewCart = async (
   }
 };
 
-const getAllCarts = async (request: Request, response: Response) => {
-  try {
-                            const data = await getCarts();
-    return response.status(200).json(data);
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({ error: "failed to get the data" });
-  }
-};
-
-const getCartByID = async (request: Request, response: Response) => {
-  const id = parseInt(request.params.id);
-  try {
-    const cartData = await getCartID({ id: id });
-    return response.status(200).json(cartData);
-  } catch (err) {
-    console.log(err);
-    response.status(500).json({ error: `failed to get cart with id${id}` });
-  }
-};
-
-const deleteCartData = async (request: Request, response: Response) => {
-  const id = parseInt(request.params.id);
-  try {
-    const deletedCart = await deleteCart({ id: id });
-    return response.status(200).json(deletedCart);
-  } catch (error) {
-    console.log(error);
-    response.status(500).json({ error: `failed to delete cart with id${id}` });
-  }
-};
-
 const updateCartData = async (
   data: { item: string; price: number },
   cart: Cart,
@@ -72,7 +34,7 @@ const updateCartData = async (
   const total_price = cart.total_price + data.price;
   try {
     const finalCart = await updateCartTotalPrice(total_price, { id: cart.id });
-    const newItem = await createNewCartItem({
+    await createNewCartItem({
       cart_id: cart.id,
       item_name: data.item,
       price: data.price,
@@ -84,7 +46,7 @@ const updateCartData = async (
   }
 };
 
-const findCartByCustomer = async (customerId: any) => {
+const findCartByCustomer = async (customerId: number) => {
   return await findCartOwner({ customerId: customerId });
 };
 
@@ -92,7 +54,7 @@ const addItemsToCart = async (request: Request, response: Response) => {
   const { serviceId, customer } = request.body;
   const sId = parseInt(serviceId);
   const itemInfo = await findStoreItem(sId);
-  let customerId = parseInt(customer);
+  const customerId = parseInt(customer);
   if (!customerId) {
     return response.status(400).json({ error: "Customer ID is required" });
   }

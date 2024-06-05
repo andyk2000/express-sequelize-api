@@ -1,20 +1,9 @@
-import {
-  DataTypes,
-  Sequelize,
-  Model,
-  Optional,
-  FindOptions,
-  WhereOptions,
-} from "sequelize";
+import { DataTypes, Sequelize, Model, Optional, WhereOptions } from "sequelize";
 
 interface CartAttributes {
   id: number;
   customerId: number;
   total_price: number;
-}
-
-interface Item {
-  name: string;
 }
 
 interface CartCreationAttributes extends Optional<CartAttributes, "id"> {}
@@ -66,20 +55,23 @@ const getCarts = async () => {
   return cartsData;
 };
 
-const getCartID = async (query: {}) => {
+const getCartID = async (query: NonNullable<unknown>) => {
   const cartData = await Cart.findOne({
     where: query,
   });
   return cartData;
 };
 
-const deleteCart = async (query: {}) => {
+const deleteCart = async (query: NonNullable<unknown>) => {
   return await Cart.destroy({
     where: query,
   });
 };
 
-const updateCart = async (data: {}, query: {}) => {
+const updateCart = async (
+  data: NonNullable<unknown>,
+  query: NonNullable<unknown>,
+) => {
   return await Cart.update(data, {
     where: query,
   });
@@ -101,7 +93,7 @@ const updateCartTotalPrice = async (
   return updated[1][0];
 };
 
-const findCartOwner = async (query: {}) => {
+const findCartOwner = async (query: NonNullable<unknown>) => {
   return await Cart.findOne({
     where: query,
   });

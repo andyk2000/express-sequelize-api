@@ -6,9 +6,8 @@ import {
   updateService,
   getServicesByStore,
 } from "../models/Services";
-import { getStoreByUrl, getStoreInfo } from "../models/Stores";
+import { getStoreByUrl } from "../models/Stores";
 import { Request, Response } from "express";
-const slugify = require("slugify");
 
 const createNewService = async (request: Request, response: Response) => {
   const { name, price, store_id } = request.body;

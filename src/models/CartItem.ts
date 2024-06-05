@@ -1,5 +1,4 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import { AllowNull } from "sequelize-typescript";
 
 interface CartItemAttributes {
   id: number;
@@ -62,26 +61,29 @@ const getCartItems = async () => {
   return cartsData;
 };
 
-const getCartItemID = async (query: {}) => {
+const getCartItemID = async (query: NonNullable<unknown>) => {
   const cartData = await CartItem.findOne({
     where: query,
   });
   return cartData;
 };
 
-const deleteCartItem = async (query: {}) => {
+const deleteCartItem = async (query: NonNullable<unknown>) => {
   return await CartItem.destroy({
     where: query,
   });
 };
 
-const updateCartItem = async (data: {}, query: {}) => {
+const updateCartItem = async (
+  data: NonNullable<unknown>,
+  query: NonNullable<unknown>,
+) => {
   return await CartItem.update(data, {
     where: query,
   });
 };
 
-const getCartCustomer = async (query: {}) => {
+const getCartCustomer = async (query: NonNullable<unknown>) => {
   return await CartItem.findAll({
     where: query,
   });

@@ -16,8 +16,4 @@ const serviceDataValidation = celebrate({
   }),
 });
 
-const serviceUserVAlidation = celebrate({
-  [Segments.BODY]: Joi.object().keys({}),
-});
-
 export { storeDataValidation, serviceDataValidation };

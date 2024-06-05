@@ -1,5 +1,4 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import { AllowNull } from "sequelize-typescript";
 
 interface ServiceAttributes {
   id: number;
@@ -61,32 +60,35 @@ const createService = async (service: ServiceCreationAttributes) => {
   return await Service.create(service);
 };
 
-const getServiceID = async (query: {}) => {
+const getServiceID = async (query: NonNullable<unknown>) => {
   const serviceData = await Service.findOne({
     where: query,
   });
   return serviceData;
 };
 
-const deleteService = async (query: {}) => {
+const deleteService = async (query: NonNullable<unknown>) => {
   return await Service.destroy({
     where: query,
   });
 };
 
-const updateService = async (data: {}, query: {}) => {
+const updateService = async (
+  data: NonNullable<unknown>,
+  query: NonNullable<unknown>,
+) => {
   return await Service.update(data, {
     where: query,
   });
 };
 
-const getServicesByStore = async (query: {}) => {
+const getServicesByStore = async (query: NonNullable<unknown>) => {
   return await Service.findAll({
     where: query,
   });
 };
 
-const getServiceBystoreName = async (query: {}) => {
+const getServiceBystoreName = async (query: NonNullable<unknown>) => {
   return await Service.findOne({
     where: query,
   });

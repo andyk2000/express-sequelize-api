@@ -4,7 +4,7 @@ import { getStoreByName } from "../models/Stores";
 const storeVerification = async (
   request: Request,
   response: Response,
-  next: any,
+  next: () => void,
 ) => {
   const { name } = request.body;
   try {

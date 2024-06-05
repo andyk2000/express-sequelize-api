@@ -4,7 +4,7 @@ import { getUserEmail, getUserID } from "../models/Users";
 const customerCheck = async (
   request: Request,
   response: Response,
-  next: any,
+  next: () => void,
 ) => {
   const customerId = response.locals.user.id;
   if (customerId === null) {
@@ -23,11 +23,9 @@ const customerCheck = async (
     if (customer.role === "customer") {
       next();
     } else {
-      return response
-        .status(401)
-        .json({
-          error: "This user is not allowed to access the page required.",
-        });
+      return response.status(401).json({
+        error: "This user is not allowed to access the page required.",
+      });
     }
   } catch (error) {
     console.log(customerId);
@@ -41,7 +39,7 @@ const customerCheck = async (
 const emailVerification = async (
   request: Request,
   response: Response,
-  next: any,
+  next: () => void,
 ) => {
   const { email } = request.body;
   try {

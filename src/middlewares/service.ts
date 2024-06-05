@@ -4,7 +4,7 @@ import { getServiceBystoreName } from "../models/Services";
 const serviceVerification = async (
   request: Request,
   response: Response,
-  next: any,
+  next: () => void,
 ) => {
   const { name, store_id } = request.body;
 

@@ -1,5 +1,4 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import { AllowNull } from "sequelize-typescript";
 
 interface StoreAttributes {
   id: number;
@@ -74,26 +73,29 @@ const createStore = async (store: StoreCreationAttributes) => {
   return await Store.create(store);
 };
 
-const getStoreID = async (query: {}) => {
+const getStoreID = async (query: NonNullable<unknown>) => {
   const storeData = await Store.findOne({
     where: query,
   });
   return storeData;
 };
 
-const deleteStore = async (query: {}) => {
+const deleteStore = async (query: NonNullable<unknown>) => {
   return await Store.destroy({
     where: query,
   });
 };
 
-const updateStore = async (data: {}, query: {}) => {
+const updateStore = async (
+  data: NonNullable<unknown>,
+  query: NonNullable<unknown>,
+) => {
   return await Store.update(data, {
     where: query,
   });
 };
 
-const getStoreOwner = async (query: {}) => {
+const getStoreOwner = async (query: NonNullable<unknown>) => {
   const stores = await Store.findAll({
     where: query,
   });
@@ -114,14 +116,14 @@ const getStoreInfo = async () => {
   return stores;
 };
 
-const getStoreByName = async (query: {}) => {
+const getStoreByName = async (query: NonNullable<unknown>) => {
   const store = await Store.findOne({
     where: query,
   });
   return store;
 };
 
-const getStoreByUrl = async (query: {}) => {
+const getStoreByUrl = async (query: NonNullable<unknown>) => {
   const store = await Store.findOne({
     where: query,
   });

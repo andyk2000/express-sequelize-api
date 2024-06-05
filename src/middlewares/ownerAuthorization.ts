@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { getUserID } from "../models/Users";
 
-const ownerCheck = async (request: Request, response: Response, next: any) => {
+const ownerCheck = async (
+  request: Request,
+  response: Response,
+  next: () => void,
+) => {
   const ownerId = response.locals.user.id;
   console.log(response.locals.user.id);
   if (!ownerId) {
@@ -19,11 +23,9 @@ const ownerCheck = async (request: Request, response: Response, next: any) => {
     if (owner.role === "owner") {
       next();
     } else {
-      return response
-        .status(401)
-        .json({
-          error: "This user is not allowed to access the page required.",
-        });
+      return response.status(401).json({
+        error: "This user is not allowed to access the page required.",
+      });
     }
   } catch (error) {
     console.log(ownerId);

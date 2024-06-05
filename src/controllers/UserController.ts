@@ -8,8 +8,8 @@ import {
 } from "../models/Users";
 import { Request, Response } from "express";
 import Crypto from "crypto";
-const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 
 const generateAccessToken = (email: string, id: number) => {
   return jwt.sign(
@@ -33,14 +33,14 @@ const confirmationEmail = async (email: string) => {
     },
   });
 
-  var newMail = {
+  const newMail = {
     from: "andyirimbere@gmail.com",
     to: email,
-    subject: `welcome to urubuto`,
+    subject: "welcome to urubuto",
     text: "Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda",
   };
 
-  sender.sendMail(newMail, (error: any, info: any) => {
+  sender.sendMail(newMail, (error, info) => {
     if (error) {
       console.log("Error sending email:", error);
     } else {
@@ -118,7 +118,8 @@ const encryptPassword = (password: string) => {
 };
 
 const signUp = async (request: Request, response: Response) => {
-  let { names, email, password, role } = request.body;
+  let { password } = request.body;
+  const { names, email, role } = request.body;
   password = encryptPassword(password);
   try {
     const newUser = await createUser({ names, email, password, role });

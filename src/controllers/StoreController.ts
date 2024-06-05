@@ -1,4 +1,3 @@
-import { number } from "joi";
 import {
   createStore,
   getStores,
@@ -9,7 +8,7 @@ import {
   getstoresForCustomer,
 } from "../models/Stores";
 import { Request, Response } from "express";
-const slugify = require("slugify");
+import slugify from "slugify";
 
 const storeURLGenration = (name: string) => {
   const store_name = slugify(name, { lower: true, strict: true });

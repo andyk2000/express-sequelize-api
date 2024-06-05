@@ -64,27 +64,30 @@ const getUsers = async () => {
   return usersData;
 };
 
-const getUserID = async (query: {}) => {
+const getUserID = async (query: NonNullable<unknown>) => {
   const userData = await User.findOne({
     where: query,
   });
   return userData;
 };
 
-const getUserEmail = async (query: {}) => {
+const getUserEmail = async (query: NonNullable<unknown>) => {
   const userData = await User.findOne({
     where: query,
   });
   return userData;
 };
 
-const deleteUser = async (query: {}) => {
+const deleteUser = async (query: NonNullable<unknown>) => {
   return await User.destroy({
     where: query,
   });
 };
 
-const updateUser = async (data: {}, query: {}) => {
+const updateUser = async (
+  data: NonNullable<unknown>,
+  query: NonNullable<unknown>,
+) => {
   return await User.update(data, {
     where: query,
   });
