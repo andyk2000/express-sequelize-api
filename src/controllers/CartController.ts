@@ -35,7 +35,7 @@ const createNewCart = async (
 
 const getAllCarts = async (request: Request, response: Response) => {
   try {
-    const data = await getCarts();
+                            const data = await getCarts();
     return response.status(200).json(data);
   } catch (error) {
     console.log(error);
