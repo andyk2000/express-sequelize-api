@@ -27,7 +27,7 @@ app.use(
   })
 );
 
-const sequelize = new Sequelize('urubuto', 'postgres', 'Ny@bibuye30', {
+const sequelize = new Sequelize('urubuto', 'postgres', 'Nyabibuye30', {
   host: 'localhost',
   dialect: 'postgres'
 });
