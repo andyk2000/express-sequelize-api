@@ -6,6 +6,4 @@ const cartRouter = express.Router();
 cartRouter.get("/urubuto-store/:store_name", getStoreService);
 cartRouter.post("/addItem", addItemsToCart);
 
-export {
-    cartRouter
-}
+export { cartRouter };
