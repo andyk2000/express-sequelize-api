@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
 import { initializeUser } from "./models/Users";
@@ -16,7 +16,7 @@ import bodyParser from "body-parser";
 const router = express.Router();
 dotenv.config();
 
-const app: Express = express();
+const app: express.Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
