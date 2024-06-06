@@ -26,10 +26,15 @@ app.use(
   }),
 );
 
-const sequelize = new Sequelize("urubuto", "postgres", "Ny@bibuye30", {
-  host: "localhost",
-  dialect: "postgres",
-});
+const sequelize = new Sequelize(
+  "urubuto",
+  "admin",
+  "YuaB0ITmTrnvouaE0OSe37Dg8ekpQEeZ",
+  {
+    host: "dpg-cpgm5bm3e1ms73ai91e0-a",
+    dialect: "postgres",
+  },
+);
 
 initializeUser(sequelize);
 initializeStore(sequelize);
