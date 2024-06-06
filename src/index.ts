@@ -42,7 +42,7 @@ initializeService(sequelize);
 initializeCart(sequelize);
 initializeCartItem(sequelize);
 
-router.use("/home", userRouter);
+router.use("/user", userRouter);
 
 router.use("/store", storeRouter);
 
