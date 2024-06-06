@@ -72,10 +72,10 @@ const updateServiceData = async (request: Request, response: Response) => {
 };
 
 const getStoreService = async (request: Request, response: Response) => {
-  const url = request.params.storeurl;
+  const url = request.params.store_name;
 
   try {
-    const store_id = await await getStoreByUrl({ storeUrl: url });
+    const store_id = await getStoreByUrl({ storeUrl: url });
     if (!store_id) {
       return response.status(500).json({ error: "store not found" });
     }
