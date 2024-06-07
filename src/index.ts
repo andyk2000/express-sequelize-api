@@ -25,6 +25,7 @@ interface Config {
   user: string;
   password: string;
   database: string;
+  frontend: string;
 }
 
 const config: Config = {
@@ -32,6 +33,7 @@ const config: Config = {
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_DATABASE || "mydatabase",
+  frontend: process.env.FRONTEND_LINK || "urubuto",
 };
 
 app.use(bodyParser.json());
