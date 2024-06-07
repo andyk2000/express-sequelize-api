@@ -12,6 +12,7 @@ import { serviceRouter } from "./routes/serviceRoutes";
 import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 const router = express.Router();
 dotenv.config();
@@ -20,6 +21,11 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  }),
+);
 app.use(
   bodyParser.urlencoded({
     extended: true,
