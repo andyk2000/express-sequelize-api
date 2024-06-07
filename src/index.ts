@@ -20,6 +20,20 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+interface Config {
+  host: string;
+  user: string;
+  password: string;
+  database: string;
+}
+
+const config: Config = {
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_DATABASE || "mydatabase",
+};
+
 app.use(bodyParser.json());
 app.use(
   cors({
@@ -32,15 +46,10 @@ app.use(
   }),
 );
 
-const sequelize = new Sequelize(
-  "urubuto",
-  "admin",
-  "YuaB0ITmTrnvouaE0OSe37Dg8ekpQEeZ",
-  {
-    host: "dpg-cpgm5bm3e1ms73ai91e0-a",
-    dialect: "postgres",
-  },
-);
+const sequelize = new Sequelize(config.database, config.user, config.password, {
+  host: config.host,
+  dialect: "postgres",
+});
 
 initializeUser(sequelize);
 initializeStore(sequelize);

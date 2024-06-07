@@ -11,13 +11,25 @@ import Crypto from "crypto";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
+interface Config {
+  email: string;
+  password: string;
+  secretKey: string;
+}
+
+const config: Config = {
+  email: process.env.EMAIL_ADDRESS || "localhost",
+  password: process.env.EMAIL_PASSWORD || "",
+  secretKey: process.env.SECRET_KEY || "zero",
+};
+
 const generateAccessToken = (email: string, id: number) => {
   return jwt.sign(
     {
       id,
       email,
     },
-    "muu",
+    config.secretKey,
     {
       expiresIn: 3600,
     },
@@ -28,13 +40,13 @@ const confirmationEmail = async (email: string) => {
   const sender = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "andyirimbere@gmail.com",
-      pass: "cykvvsvmijvpqxwr",
+      user: config.email,
+      pass: config.password,
     },
   });
 
   const newMail = {
-    from: "andyirimbere@gmail.com",
+    from: config.email,
     to: email,
     subject: "welcome to urubuto",
     text: "Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda",
