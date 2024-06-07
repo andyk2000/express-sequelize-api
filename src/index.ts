@@ -12,25 +12,6 @@ import { serviceRouter } from "./routes/serviceRoutes";
 import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
-import path from "path";
-
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
-
-interface DatabaseConfig {
-  host: string;
-  user: string;
-  password: string;
-  database: string;
-  port: number;
-}
-
-const dbConfig: DatabaseConfig = {
-  host: process.env.DB_HOST || "localhost",
-  port: 5432,
-  user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "123456",
-  database: process.env.DB_NAME || "",
-};
 
 const router = express.Router();
 dotenv.config();
@@ -40,17 +21,18 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(
+  cors({
+    origin: "http://localhost:3000",
+  }),
+);
+app.use(
   bodyParser.urlencoded({
     extended: true,
   }),
 );
 
 const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.user,
-  dbConfig.password,
-  {
-    host: dbConfig.host,
+
     dialect: "postgres",
   },
 );
@@ -61,7 +43,7 @@ initializeService(sequelize);
 initializeCart(sequelize);
 initializeCartItem(sequelize);
 
-router.use("/home", userRouter);
+router.use("/user", userRouter);
 
 router.use("/store", storeRouter);
 
