@@ -12,13 +12,24 @@ import { serviceRouter } from "./routes/serviceRoutes";
 import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
+import path from "path";
 
-const dbConfig = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+interface DatabaseConfig {
+  host: string;
+  user: string;
+  password: string;
+  database: string;
+  port: number;
+}
+
+const dbConfig: DatabaseConfig = {
+  host: process.env.DB_HOST || "localhost",
+  port: 5432,
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "123456",
+  database: process.env.DB_NAME || "",
 };
 
 const router = express.Router();
