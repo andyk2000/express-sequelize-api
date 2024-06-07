@@ -13,6 +13,14 @@ import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
 
+const dbConfig = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+};
+
 const router = express.Router();
 dotenv.config();
 
@@ -26,10 +34,15 @@ app.use(
   }),
 );
 
-const sequelize = new Sequelize("urubuto", "postgres", "Ny@bibuye30", {
-  host: "localhost",
-  dialect: "postgres",
-});
+const sequelize = new Sequelize(
+  dbConfig.database,
+  dbConfig.user,
+  dbConfig.password,
+  {
+    host: dbConfig.host,
+    dialect: "postgres",
+  },
+);
 
 initializeUser(sequelize);
 initializeStore(sequelize);
