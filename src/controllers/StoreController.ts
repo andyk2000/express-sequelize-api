@@ -90,7 +90,6 @@ const getStoreByOwner = async (request: Request, response: Response) => {
   const id = response.locals.user.id;
   try {
     const storeByowner = await getStoreOwner({ owner_id: id });
-    console.log(storeByowner);
     return response.status(200).json(storeByowner);
   } catch (error) {
     console.log(error);
@@ -102,7 +101,6 @@ const getStoreByOwnerForPayment = async (owner_id: number) => {
   const id = owner_id;
   try {
     const storeByowner = await getStoreOwner({ owner_id: id });
-    console.log(storeByowner);
     return storeByowner;
   } catch (error) {
     console.log(error);
@@ -113,7 +111,6 @@ const getStoreByOwnerForPayment = async (owner_id: number) => {
 const showAvailableShops = async (request: Request, response: Response) => {
   try {
     const availablestores = await getstoresForCustomer();
-    console.log(availablestores);
     return response.status(200).json(availablestores);
   } catch (error) {
     console.log(error);

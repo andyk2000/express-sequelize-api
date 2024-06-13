@@ -7,13 +7,11 @@ const customerCheck = async (
   next: () => void,
 ) => {
   const customerId = response.locals.user.id;
-  console.log(customerId);
   if (customerId === null) {
     return response.status(500).json({ error: "provide an id" });
   }
 
   try {
-    console.log(customerId);
     const customer = await getUserID({ id: customerId });
     if (!customer) {
       return response

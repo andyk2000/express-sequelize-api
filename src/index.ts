@@ -14,7 +14,7 @@ import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { paymentRoutes } from "./routes/paymentRoutes";
+import { paymentRoutes } from "./routes/dashboardRoutes";
 
 const router = express.Router();
 dotenv.config();

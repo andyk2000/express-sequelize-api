@@ -63,7 +63,6 @@ const confirmationEmail = async (email: string) => {
 
 const createNewUser = async (request: Request, response: Response) => {
   const { names, email, password, role } = request.body;
-  console.log({ names, email, password, role });
   try {
     const data = await createUser({ names, email, password, role });
     console.log(data);

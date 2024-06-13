@@ -27,7 +27,6 @@ const check = (req: Request, res: Response, next: () => void) => {
     res.locals = {
       user: user,
     };
-    console.log(res.locals);
     next();
   });
 };

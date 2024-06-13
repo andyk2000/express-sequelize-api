@@ -7,7 +7,6 @@ const ownerCheck = async (
   next: () => void,
 ) => {
   const ownerId = response.locals.user.id;
-  console.log(response.locals.user.id);
   if (!ownerId) {
     return response.status(500).json({ error: "provide an id" });
   }

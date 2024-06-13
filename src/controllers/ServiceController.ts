@@ -5,6 +5,7 @@ import {
   deleteService,
   updateService,
   getServicesByStore,
+  getServiceByStoreID,
 } from "../models/Services";
 import { getStoreByUrl } from "../models/Stores";
 import { Request, Response } from "express";
@@ -91,6 +92,16 @@ const getStoreService = async (request: Request, response: Response) => {
   }
 };
 
+const getServiceCountByStoreID = async (id: number) => {
+  try {
+    const services = await getServiceByStoreID({ store_id: id });
+    return services.length;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
+};
+
 export {
   createNewService,
   getAllServices,
@@ -98,4 +109,5 @@ export {
   deleteServiceData,
   updateServiceData,
   getStoreService,
+  getServiceCountByStoreID,
 };

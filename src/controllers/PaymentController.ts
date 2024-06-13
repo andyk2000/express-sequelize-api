@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
 import { getPaymentByStore } from "../models/payment";
 import { getStoreByOwnerForPayment } from "./StoreController";
+import { getServiceCountByStoreID } from "./ServiceController";
 
 const findPaymentByStore = async (store_id: number) => {
   try {
     const payments = await getPaymentByStore({ store_id: store_id });
-    return payments;
+    let totalAmountPaid = 0;
+    payments.map((payment) => {
+      totalAmountPaid = totalAmountPaid + payment.amount;
+    });
+    return totalAmountPaid;
   } catch (error) {
     console.log(error);
     throw error;
@@ -13,17 +18,25 @@ const findPaymentByStore = async (store_id: number) => {
 };
 
 const findAllStorePayments = async (request: Request, response: Response) => {
-  console.log(response.locals.user);
   const owner_id = response.locals.user.id;
+  let serviceCount = 0;
   try {
     const stores = await getStoreByOwnerForPayment(owner_id);
-    console.log(stores);
-    //   let totalPayment = 0;
-    const allStores = stores.map(async (store) => {
-      return await findPaymentByStore(store.id);
+    let totalPayment = 0;
+    await Promise.all(
+      stores.map(async (store) => {
+        const services = await getServiceCountByStoreID(store.id);
+        serviceCount += services;
+        totalPayment += await findPaymentByStore(store.id);
+      }),
+    );
+
+    console.log(serviceCount);
+    return response.status(200).json({
+      totalPayment,
+      storeCount: stores.length,
+      serviceCount: serviceCount,
     });
-    console.log(allStores);
-    return response.status(200).json(allStores);
   } catch (error) {
     console.log(error);
     return response.status(500).json(error);

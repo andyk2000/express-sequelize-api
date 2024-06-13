@@ -94,6 +94,12 @@ const getServiceBystoreName = async (query: NonNullable<unknown>) => {
   });
 };
 
+const getServiceByStoreID = async (query: NonNullable<unknown>) => {
+  return await Service.findAll({
+    where: query,
+  });
+};
+
 export {
   initializeService,
   getServices,
@@ -103,4 +109,5 @@ export {
   updateService,
   getServicesByStore,
   getServiceBystoreName,
+  getServiceByStoreID,
 };
