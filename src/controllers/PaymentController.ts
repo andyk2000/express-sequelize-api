@@ -43,4 +43,23 @@ const findAllStorePayments = async (request: Request, response: Response) => {
   }
 };
 
-export { findAllStorePayments };
+const findLatestTransaction = async (request: Request, response: Response) => {
+  const owner_id = response.locals.user.id;
+  try {
+    const stores = await getStoreByOwnerForPayment(owner_id);
+
+    const payments = await Promise.all(
+      stores.map(async (store) => {
+        return await getPaymentByStore(store.id);
+      }),
+    );
+    response.json({ success: true, payments });
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    response
+      .status(500)
+      .json({ success: false, message: "Something went wrong" });
+  }
+};
+
+export { findAllStorePayments, findLatestTransaction };

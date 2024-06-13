@@ -84,7 +84,7 @@ const getAllUsers = async (request: Request, response: Response) => {
 };
 
 const getUserByID = async (request: Request, response: Response) => {
-  const id = parseInt(request.params.id);
+  const id = response.locals.user.id;
   try {
     const userData = await getUserID({ id: id });
     return response.status(200).json(userData);
