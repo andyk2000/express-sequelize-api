@@ -5,6 +5,7 @@ import { initializeUser } from "./models/Users";
 import { initializeStore } from "./models/Stores";
 import { initializeService } from "./models/Services";
 import { initializeCart } from "./models/cart";
+import { initializePayment } from "./models/payment";
 import { initializeCartItem } from "./models/CartItem";
 import { userRouter } from "./routes/usersRoutes";
 import { storeRouter } from "./routes/storeRoutes";
@@ -13,6 +14,7 @@ import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { paymentRoutes } from "./routes/paymentRoutes";
 
 const router = express.Router();
 dotenv.config();
@@ -58,6 +60,7 @@ initializeStore(sequelize);
 initializeService(sequelize);
 initializeCart(sequelize);
 initializeCartItem(sequelize);
+initializePayment(sequelize);
 
 router.use("/user", userRouter);
 
@@ -66,6 +69,8 @@ router.use("/store", storeRouter);
 router.use("/service", serviceRouter);
 
 router.use("/cart", cartRouter);
+
+router.use("/payment", paymentRoutes);
 
 app.use(router);
 app.use(errors());

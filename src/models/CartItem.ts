@@ -5,6 +5,7 @@ interface CartItemAttributes {
   cart_id: number;
   item_name: string;
   price: number;
+  store_id: number;
 }
 
 interface CartItemCreationAttributes
@@ -18,6 +19,7 @@ class CartItem
   public cart_id!: number;
   public item_name!: string;
   public price!: number;
+  public store_id!: number;
 }
 
 const cartItemSchema = {
@@ -41,6 +43,14 @@ const cartItemSchema = {
   price: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  store_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "stores",
+      key: "id",
+    },
   },
 };
 

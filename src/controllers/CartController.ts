@@ -9,7 +9,7 @@ import { Request, Response } from "express";
 import { getServiceID } from "../models/Services";
 
 const createNewCart = async (
-  data: { total_price: number; customerId: number },
+  data: { total_price: number; customerId: number; store_id: number },
   item: string,
 ) => {
   const firstPurchase = data;
@@ -19,6 +19,7 @@ const createNewCart = async (
       cart_id: results.id,
       price: data.total_price,
       item_name: item,
+      store_id: data.store_id,
     });
     return results;
   } catch (error) {
@@ -28,7 +29,7 @@ const createNewCart = async (
 };
 
 const updateCartData = async (
-  data: { item: string; price: number },
+  data: { item: string; price: number; store_id: number },
   cart: Cart,
 ) => {
   const total_price = cart.total_price + data.price;
@@ -38,6 +39,7 @@ const updateCartData = async (
       cart_id: cart.id,
       item_name: data.item,
       price: data.price,
+      store_id: data.store_id,
     });
     return finalCart;
   } catch (error) {
@@ -51,10 +53,11 @@ const findCartByCustomer = async (customerId: number) => {
 };
 
 const addItemsToCart = async (request: Request, response: Response) => {
-  const { serviceId, customer } = request.body;
+  const { serviceId, customer, store } = request.body;
   const sId = parseInt(serviceId);
   const itemInfo = await findStoreItem(sId);
   const customerId = parseInt(customer);
+  const store_id = parseInt(store);
   if (!customerId) {
     return response.status(400).json({ error: "Customer ID is required" });
   }
@@ -66,13 +69,13 @@ const addItemsToCart = async (request: Request, response: Response) => {
       if (cart === null) {
         const total_price = itemInfo.dataValues.price;
         cart = await createNewCart(
-          { customerId, total_price },
+          { customerId, total_price, store_id },
           itemInfo.dataValues.name,
         );
       } else {
         const item = itemInfo.dataValues.name;
         const price = itemInfo.dataValues.price;
-        cart = await updateCartData({ item, price }, cart);
+        cart = await updateCartData({ item, price, store_id }, cart);
       }
       return response.status(200).json(cart);
     } catch (error) {

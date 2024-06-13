@@ -49,7 +49,7 @@ const confirmationEmail = async (email: string) => {
     from: config.email,
     to: email,
     subject: "welcome to urubuto",
-    text: "Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda",
+    text: "Welcome to Our Online Shopping app, the best platform to connect you with your customers and stores across Rwanda",
   };
 
   sender.sendMail(newMail, (error, info) => {

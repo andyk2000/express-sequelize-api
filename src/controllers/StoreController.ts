@@ -87,7 +87,7 @@ const updateStoreData = async (request: Request, response: Response) => {
 };
 
 const getStoreByOwner = async (request: Request, response: Response) => {
-  const id = Number(request.headers["id"]);
+  const id = response.locals.user.id;
   try {
     const storeByowner = await getStoreOwner({ owner_id: id });
     console.log(storeByowner);
@@ -98,9 +98,22 @@ const getStoreByOwner = async (request: Request, response: Response) => {
   }
 };
 
+const getStoreByOwnerForPayment = async (owner_id: number) => {
+  const id = owner_id;
+  try {
+    const storeByowner = await getStoreOwner({ owner_id: id });
+    console.log(storeByowner);
+    return storeByowner;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const showAvailableShops = async (request: Request, response: Response) => {
   try {
     const availablestores = await getstoresForCustomer();
+    console.log(availablestores);
     return response.status(200).json(availablestores);
   } catch (error) {
     console.log(error);
@@ -118,4 +131,5 @@ export {
   updateStoreData,
   getStoreByOwner,
   showAvailableShops,
+  getStoreByOwnerForPayment,
 };
