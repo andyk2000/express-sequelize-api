@@ -39,7 +39,7 @@ const config: Config = {
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", config.frontend],
+    origin: "*",
   }),
 );
 app.use(
