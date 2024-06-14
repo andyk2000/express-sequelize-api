@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { Payment, getPaymentByStore } from "../models/payment";
+import { getPaymentByStore } from "../models/payment";
 import { getStoreByOwnerForPayment } from "./StoreController";
 import { getServiceCountByStoreID } from "./ServiceController";
 import { getUserID } from "../models/Users";
-// import { getUserID } from "../models/Users";
 
 interface Data {
   item_name: string;
@@ -60,7 +59,8 @@ const findLatestTransaction = async (request: Request, response: Response) => {
 
     await Promise.all(
       stores.map(async (store) => {
-        const storePayments = await getPaymentByStore(store.id);
+        const storePayments = await getPaymentByStore({ store_id: store.id });
+        console.log(storePayments);
         const paymentPromises = storePayments.map(async (payt) => {
           const user = await getUserID(payt.customer_id);
           if (user) {
