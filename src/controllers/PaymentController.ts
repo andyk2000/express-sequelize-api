@@ -1,7 +1,16 @@
 import { Request, Response } from "express";
-import { getPaymentByStore } from "../models/payment";
+import { Payment, getPaymentByStore } from "../models/payment";
 import { getStoreByOwnerForPayment } from "./StoreController";
 import { getServiceCountByStoreID } from "./ServiceController";
+import { getUserID } from "../models/Users";
+// import { getUserID } from "../models/Users";
+
+interface Data {
+  item_name: string;
+  amount: number;
+  customer: string;
+  date: Date;
+}
 
 const findPaymentByStore = async (store_id: number) => {
   try {
@@ -47,13 +56,27 @@ const findLatestTransaction = async (request: Request, response: Response) => {
   const owner_id = response.locals.user.id;
   try {
     const stores = await getStoreByOwnerForPayment(owner_id);
+    const payments: Data[] = [];
 
-    const payments = await Promise.all(
+    await Promise.all(
       stores.map(async (store) => {
-        return await getPaymentByStore(store.id);
+        const storePayments = await getPaymentByStore(store.id);
+        const paymentPromises = storePayments.map(async (payt) => {
+          const user = await getUserID(payt.customer_id);
+          if (user) {
+            payments.push({
+              item_name: payt.item_name,
+              amount: payt.amount,
+              customer: user.names,
+              date: payt.date,
+            });
+          }
+        });
+        await Promise.all(paymentPromises);
       }),
     );
-    response.json({ success: true, payments });
+
+    response.json(payments);
   } catch (error) {
     console.error("Error fetching payments:", error);
     response

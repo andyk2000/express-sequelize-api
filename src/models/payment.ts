@@ -6,6 +6,7 @@ interface PaymentAttributes {
   store_id: number;
   customer_id: number;
   amount: number;
+  date: Date;
 }
 
 interface PaymentCreationAttributes extends Optional<PaymentAttributes, "id"> {}
@@ -19,6 +20,7 @@ class Payment
   public store_id!: number;
   public customer_id!: number;
   public amount!: number;
+  public date!: Date;
 }
 
 const paymentSchema = {
@@ -51,6 +53,10 @@ const paymentSchema = {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 0,
+  },
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false,
   },
 };
 
@@ -108,4 +114,5 @@ export {
   deletePayment,
   getPaymentID,
   createPayment,
+  Payment,
 };
