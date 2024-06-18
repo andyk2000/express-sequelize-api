@@ -18,6 +18,7 @@ const findPaymentByStore = async (store_id: number) => {
     payments.map((payment) => {
       totalAmountPaid = totalAmountPaid + payment.amount;
     });
+    console.log(totalAmountPaid);
     return totalAmountPaid;
   } catch (error) {
     console.log(error);
@@ -28,9 +29,9 @@ const findPaymentByStore = async (store_id: number) => {
 const findAllStorePayments = async (request: Request, response: Response) => {
   const owner_id = response.locals.user.id;
   let serviceCount = 0;
+  let totalPayment = 0;
   try {
     const stores = await getStoreByOwnerForPayment(owner_id);
-    let totalPayment = 0;
     await Promise.all(
       stores.map(async (store) => {
         const services = await getServiceCountByStoreID(store.id);
@@ -85,4 +86,32 @@ const findLatestTransaction = async (request: Request, response: Response) => {
   }
 };
 
-export { findAllStorePayments, findLatestTransaction };
+const findServiceSold = async (request: Request, response: Response) => {
+  const { store_id } = request.body;
+  const all_payments: Data[] = [];
+  try {
+    const payments = await getPaymentByStore({ store_id: store_id });
+    const paymentPromises = payments.map(async (payment) => {
+      const user = await getUserID(payment.customer_id);
+      if (user) {
+        all_payments.push({
+          item_name: payment.item_name,
+          amount: payment.amount,
+          customer: user.names,
+          date: payment.date,
+        });
+      }
+      console.log(all_payments);
+    });
+    await Promise.all(paymentPromises);
+    console.log(paymentPromises);
+    return response.status(200).json(all_payments);
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    response
+      .status(500)
+      .json({ success: false, message: "Something went wrong" });
+  }
+};
+
+export { findAllStorePayments, findLatestTransaction, findServiceSold };

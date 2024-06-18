@@ -7,6 +7,7 @@ import {
   createNewStore,
   deleteStoreData,
   updateStoreData,
+  getStoreCardData,
 } from "../controllers/StoreController";
 import { storeVerification } from "../middlewares/storeValidation";
 
@@ -19,5 +20,6 @@ storeRouter.post(
 );
 storeRouter.delete("/:id", [check, ownerCheck], deleteStoreData);
 storeRouter.put("/:id", [check, ownerCheck], updateStoreData);
+storeRouter.post("/card/data", [check, ownerCheck], getStoreCardData);
 
 export { storeRouter };

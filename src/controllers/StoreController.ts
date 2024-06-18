@@ -9,6 +9,8 @@ import {
 } from "../models/Stores";
 import { Request, Response } from "express";
 import slugify from "slugify";
+import { getPaymentByStore } from "../models/payment";
+import { getServiceByStoreID } from "../models/Services";
 
 const storeURLGenration = (name: string) => {
   const store_name = slugify(name, { lower: true, strict: true });
@@ -120,6 +122,26 @@ const showAvailableShops = async (request: Request, response: Response) => {
   }
 };
 
+const getStoreCardData = async (request: Request, response: Response) => {
+  const { store_id } = request.body;
+  let revenue = 0;
+  try {
+    const payments = await getPaymentByStore({ store_id: store_id });
+    const services = await getServiceByStoreID({ store_id: store_id });
+    const serviceSold = payments.length;
+    const availableServices = services.length;
+    console.log(services.length);
+    payments.map((payment) => {
+      revenue = revenue + payment.amount;
+      console.log(revenue);
+    });
+    console.log(revenue);
+    return response
+      .status(200)
+      .json({ revenue, availableServices, serviceSold });
+  } catch (error) {}
+};
+
 export {
   createNewStore,
   getAllStores,
@@ -129,4 +151,5 @@ export {
   getStoreByOwner,
   showAvailableShops,
   getStoreByOwnerForPayment,
+  getStoreCardData,
 };
