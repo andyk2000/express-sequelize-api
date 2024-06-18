@@ -114,4 +114,66 @@ const findServiceSold = async (request: Request, response: Response) => {
   }
 };
 
-export { findAllStorePayments, findLatestTransaction, findServiceSold };
+const statRetrieval = async (request: Request, response: Response) => {
+  const { store_id } = request.body;
+  try {
+    const payments = await getPaymentByStore({ store_id: store_id });
+
+    let users: { id: number; recurrence: number; name: string }[] = [];
+    let services: { name: string; recurrence: number }[] = [];
+
+    // Process users
+    for (const payment of payments) {
+      const existingUser = users.find(
+        (user) => user.id === payment.customer_id,
+      );
+      if (existingUser) {
+        existingUser.recurrence++;
+      } else {
+        const user_name = await getUserID({ id: payment.customer_id });
+        if (user_name) {
+          users.push({
+            id: payment.customer_id,
+            recurrence: 1,
+            name: user_name.names,
+          });
+        }
+      }
+    }
+
+    // Process services
+    for (const payment of payments) {
+      const existingService = services.find(
+        (service) => service.name === payment.item_name,
+      );
+      if (existingService) {
+        existingService.recurrence++;
+      } else {
+        services.push({ name: payment.item_name, recurrence: 1 });
+      }
+    }
+
+    console.log(users);
+    console.log(services);
+
+    if (users.length > 3) {
+      users = users.splice(0, 2);
+    }
+
+    if (services.length > 3) {
+      services = services.splice(0, 2);
+    }
+
+    response.status(200).json({ users, services });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({ message: "There was an error", error });
+  }
+};
+
+export {
+  findAllStorePayments,
+  findLatestTransaction,
+  findServiceSold,
+  statRetrieval,
+};
