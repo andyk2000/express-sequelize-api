@@ -114,7 +114,7 @@ const getPaymentSearchByItem = async (
     where: {
       store_id: storeId,
       item_name: {
-        [Op.like]: search_string,
+        [Op.like]: `%${search_string}%`,
       },
     },
   });

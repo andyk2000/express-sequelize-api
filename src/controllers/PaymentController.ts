@@ -266,7 +266,72 @@ const searchPayments = async (request: Request, response: Response) => {
   }
 };
 
+const findServiceFilterByDate = async (
+  request: Request,
+  response: Response,
+) => {
+  const { store_id, start_date, end_date } = request.body;
+  const all_payments: Data[] = [];
+
+  try {
+    const payments = await getPaymentByStore({ store_id: store_id });
+
+    const paymentPromises = payments.map(async (payment) => {
+      const paymentDate = payment.date.toISOString().substr(0, 10);
+      const startDate = start_date ? new Date(start_date) : null;
+      const endDate = end_date ? new Date(end_date) : null;
+
+      if (startDate && endDate && startDate.getTime() === endDate.getTime()) {
+        if (paymentDate === start_date) {
+          const user = await getUserID(payment.customer_id);
+          if (user) {
+            all_payments.push({
+              item_name: payment.item_name,
+              amount: payment.amount,
+              customer: user.names,
+              date: payment.date,
+            });
+          }
+        }
+      } else {
+        const paymentDateObj = new Date(payment.date);
+        const withinRange =
+          (!startDate || paymentDateObj >= startDate) &&
+          (!endDate || paymentDateObj <= endDate);
+
+        if (withinRange) {
+          const user = await getUserID(payment.customer_id);
+          if (user) {
+            all_payments.push({
+              item_name: payment.item_name,
+              amount: payment.amount,
+              customer: user.names,
+              date: payment.date,
+            });
+          }
+        }
+      }
+    });
+
+    await Promise.all(paymentPromises);
+
+    const sortedPayments = all_payments.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+
+    return response.status(200).json(sortedPayments);
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    return response
+      .status(500)
+      .json({ success: false, message: "Something went wrong" });
+  }
+};
+
+export default findServiceFilterByDate;
+
 export {
+  findServiceFilterByDate,
   findAllStorePayments,
   findLatestTransaction,
   findServiceSold,

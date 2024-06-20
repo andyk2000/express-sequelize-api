@@ -97,7 +97,7 @@ const searchCustomerByName = async (search_string: string) => {
   const customers = await User.findAll({
     where: {
       names: {
-        [Op.like]: search_string,
+        [Op.like]: `%${search_string}%`,
       },
       role: "customer",
     },
