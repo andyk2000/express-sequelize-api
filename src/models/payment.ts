@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { DataTypes, Sequelize, Model, Optional, Op } from "sequelize";
 
 interface PaymentAttributes {
   id: number;
@@ -106,6 +106,29 @@ const getPaymentByStore = async (query: NonNullable<unknown>) => {
   return stores;
 };
 
+const getPaymentSearchByItem = async (
+  search_string: string,
+  storeId: number,
+) => {
+  const payments = await Payment.findAll({
+    where: {
+      store_id: storeId,
+      item_name: {
+        [Op.like]: search_string,
+      },
+    },
+  });
+
+  return payments;
+};
+
+const getPaymentByCustomer = async (query: NonNullable<unknown>) => {
+  const payments = await Payment.findAll({
+    where: query,
+  });
+  return payments;
+};
+
 export {
   initializePayment,
   getPayments,
@@ -115,4 +138,6 @@ export {
   getPaymentID,
   createPayment,
   Payment,
+  getPaymentSearchByItem,
+  getPaymentByCustomer,
 };

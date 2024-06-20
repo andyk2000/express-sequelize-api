@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { DataTypes, Sequelize, Model, Optional, Op } from "sequelize";
 
 interface UserAttributes {
   id: number;
@@ -93,6 +93,19 @@ const updateUser = async (
   });
 };
 
+const searchCustomerByName = async (search_string: string) => {
+  const customers = await User.findAll({
+    where: {
+      names: {
+        [Op.like]: search_string,
+      },
+      role: "customer",
+    },
+  });
+  console.log(customers);
+  return customers;
+};
+
 export {
   initializeUser,
   createUser,
@@ -101,4 +114,5 @@ export {
   deleteUser,
   updateUser,
   getUserEmail,
+  searchCustomerByName,
 };

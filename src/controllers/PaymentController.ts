@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import { getPaymentByStore } from "../models/payment";
+import {
+  getPaymentByCustomer,
+  getPaymentByStore,
+  getPaymentSearchByItem,
+} from "../models/payment";
 import { getStoreByOwnerForPayment } from "./StoreController";
 import { getServiceCountByStoreID } from "./ServiceController";
-import { getUserID } from "../models/Users";
+import { getUserID, searchCustomerByName } from "../models/Users";
 
 interface Data {
   item_name: string;
@@ -13,15 +17,10 @@ interface Data {
 
 const findPaymentByStore = async (store_id: number) => {
   try {
-    const payments = await getPaymentByStore({ store_id: store_id });
-    let totalAmountPaid = 0;
-    payments.map((payment) => {
-      totalAmountPaid = totalAmountPaid + payment.amount;
-    });
-    console.log(totalAmountPaid);
-    return totalAmountPaid;
+    const payments = await getPaymentByStore({ store_id });
+    return payments.reduce((total, payment) => total + payment.amount, 0);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };
@@ -30,25 +29,28 @@ const findAllStorePayments = async (request: Request, response: Response) => {
   const owner_id = response.locals.user.id;
   let serviceCount = 0;
   let totalPayment = 0;
+
   try {
     const stores = await getStoreByOwnerForPayment(owner_id);
+
     await Promise.all(
       stores.map(async (store) => {
         const services = await getServiceCountByStoreID(store.id);
         serviceCount += services;
-        totalPayment += await findPaymentByStore(store.id);
+        const paymentByStore = await findPaymentByStore(store.id);
+        totalPayment += paymentByStore;
+        console.log(totalPayment);
       }),
     );
 
-    console.log(serviceCount);
     return response.status(200).json({
       totalPayment,
       storeCount: stores.length,
-      serviceCount: serviceCount,
+      serviceCount,
     });
   } catch (error) {
-    console.log(error);
-    return response.status(500).json(error);
+    console.error(error);
+    return response.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -61,7 +63,6 @@ const findLatestTransaction = async (request: Request, response: Response) => {
     await Promise.all(
       stores.map(async (store) => {
         const storePayments = await getPaymentByStore({ store_id: store.id });
-        console.log(storePayments);
         const paymentPromises = storePayments.map(async (payt) => {
           const user = await getUserID(payt.customer_id);
           if (user) {
@@ -77,7 +78,10 @@ const findLatestTransaction = async (request: Request, response: Response) => {
       }),
     );
 
-    response.json(payments);
+    const sortedPayments = payments.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+    response.status(200).json(sortedPayments.splice(0, 6));
   } catch (error) {
     console.error("Error fetching payments:", error);
     response
@@ -101,14 +105,15 @@ const findServiceSold = async (request: Request, response: Response) => {
           date: payment.date,
         });
       }
-      console.log(all_payments);
     });
     await Promise.all(paymentPromises);
-    console.log(paymentPromises);
-    return response.status(200).json(all_payments);
+    const sortedPayments = all_payments.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+    return response.status(200).json(sortedPayments);
   } catch (error) {
     console.error("Error fetching payments:", error);
-    response
+    return response
       .status(500)
       .json({ success: false, message: "Something went wrong" });
   }
@@ -122,7 +127,6 @@ const statRetrieval = async (request: Request, response: Response) => {
     let users: { id: number; recurrence: number; name: string }[] = [];
     let services: { name: string; recurrence: number }[] = [];
 
-    // Process users
     for (const payment of payments) {
       const existingUser = users.find(
         (user) => user.id === payment.customer_id,
@@ -141,7 +145,6 @@ const statRetrieval = async (request: Request, response: Response) => {
       }
     }
 
-    // Process services
     for (const payment of payments) {
       const existingService = services.find(
         (service) => service.name === payment.item_name,
@@ -153,15 +156,15 @@ const statRetrieval = async (request: Request, response: Response) => {
       }
     }
 
-    console.log(users);
-    console.log(services);
+    users = users.sort((a, b) => b.recurrence - a.recurrence);
+    services = services.sort((a, b) => b.recurrence - a.recurrence);
 
     if (users.length > 3) {
       users = users.splice(0, 2);
     }
 
     if (services.length > 3) {
-      services = services.splice(0, 2);
+      services = services.splice(0, 3);
     }
 
     response.status(200).json({ users, services });
@@ -171,9 +174,102 @@ const statRetrieval = async (request: Request, response: Response) => {
   }
 };
 
+const searchByItem = async (search: string, store_id: number) => {
+  try {
+    const payments = await getPaymentSearchByItem(search, store_id);
+    const paymentWithUserPromises = payments.map(async (payment) => {
+      const user = await getUserID(payment.customer_id);
+      if (user) {
+        return {
+          item_name: payment.item_name,
+          amount: payment.amount,
+          customer: user.names,
+          date: payment.date,
+        };
+      }
+      return null;
+    });
+
+    const formattedPayments = await Promise.all(paymentWithUserPromises);
+
+    const filteredPayments = formattedPayments.filter(
+      (payment) => payment !== null,
+    ) as Data[];
+
+    console.log(filteredPayments);
+    return filteredPayments;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const searchByCustomer = async (
+  search: string,
+  store_id: number,
+): Promise<Data[]> => {
+  try {
+    const customers = await searchCustomerByName(search);
+    const paymentPromises = customers.map(async (customer) => {
+      console.log(customer);
+      return await getPaymentByCustomer({
+        customer_id: customer.id,
+        store_id: store_id,
+      });
+    });
+
+    const paymentsArrays = await Promise.all(paymentPromises);
+    const payments = paymentsArrays.flat();
+    const paymentWithUserPromises = payments.map(async (payment) => {
+      const user = await getUserID(payment.customer_id);
+      if (user) {
+        return {
+          item_name: payment.item_name,
+          amount: payment.amount,
+          customer: user.names,
+          date: payment.date,
+        };
+      }
+      return null;
+    });
+
+    const formattedPayments = await Promise.all(paymentWithUserPromises);
+
+    const filteredPayments = formattedPayments.filter(
+      (payment) => payment !== null,
+    ) as Data[];
+
+    console.log(filteredPayments);
+    return filteredPayments;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const searchPayments = async (request: Request, response: Response) => {
+  const { category, search_string, store_id } = request.body;
+  let payments;
+  try {
+    if (category === "customer") {
+      payments = await searchByCustomer(search_string, store_id);
+      console.log(payments);
+    } else if (category === "item") {
+      payments = await searchByItem(search_string, store_id);
+    }
+    return response.status(200).json(payments);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .json({ message: "There was an error", error: error });
+  }
+};
+
 export {
   findAllStorePayments,
   findLatestTransaction,
   findServiceSold,
   statRetrieval,
+  searchPayments,
 };
