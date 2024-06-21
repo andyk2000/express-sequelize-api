@@ -6,11 +6,11 @@ const serviceVerification = async (
   response: Response,
   next: () => void,
 ) => {
-  const { name, store_id } = request.body;
+  const { name, storeId } = request.body;
 
   const result = await getServiceBystoreName({
     name: name,
-    store_id: store_id,
+    storeId: storeId,
   });
   if (!result) {
     next();

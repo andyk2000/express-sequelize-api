@@ -9,17 +9,17 @@ import { Request, Response } from "express";
 import { getServiceID } from "../models/Services";
 
 const createNewCart = async (
-  data: { total_price: number; customerId: number; store_id: number },
+  data: { total_price: number; userId: number; storeId: number },
   item: string,
 ) => {
   const firstPurchase = data;
   try {
     const results = await createCart(firstPurchase);
     await createNewCartItem({
-      cart_id: results.id,
+      cartId: results.id,
       price: data.total_price,
       item_name: item,
-      store_id: data.store_id,
+      storeId: data.storeId,
     });
     return results;
   } catch (error) {
@@ -29,17 +29,17 @@ const createNewCart = async (
 };
 
 const updateCartData = async (
-  data: { item: string; price: number; store_id: number },
+  data: { item: string; price: number; storeId: number },
   cart: Cart,
 ) => {
   const total_price = cart.total_price + data.price;
   try {
     const finalCart = await updateCartTotalPrice(total_price, { id: cart.id });
     await createNewCartItem({
-      cart_id: cart.id,
+      cartId: cart.id,
       item_name: data.item,
       price: data.price,
-      store_id: data.store_id,
+      storeId: data.storeId,
     });
     return finalCart;
   } catch (error) {
@@ -48,34 +48,34 @@ const updateCartData = async (
   }
 };
 
-const findCartByCustomer = async (customerId: number) => {
-  return await findCartOwner({ customerId: customerId });
+const findCartByCustomer = async (userId: number) => {
+  return await findCartOwner({ userId: userId });
 };
 
 const addItemsToCart = async (request: Request, response: Response) => {
   const { serviceId, customer, store } = request.body;
   const sId = parseInt(serviceId);
   const itemInfo = await findStoreItem(sId);
-  const customerId = parseInt(customer);
-  const store_id = parseInt(store);
-  if (!customerId) {
+  const userId = parseInt(customer);
+  const storeId = parseInt(store);
+  if (!userId) {
     return response.status(400).json({ error: "Customer ID is required" });
   }
   if (!itemInfo) {
     return response.status(500).json({ error: "service not found" });
   } else {
     try {
-      let cart = await findCartByCustomer(customerId);
+      let cart = await findCartByCustomer(userId);
       if (cart === null) {
         const total_price = itemInfo.dataValues.price;
         cart = await createNewCart(
-          { customerId, total_price, store_id },
+          { userId, total_price, storeId },
           itemInfo.dataValues.name,
         );
       } else {
         const item = itemInfo.dataValues.name;
         const price = itemInfo.dataValues.price;
-        cart = await updateCartData({ item, price, store_id }, cart);
+        cart = await updateCartData({ item, price, storeId }, cart);
       }
       return response.status(200).json(cart);
     } catch (error) {
@@ -88,7 +88,7 @@ const addItemsToCart = async (request: Request, response: Response) => {
 const getCartByCustomer = async (request: Request, response: Response) => {
   const customer = response.locals.user.id;
 
-  const cart = await findCartOwner({ customerId: customer });
+  const cart = await findCartOwner({ userId: customer });
   if (!cart) {
     return response.status(200).json(cart);
   }

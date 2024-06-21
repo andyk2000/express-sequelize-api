@@ -5,7 +5,7 @@ interface StoreAttributes {
   name: string;
   address: string;
   description: string;
-  owner_id: number;
+  userId: number;
   storeUrl: string;
 }
 
@@ -19,7 +19,7 @@ class Store
   public name!: string;
   public address!: string;
   public description!: string;
-  public owner_id!: number;
+  public userId!: number;
   public storeUrl!: string;
 }
 
@@ -42,7 +42,7 @@ const storeSchema = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  owner_id: {
+  userId: {
     type: DataTypes.INTEGER,
     references: {
       model: "users",
@@ -73,16 +73,20 @@ const createStore = async (store: StoreCreationAttributes) => {
   return await Store.create(store);
 };
 
-const getStoreID = async (query: NonNullable<unknown>) => {
+const getStoreID = async (id: number) => {
   const storeData = await Store.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return storeData;
 };
 
-const deleteStore = async (query: NonNullable<unknown>) => {
+const deleteStore = async (id: number) => {
   return await Store.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
@@ -95,9 +99,11 @@ const updateStore = async (
   });
 };
 
-const getStoreOwner = async (query: NonNullable<unknown>) => {
+const getStoreOwner = async (userId: number) => {
   const stores = await Store.findAll({
-    where: query,
+    where: {
+      userId: userId,
+    },
   });
   return stores;
 };
@@ -116,16 +122,20 @@ const getStoreInfo = async () => {
   return stores;
 };
 
-const getStoreByName = async (query: NonNullable<unknown>) => {
+const getStoreByName = async (storeName: string) => {
   const store = await Store.findOne({
-    where: query,
+    where: {
+      name: storeName,
+    },
   });
   return store;
 };
 
-const getStoreByUrl = async (query: NonNullable<unknown>) => {
+const getStoreByUrl = async (url: string) => {
   const store = await Store.findOne({
-    where: query,
+    where: {
+      storeUrl: url,
+    },
   });
   return store?.id;
 };
@@ -142,4 +152,5 @@ export {
   getStoreInfo,
   getStoreByName,
   getStoreByUrl,
+  Store,
 };

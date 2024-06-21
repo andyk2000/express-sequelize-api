@@ -6,13 +6,13 @@ const customerCheck = async (
   response: Response,
   next: () => void,
 ) => {
-  const customerId = response.locals.user.id;
-  if (customerId === null) {
+  const userId = response.locals.user.id;
+  if (userId === null) {
     return response.status(500).json({ error: "provide an id" });
   }
 
   try {
-    const customer = await getUserID({ id: customerId });
+    const customer = await getUserID(userId);
     if (!customer) {
       return response
         .status(500)
@@ -27,7 +27,7 @@ const customerCheck = async (
       });
     }
   } catch (error) {
-    console.log(customerId);
+    console.log(userId);
     console.log(error);
     return response
       .status(500)
@@ -42,7 +42,7 @@ const emailVerification = async (
 ) => {
   const { email } = request.body;
   try {
-    const user = await getUserEmail({ email: email });
+    const user = await getUserEmail(email);
     if (!user) {
       next();
     } else {

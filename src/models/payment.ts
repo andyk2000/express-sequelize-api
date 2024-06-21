@@ -1,10 +1,13 @@
 import { DataTypes, Sequelize, Model, Optional, Op } from "sequelize";
+// import { Store } from "./Stores";
+import { User } from "./Users";
+import { Store } from "./Stores";
 
 interface PaymentAttributes {
   id: number;
   item_name: string;
-  store_id: number;
-  customer_id: number;
+  storeId: number;
+  userId: number;
   amount: number;
   date: Date;
 }
@@ -15,10 +18,11 @@ class Payment
   extends Model<PaymentAttributes, PaymentCreationAttributes>
   implements PaymentAttributes
 {
+  [x: string]: any;
   public id!: number;
   public item_name!: string;
-  public store_id!: number;
-  public customer_id!: number;
+  public storeId!: number;
+  public userId!: number;
   public amount!: number;
   public date!: Date;
 }
@@ -33,7 +37,7 @@ const paymentSchema = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  store_id: {
+  storeId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -41,7 +45,7 @@ const paymentSchema = {
       key: "id",
     },
   },
-  customer_id: {
+  userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -77,9 +81,11 @@ const createPayment = async (store: PaymentCreationAttributes) => {
   return await Payment.create(store);
 };
 
-const getPaymentID = async (query: NonNullable<unknown>) => {
+const getPaymentID = async (paymentId: number) => {
   const paymentData = await Payment.findOne({
-    where: query,
+    where: {
+      id: paymentId,
+    },
   });
   return paymentData;
 };
@@ -112,14 +118,32 @@ const getPaymentSearchByItem = async (
 ) => {
   const payments = await Payment.findAll({
     where: {
-      store_id: storeId,
+      storeId: storeId,
       item_name: {
         [Op.like]: `%${search_string}%`,
       },
     },
+    include: { model: User, attributes: ["names", "email"] },
   });
 
   return payments;
+};
+
+const searchPaymentByUser = async (search_string: string, storeId: string) => {
+  return await Payment.findAll({
+    where: {
+      storeId: storeId,
+    },
+    include: {
+      model: User,
+      attributes: ["names", "email"],
+      where: {
+        names: {
+          [Op.like]: `%${search_string}%`,
+        },
+      },
+    },
+  });
 };
 
 const getPaymentByCustomer = async (query: NonNullable<unknown>) => {
@@ -127,6 +151,164 @@ const getPaymentByCustomer = async (query: NonNullable<unknown>) => {
     where: query,
   });
   return payments;
+};
+
+const getAllPaymentStore = async (storeID: number) => {
+  return await Payment.findAll({
+    where: {
+      storeId: storeID,
+    },
+    include: { model: User, attributes: ["names", "email"] },
+  });
+};
+
+const getPaymentDateFilter = async (
+  storeId: number,
+  startDate: Date,
+  endDate: Date,
+) => {
+  if (startDate && endDate) {
+    return await Payment.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        storeId: storeId,
+      },
+      include: {
+        model: User,
+        attributes: ["names", "email"],
+      },
+    });
+  } else if (!startDate && endDate) {
+    return await Payment.findAll({
+      where: {
+        date: {
+          [Op.lt]: endDate,
+        },
+        storeId: storeId,
+      },
+      include: {
+        model: User,
+        attributes: ["names", "email"],
+      },
+    });
+  } else if (startDate && !endDate) {
+    return await Payment.findAll({
+      where: {
+        date: {
+          [Op.gte]: startDate,
+        },
+        storeId: storeId,
+      },
+      include: {
+        model: User,
+        attributes: ["names", "email"],
+      },
+    });
+  } else {
+    return await Payment.findAll({
+      where: {
+        storeId: storeId,
+      },
+      include: {
+        model: User,
+        attributes: ["names", "email"],
+      },
+    });
+  }
+};
+
+const countPaymentsPerStore = async (storeId: number) => {
+  return await Payment.count({
+    where: {
+      storeId: storeId,
+    },
+  });
+};
+
+const totalPaymentByStore = async (storeId: number) => {
+  return await Payment.sum("amount", {
+    where: {
+      storeId: storeId,
+    },
+  });
+};
+
+const paymentByStoreOwner = async (userId: number) => {
+  return await Payment.findAll({
+    include: [
+      {
+        model: Store,
+        where: {
+          userId: userId,
+        },
+      },
+      {
+        model: User,
+        attributes: ["names", "email"],
+      },
+    ],
+  });
+};
+
+const totalPaymentByOwnedStores = async (userId: number) => {
+  const stores = await Store.findAll({
+    where: {
+      userId: userId,
+    },
+    attributes: ["id"],
+  });
+
+  const storeIds = stores.map((store) => store.id);
+
+  if (storeIds.length === 0) {
+    return 0;
+  }
+  const totalAmount = await Payment.sum("amount", {
+    where: {
+      storeId: {
+        [Op.in]: storeIds,
+      },
+    },
+  });
+  return totalAmount;
+};
+
+const getUserRecurrence = async (storeId: number) => {
+  try {
+    const payments = await Payment.findAll({
+      attributes: [
+        "userId",
+        [Sequelize.fn("COUNT", Sequelize.col("userId")), "recurrence"],
+      ],
+      where: { storeId: storeId },
+      include: {
+        model: User,
+        as: "user",
+        attributes: ["id", "names"],
+      },
+      group: ["userId", "user.id"],
+      order: [[Sequelize.literal("recurrence"), "DESC"]],
+    });
+
+    return payments;
+  } catch (error) {
+    console.error("Error in getUserRecurrence:", error);
+    throw error;
+  }
+};
+
+const getServiceRecurrence = async (storeId: number) => {
+  return await Payment.findAll({
+    attributes: [
+      "item_name",
+      [Sequelize.fn("COUNT", Sequelize.col("item_name")), "recurrence"],
+    ],
+    where: { storeId: storeId },
+    group: ["item_name"],
+    order: [[Sequelize.literal("recurrence"), "DESC"]],
+  });
 };
 
 export {
@@ -140,4 +322,13 @@ export {
   Payment,
   getPaymentSearchByItem,
   getPaymentByCustomer,
+  getAllPaymentStore,
+  searchPaymentByUser,
+  getPaymentDateFilter,
+  countPaymentsPerStore,
+  totalPaymentByStore,
+  paymentByStoreOwner,
+  totalPaymentByOwnedStores,
+  getUserRecurrence,
+  getServiceRecurrence,
 };

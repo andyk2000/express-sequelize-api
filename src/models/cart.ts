@@ -2,7 +2,7 @@ import { DataTypes, Sequelize, Model, Optional, WhereOptions } from "sequelize";
 
 interface CartAttributes {
   id: number;
-  customerId: number;
+  userId: number;
   total_price: number;
 }
 
@@ -13,7 +13,7 @@ class Cart
   implements CartAttributes
 {
   public id!: number;
-  public customerId!: number;
+  public userId!: number;
   public total_price!: number;
 }
 
@@ -23,7 +23,7 @@ const cartSchema = {
     autoIncrement: true,
     primaryKey: true,
   },
-  customerId: {
+  userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     unique: true,

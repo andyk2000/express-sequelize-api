@@ -1,10 +1,11 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { Store } from "./Stores";
 
 interface ServiceAttributes {
   id: number;
   name: string;
   price: number;
-  store_id: number;
+  storeId: number;
 }
 
 interface ServiceCreationAttributes extends Optional<ServiceAttributes, "id"> {}
@@ -16,7 +17,7 @@ class Service
   public id!: number;
   public name!: string;
   public price!: number;
-  public store_id!: number;
+  public storeId!: number;
 }
 
 const serviceSchema = {
@@ -33,7 +34,7 @@ const serviceSchema = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  store_id: {
+  storeId: {
     type: DataTypes.INTEGER,
     AllowNull: false,
     references: {
@@ -94,9 +95,30 @@ const getServiceBystoreName = async (query: NonNullable<unknown>) => {
   });
 };
 
-const getServiceByStoreID = async (query: NonNullable<unknown>) => {
+const getServiceByStoreID = async (id: number) => {
   return await Service.findAll({
-    where: query,
+    where: {
+      storeId: id,
+    },
+  });
+};
+
+const countServicesByStore = async (storeId: number) => {
+  return await Service.count({
+    where: {
+      storeId: storeId,
+    },
+  });
+};
+
+const countServiceByOwner = async (userId: number) => {
+  return await Service.count({
+    include: {
+      model: Store,
+      where: {
+        userId: userId,
+      },
+    },
   });
 };
 
@@ -110,4 +132,7 @@ export {
   getServicesByStore,
   getServiceBystoreName,
   getServiceByStoreID,
+  Service,
+  countServicesByStore,
+  countServiceByOwner,
 };

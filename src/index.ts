@@ -1,12 +1,12 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-import { initializeUser } from "./models/Users";
-import { initializeStore } from "./models/Stores";
-import { initializeService } from "./models/Services";
-import { initializeCart } from "./models/cart";
-import { initializePayment } from "./models/payment";
-import { initializeCartItem } from "./models/CartItem";
+import { User, initializeUser } from "./models/Users";
+import { Store, initializeStore } from "./models/Stores";
+import { Service, initializeService } from "./models/Services";
+import { Cart, initializeCart } from "./models/cart";
+import { Payment, initializePayment } from "./models/payment";
+import { CartItem, initializeCartItem } from "./models/CartItem";
 import { userRouter } from "./routes/usersRoutes";
 import { storeRouter } from "./routes/storeRoutes";
 import { serviceRouter } from "./routes/serviceRoutes";
@@ -62,14 +62,25 @@ initializeCart(sequelize);
 initializeCartItem(sequelize);
 initializePayment(sequelize);
 
+Payment.belongsTo(User);
+User.hasMany(Payment);
+Payment.belongsTo(Store);
+Store.hasMany(Payment);
+Store.belongsTo(User);
+User.hasMany(Store);
+Service.belongsTo(Store);
+Store.hasMany(Service);
+Cart.belongsTo(User);
+User.hasOne(Cart);
+CartItem.belongsTo(Cart);
+Cart.hasMany(CartItem);
+CartItem.belongsTo(Store);
+Store.hasMany(CartItem);
+
 router.use("/user", userRouter);
-
 router.use("/store", storeRouter);
-
 router.use("/service", serviceRouter);
-
 router.use("/cart", cartRouter);
-
 router.use("/payment", paymentRoutes);
 
 app.use(router);

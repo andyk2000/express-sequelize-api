@@ -23,7 +23,7 @@ const check = (req: Request, res: Response, next: () => void) => {
         error: "Invalid access token provided, please login again.",
       });
     }
-    const user = await getUserID({ id: data.id });
+    const user = await getUserID(data.id);
     res.locals = {
       user: user,
     };

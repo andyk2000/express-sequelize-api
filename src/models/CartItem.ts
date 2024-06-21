@@ -2,10 +2,10 @@ import { DataTypes, Sequelize, Model, Optional } from "sequelize";
 
 interface CartItemAttributes {
   id: number;
-  cart_id: number;
+  cartId: number;
   item_name: string;
   price: number;
-  store_id: number;
+  storeId: number;
 }
 
 interface CartItemCreationAttributes
@@ -16,10 +16,10 @@ class CartItem
   implements CartItemAttributes
 {
   public id!: number;
-  public cart_id!: number;
+  public cartId!: number;
   public item_name!: string;
   public price!: number;
-  public store_id!: number;
+  public storeId!: number;
 }
 
 const cartItemSchema = {
@@ -28,7 +28,7 @@ const cartItemSchema = {
     autoIncrement: true,
     primaryKey: true,
   },
-  cart_id: {
+  cartId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -44,7 +44,7 @@ const cartItemSchema = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  store_id: {
+  storeId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -107,4 +107,5 @@ export {
   deleteCartItem,
   updateCartItem,
   getCartCustomer,
+  CartItem,
 };

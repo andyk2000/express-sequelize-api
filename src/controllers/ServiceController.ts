@@ -11,9 +11,9 @@ import { getStoreByUrl } from "../models/Stores";
 import { Request, Response } from "express";
 
 const createNewService = async (request: Request, response: Response) => {
-  const { name, price, store_id } = request.body;
+  const { name, price, storeId } = request.body;
   try {
-    const data = await createService({ name, price, store_id });
+    const data = await createService({ name, price, storeId });
     return response.status(201).json(data);
   } catch (error) {
     console.error(error);
@@ -57,10 +57,10 @@ const deleteServiceData = async (request: Request, response: Response) => {
 
 const updateServiceData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
-  const { name, price, store_id } = request.body;
+  const { name, price, storeId } = request.body;
   try {
     const updatedService = await updateService(
-      { name, price, store_id },
+      { name, price, storeId },
       { id: id },
     );
     return response.status(200).json(updatedService);
@@ -76,12 +76,12 @@ const getStoreService = async (request: Request, response: Response) => {
   const url = request.params.storeurl;
 
   try {
-    const store_id = await getStoreByUrl({ storeUrl: url });
-    if (!store_id) {
+    const storeId = await getStoreByUrl(url);
+    if (!storeId) {
       return response.status(500).json({ error: "store not found" });
     }
     const services = await getServicesByStore({
-      store_id: store_id.toString(),
+      storeId: storeId.toString(),
     });
     return response.status(200).json(services);
   } catch (error) {
@@ -94,7 +94,7 @@ const getStoreService = async (request: Request, response: Response) => {
 
 const getServiceCountByStoreID = async (id: number) => {
   try {
-    const services = await getServiceByStoreID({ store_id: id });
+    const services = await getServiceByStoreID(id);
     return services.length;
   } catch (error) {
     console.log(error);

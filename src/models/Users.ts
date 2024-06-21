@@ -64,23 +64,29 @@ const getUsers = async () => {
   return usersData;
 };
 
-const getUserID = async (query: NonNullable<unknown>) => {
+const getUserID = async (id: number) => {
   const userData = await User.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return userData;
 };
 
-const getUserEmail = async (query: NonNullable<unknown>) => {
+const getUserEmail = async (email: string) => {
   const userData = await User.findOne({
-    where: query,
+    where: {
+      email: email,
+    },
   });
   return userData;
 };
 
-const deleteUser = async (query: NonNullable<unknown>) => {
+const deleteUser = async (id: number) => {
   return await User.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
@@ -102,7 +108,6 @@ const searchCustomerByName = async (search_string: string) => {
       role: "customer",
     },
   });
-  console.log(customers);
   return customers;
 };
 
@@ -115,4 +120,5 @@ export {
   updateUser,
   getUserEmail,
   searchCustomerByName,
+  User,
 };

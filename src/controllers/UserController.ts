@@ -86,7 +86,7 @@ const getAllUsers = async (request: Request, response: Response) => {
 const getUserByID = async (request: Request, response: Response) => {
   const id = response.locals.user.id;
   try {
-    const userData = await getUserID({ id: id });
+    const userData = await getUserID(id);
     return response.status(200).json(userData);
   } catch (err) {
     console.log(err);
@@ -97,7 +97,7 @@ const getUserByID = async (request: Request, response: Response) => {
 const deleteUserData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
   try {
-    const deletedUser = await deleteUser({ id: id });
+    const deletedUser = await deleteUser(id);
     return response.status(200).json(deletedUser);
   } catch (error) {
     console.log(error);
@@ -146,7 +146,7 @@ const logIn = async (request: Request, response: Response) => {
   const { email, password } = request.body;
   const encrypted = encryptPassword(password);
   try {
-    const user = await getUserEmail({ email: email });
+    const user = await getUserEmail(email);
     if (user === null) {
       return response.status(404).json({ error: "login failed try again" });
     }
