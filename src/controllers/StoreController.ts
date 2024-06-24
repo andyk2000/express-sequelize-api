@@ -89,6 +89,7 @@ const updateStoreData = async (request: Request, response: Response) => {
 
 const getStoreByOwner = async (request: Request, response: Response) => {
   const id = response.locals.user.id;
+  console.log(id);
   try {
     const storeByowner = await getStoreOwner(id);
     return response.status(200).json(storeByowner);

@@ -12,6 +12,7 @@ const ownerCheck = async (
   }
 
   try {
+    console.log(userId);
     const owner = await getUserID(userId);
     if (!owner) {
       return response
