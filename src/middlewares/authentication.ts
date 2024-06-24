@@ -6,7 +6,6 @@ const secretKey = process.env.SECRET_KEY || "zero";
 
 const check = (req: Request, res: Response, next: () => void) => {
   const authHeader = req.headers["authorization"];
-  console.log(authHeader);
 
   if (!authHeader) {
     return res.status(401).json({

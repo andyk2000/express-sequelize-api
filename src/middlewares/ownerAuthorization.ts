@@ -12,7 +12,6 @@ const ownerCheck = async (
   }
 
   try {
-    console.log(userId);
     const owner = await getUserID(userId);
     if (!owner) {
       return response
@@ -28,7 +27,6 @@ const ownerCheck = async (
       });
     }
   } catch (error) {
-    console.log(userId);
     console.log(error);
     return response
       .status(500)
