@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional, WhereOptions } from "sequelize";
+import { DataTypes, Sequelize, Model, Optional } from "sequelize";
 
 interface CartAttributes {
   id: number;
@@ -77,25 +77,24 @@ const updateCart = async (
   });
 };
 
-const updateCartTotalPrice = async (
-  data: number,
-  query: WhereOptions<Cart>,
-) => {
+const updateCartTotalPrice = async (data: number, id: number) => {
   const updated = await Cart.update(
     {
       total_price: data,
     },
     {
-      where: query,
+      where: { id: id },
       returning: true,
     },
   );
   return updated[1][0];
 };
 
-const findCartOwner = async (query: NonNullable<unknown>) => {
+const findCartOwner = async (customerID: number) => {
   return await Cart.findOne({
-    where: query,
+    where: {
+      userId: customerID,
+    },
   });
 };
 

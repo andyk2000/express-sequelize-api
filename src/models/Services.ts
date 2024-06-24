@@ -61,25 +61,28 @@ const createService = async (service: ServiceCreationAttributes) => {
   return await Service.create(service);
 };
 
-const getServiceID = async (query: NonNullable<unknown>) => {
+const getServiceID = async (id: number) => {
   const serviceData = await Service.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return serviceData;
 };
 
-const deleteService = async (query: NonNullable<unknown>) => {
+const deleteService = async (id: number) => {
   return await Service.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const updateService = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateService = async (data: NonNullable<unknown>, id: number) => {
   return await Service.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 

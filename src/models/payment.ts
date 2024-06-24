@@ -91,18 +91,19 @@ const getPaymentID = async (paymentId: number) => {
   return paymentData;
 };
 
-const deletePayment = async (query: NonNullable<unknown>) => {
+const deletePayment = async (id: number) => {
   return await Payment.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const updatePayment = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updatePayment = async (data: NonNullable<unknown>, id: number) => {
   return await Payment.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
@@ -138,13 +139,6 @@ const searchPaymentByUser = async (search_string: string, storeId: string) => {
       },
     },
   });
-};
-
-const getPaymentByCustomer = async (query: NonNullable<unknown>) => {
-  const payments = await Payment.findAll({
-    where: query,
-  });
-  return payments;
 };
 
 const getAllPaymentStore = async (storeID: number) => {
@@ -316,7 +310,6 @@ export {
   createPayment,
   Payment,
   getPaymentSearchByItem,
-  getPaymentByCustomer,
   getAllPaymentStore,
   searchPaymentByUser,
   getPaymentDateFilter,

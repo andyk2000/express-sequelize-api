@@ -34,7 +34,7 @@ const updateCartData = async (
 ) => {
   const total_price = cart.total_price + data.price;
   try {
-    const finalCart = await updateCartTotalPrice(total_price, { id: cart.id });
+    const finalCart = await updateCartTotalPrice(total_price, cart.id);
     await createNewCartItem({
       cartId: cart.id,
       item_name: data.item,
@@ -49,7 +49,7 @@ const updateCartData = async (
 };
 
 const findCartByCustomer = async (userId: number) => {
-  return await findCartOwner({ userId: userId });
+  return await findCartOwner(userId);
 };
 
 const addItemsToCart = async (request: Request, response: Response) => {
@@ -88,7 +88,7 @@ const addItemsToCart = async (request: Request, response: Response) => {
 const getCartByCustomer = async (request: Request, response: Response) => {
   const customer = response.locals.user.id;
 
-  const cart = await findCartOwner({ userId: customer });
+  const cart = await findCartOwner(customer);
   if (!cart) {
     return response.status(200).json(cart);
   }
@@ -99,7 +99,7 @@ const getCartByCustomer = async (request: Request, response: Response) => {
 
 const findStoreItem = async (id: number) => {
   try {
-    const service = await getServiceID({ id: id });
+    const service = await getServiceID(id);
     return service;
   } catch (error) {
     console.log(error);

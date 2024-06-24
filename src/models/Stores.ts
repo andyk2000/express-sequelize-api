@@ -90,12 +90,11 @@ const deleteStore = async (id: number) => {
   });
 };
 
-const updateStore = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateStore = async (data: NonNullable<unknown>, id: number) => {
   return await Store.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 

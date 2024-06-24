@@ -71,31 +71,36 @@ const getCartItems = async () => {
   return cartsData;
 };
 
-const getCartItemID = async (query: NonNullable<unknown>) => {
+const getCartItemID = async (id: number) => {
   const cartData = await CartItem.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return cartData;
 };
 
-const deleteCartItem = async (query: NonNullable<unknown>) => {
+const deleteCartItem = async (id: number) => {
   return await CartItem.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const updateCartItem = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateCartItem = async (data: CartItemCreationAttributes, id: number) => {
   return await CartItem.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const getCartCustomer = async (query: NonNullable<unknown>) => {
+const getCartCustomer = async (id: number) => {
   return await CartItem.findAll({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 

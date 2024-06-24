@@ -22,7 +22,7 @@ const createNewCartItem = async (newCartItem: {
 const getCartItemBycart = async (Cart: number) => {
   const cartId = Cart;
   try {
-    const results = await getCartCustomer({ cartId: cartId });
+    const results = await getCartCustomer(cartId);
     return results;
   } catch (error) {
     console.error(error);

@@ -90,20 +90,19 @@ const deleteUser = async (id: number) => {
   });
 };
 
-const updateUser = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateUser = async (data: UserAttributes, id: number) => {
   return await User.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const searchCustomerByName = async (search_string: string) => {
+const searchCustomerByName = async (searchString: string) => {
   const customers = await User.findAll({
     where: {
       names: {
-        [Op.like]: `%${search_string}%`,
+        [Op.like]: `%${searchString}%`,
       },
       role: "customer",
     },
