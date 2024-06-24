@@ -18,6 +18,7 @@ class Payment
   extends Model<PaymentAttributes, PaymentCreationAttributes>
   implements PaymentAttributes
 {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
   public id!: number;
   public item_name!: string;
@@ -103,13 +104,6 @@ const updatePayment = async (
   return await Payment.update(data, {
     where: query,
   });
-};
-
-const getPaymentByStore = async (query: NonNullable<unknown>) => {
-  const stores = await Payment.findAll({
-    where: query,
-  });
-  return stores;
 };
 
 const getPaymentSearchByItem = async (
@@ -290,6 +284,7 @@ const getUserRecurrence = async (storeId: number) => {
       },
       group: ["userId", "user.id"],
       order: [[Sequelize.literal("recurrence"), "DESC"]],
+      limit: 3,
     });
 
     return payments;
@@ -308,13 +303,13 @@ const getServiceRecurrence = async (storeId: number) => {
     where: { storeId: storeId },
     group: ["item_name"],
     order: [[Sequelize.literal("recurrence"), "DESC"]],
+    limit: 3,
   });
 };
 
 export {
   initializePayment,
   getPayments,
-  getPaymentByStore,
   updatePayment,
   deletePayment,
   getPaymentID,

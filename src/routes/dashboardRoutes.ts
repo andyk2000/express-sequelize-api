@@ -2,10 +2,8 @@ import express from "express";
 import {
   filterDate,
   findAllStorePayments,
-  // findLatestTransaction,
   findServiceSold,
   getAllTransactions,
-  // getAllpayment,
   searchPayments,
   statRetrieval,
 } from "../controllers/PaymentController";
