@@ -2,9 +2,10 @@ import { DataTypes, Sequelize, Model, Optional } from "sequelize";
 
 interface CartItemAttributes {
   id: number;
-  cart_id: number;
+  cartId: number;
   item_name: string;
   price: number;
+  storeId: number;
 }
 
 interface CartItemCreationAttributes
@@ -15,9 +16,10 @@ class CartItem
   implements CartItemAttributes
 {
   public id!: number;
-  public cart_id!: number;
+  public cartId!: number;
   public item_name!: string;
   public price!: number;
+  public storeId!: number;
 }
 
 const cartItemSchema = {
@@ -26,7 +28,7 @@ const cartItemSchema = {
     autoIncrement: true,
     primaryKey: true,
   },
-  cart_id: {
+  cartId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -41,6 +43,14 @@ const cartItemSchema = {
   price: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  storeId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "stores",
+      key: "id",
+    },
   },
 };
 
@@ -61,31 +71,36 @@ const getCartItems = async () => {
   return cartsData;
 };
 
-const getCartItemID = async (query: NonNullable<unknown>) => {
+const getCartItemID = async (id: number) => {
   const cartData = await CartItem.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return cartData;
 };
 
-const deleteCartItem = async (query: NonNullable<unknown>) => {
+const deleteCartItem = async (id: number) => {
   return await CartItem.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const updateCartItem = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateCartItem = async (data: CartItemCreationAttributes, id: number) => {
   return await CartItem.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const getCartCustomer = async (query: NonNullable<unknown>) => {
+const getCartCustomer = async (id: number) => {
   return await CartItem.findAll({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
@@ -97,4 +112,5 @@ export {
   deleteCartItem,
   updateCartItem,
   getCartCustomer,
+  CartItem,
 };

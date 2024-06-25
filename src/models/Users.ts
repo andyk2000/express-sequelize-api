@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { DataTypes, Sequelize, Model, Optional, Op } from "sequelize";
 
 interface UserAttributes {
   id: number;
@@ -64,33 +64,50 @@ const getUsers = async () => {
   return usersData;
 };
 
-const getUserID = async (query: NonNullable<unknown>) => {
+const getUserID = async (id: number) => {
   const userData = await User.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return userData;
 };
 
-const getUserEmail = async (query: NonNullable<unknown>) => {
+const getUserEmail = async (email: string) => {
   const userData = await User.findOne({
-    where: query,
+    where: {
+      email: email,
+    },
   });
   return userData;
 };
 
-const deleteUser = async (query: NonNullable<unknown>) => {
+const deleteUser = async (id: number) => {
   return await User.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const updateUser = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateUser = async (data: UserAttributes, id: number) => {
   return await User.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
+};
+
+const searchCustomerByName = async (searchString: string) => {
+  const customers = await User.findAll({
+    where: {
+      names: {
+        [Op.like]: `%${searchString}%`,
+      },
+      role: "customer",
+    },
+  });
+  return customers;
 };
 
 export {
@@ -101,4 +118,6 @@ export {
   deleteUser,
   updateUser,
   getUserEmail,
+  searchCustomerByName,
+  User,
 };

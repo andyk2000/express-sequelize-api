@@ -1,10 +1,11 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { Store } from "./Stores";
 
 interface ServiceAttributes {
   id: number;
   name: string;
   price: number;
-  store_id: number;
+  storeId: number;
 }
 
 interface ServiceCreationAttributes extends Optional<ServiceAttributes, "id"> {}
@@ -16,7 +17,7 @@ class Service
   public id!: number;
   public name!: string;
   public price!: number;
-  public store_id!: number;
+  public storeId!: number;
 }
 
 const serviceSchema = {
@@ -33,7 +34,7 @@ const serviceSchema = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  store_id: {
+  storeId: {
     type: DataTypes.INTEGER,
     AllowNull: false,
     references: {
@@ -60,25 +61,28 @@ const createService = async (service: ServiceCreationAttributes) => {
   return await Service.create(service);
 };
 
-const getServiceID = async (query: NonNullable<unknown>) => {
+const getServiceID = async (id: number) => {
   const serviceData = await Service.findOne({
-    where: query,
+    where: {
+      id: id,
+    },
   });
   return serviceData;
 };
 
-const deleteService = async (query: NonNullable<unknown>) => {
+const deleteService = async (id: number) => {
   return await Service.destroy({
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
-const updateService = async (
-  data: NonNullable<unknown>,
-  query: NonNullable<unknown>,
-) => {
+const updateService = async (data: NonNullable<unknown>, id: number) => {
   return await Service.update(data, {
-    where: query,
+    where: {
+      id: id,
+    },
   });
 };
 
@@ -94,6 +98,33 @@ const getServiceBystoreName = async (query: NonNullable<unknown>) => {
   });
 };
 
+const getServiceByStoreID = async (id: number) => {
+  return await Service.findAll({
+    where: {
+      storeId: id,
+    },
+  });
+};
+
+const countServicesByStore = async (storeId: number) => {
+  return await Service.count({
+    where: {
+      storeId: storeId,
+    },
+  });
+};
+
+const countServiceByOwner = async (userId: number) => {
+  return await Service.count({
+    include: {
+      model: Store,
+      where: {
+        userId: userId,
+      },
+    },
+  });
+};
+
 export {
   initializeService,
   getServices,
@@ -103,4 +134,8 @@ export {
   updateService,
   getServicesByStore,
   getServiceBystoreName,
+  getServiceByStoreID,
+  Service,
+  countServicesByStore,
+  countServiceByOwner,
 };

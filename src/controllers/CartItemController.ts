@@ -1,15 +1,17 @@
 import { getCartCustomer, createCartItem } from "../models/CartItem";
 
 const createNewCartItem = async (newCartItem: {
-  cart_id: number;
+  cartId: number;
   item_name: string;
   price: number;
+  storeId: number;
 }) => {
-  const cart_id = newCartItem.cart_id;
+  const cartId = newCartItem.cartId;
   const item_name = newCartItem.item_name;
   const price = newCartItem.price;
+  const storeId = newCartItem.storeId;
   try {
-    const data = await createCartItem({ cart_id, item_name, price });
+    const data = await createCartItem({ cartId, item_name, price, storeId });
     return data;
   } catch (error) {
     console.error(error);
@@ -18,9 +20,9 @@ const createNewCartItem = async (newCartItem: {
 };
 
 const getCartItemBycart = async (Cart: number) => {
-  const cart_id = Cart;
+  const cartId = Cart;
   try {
-    const results = await getCartCustomer({ cart_id: cart_id });
+    const results = await getCartCustomer(cartId);
     return results;
   } catch (error) {
     console.error(error);

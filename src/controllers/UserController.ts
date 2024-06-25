@@ -49,7 +49,7 @@ const confirmationEmail = async (email: string) => {
     from: config.email,
     to: email,
     subject: "welcome to urubuto",
-    text: "Welcome to URUBUTO, the best platform to connect you with your customers and stores across Rwanda",
+    text: "Welcome to Our Online Shopping app, the best platform to connect you with your customers and stores across Rwanda",
   };
 
   sender.sendMail(newMail, (error, info) => {
@@ -63,7 +63,6 @@ const confirmationEmail = async (email: string) => {
 
 const createNewUser = async (request: Request, response: Response) => {
   const { names, email, password, role } = request.body;
-  console.log({ names, email, password, role });
   try {
     const data = await createUser({ names, email, password, role });
     console.log(data);
@@ -85,9 +84,9 @@ const getAllUsers = async (request: Request, response: Response) => {
 };
 
 const getUserByID = async (request: Request, response: Response) => {
-  const id = parseInt(request.params.id);
+  const id = response.locals.user.id;
   try {
-    const userData = await getUserID({ id: id });
+    const userData = await getUserID(id);
     return response.status(200).json(userData);
   } catch (err) {
     console.log(err);
@@ -98,7 +97,7 @@ const getUserByID = async (request: Request, response: Response) => {
 const deleteUserData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
   try {
-    const deletedUser = await deleteUser({ id: id });
+    const deletedUser = await deleteUser(id);
     return response.status(200).json(deletedUser);
   } catch (error) {
     console.log(error);
@@ -147,7 +146,7 @@ const logIn = async (request: Request, response: Response) => {
   const { email, password } = request.body;
   const encrypted = encryptPassword(password);
   try {
-    const user = await getUserEmail({ email: email });
+    const user = await getUserEmail(email);
     if (user === null) {
       return response.status(404).json({ error: "login failed try again" });
     }

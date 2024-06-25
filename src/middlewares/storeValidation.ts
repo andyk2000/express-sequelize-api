@@ -8,7 +8,7 @@ const storeVerification = async (
 ) => {
   const { name } = request.body;
   try {
-    const store = await getStoreByName({ name: name });
+    const store = await getStoreByName(name);
     console.log(name);
     if (!store) {
       next();

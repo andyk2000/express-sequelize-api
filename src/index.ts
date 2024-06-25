@@ -1,11 +1,12 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-import { initializeUser } from "./models/Users";
-import { initializeStore } from "./models/Stores";
-import { initializeService } from "./models/Services";
-import { initializeCart } from "./models/cart";
-import { initializeCartItem } from "./models/CartItem";
+import { User, initializeUser } from "./models/Users";
+import { Store, initializeStore } from "./models/Stores";
+import { Service, initializeService } from "./models/Services";
+import { Cart, initializeCart } from "./models/cart";
+import { Payment, initializePayment } from "./models/payment";
+import { CartItem, initializeCartItem } from "./models/CartItem";
 import { userRouter } from "./routes/usersRoutes";
 import { storeRouter } from "./routes/storeRoutes";
 import { serviceRouter } from "./routes/serviceRoutes";
@@ -13,6 +14,7 @@ import { cartRouter } from "./routes/cartRoutes";
 import { errors } from "celebrate";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { paymentRoutes } from "./routes/dashboardRoutes";
 
 const router = express.Router();
 dotenv.config();
@@ -39,7 +41,7 @@ const config: Config = {
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", config.frontend],
+    origin: "*",
   }),
 );
 app.use(
@@ -58,14 +60,28 @@ initializeStore(sequelize);
 initializeService(sequelize);
 initializeCart(sequelize);
 initializeCartItem(sequelize);
+initializePayment(sequelize);
+
+Payment.belongsTo(User);
+User.hasMany(Payment);
+Payment.belongsTo(Store);
+Store.hasMany(Payment);
+Store.belongsTo(User);
+User.hasMany(Store);
+Service.belongsTo(Store);
+Store.hasMany(Service);
+Cart.belongsTo(User);
+User.hasOne(Cart);
+CartItem.belongsTo(Cart);
+Cart.hasMany(CartItem);
+CartItem.belongsTo(Store);
+Store.hasMany(CartItem);
 
 router.use("/user", userRouter);
-
 router.use("/store", storeRouter);
-
 router.use("/service", serviceRouter);
-
 router.use("/cart", cartRouter);
+router.use("/payment", paymentRoutes);
 
 app.use(router);
 app.use(errors());

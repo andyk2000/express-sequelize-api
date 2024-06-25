@@ -12,7 +12,7 @@ const serviceDataValidation = celebrate({
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required(),
     price: Joi.string().required(),
-    store_id: Joi.string().required(),
+    storeId: Joi.string().required(),
   }),
 });
 

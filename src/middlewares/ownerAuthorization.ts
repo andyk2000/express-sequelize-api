@@ -6,14 +6,13 @@ const ownerCheck = async (
   response: Response,
   next: () => void,
 ) => {
-  const ownerId = response.locals.user.id;
-  console.log(response.locals.user.id);
-  if (!ownerId) {
+  const userId = response.locals.user.id;
+  if (!userId) {
     return response.status(500).json({ error: "provide an id" });
   }
 
   try {
-    const owner = await getUserID({ id: ownerId });
+    const owner = await getUserID(userId);
     if (!owner) {
       return response
         .status(500)
@@ -28,7 +27,6 @@ const ownerCheck = async (
       });
     }
   } catch (error) {
-    console.log(ownerId);
     console.log(error);
     return response
       .status(500)

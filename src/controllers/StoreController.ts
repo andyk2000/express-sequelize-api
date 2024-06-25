@@ -9,6 +9,8 @@ import {
 } from "../models/Stores";
 import { Request, Response } from "express";
 import slugify from "slugify";
+import { countPaymentsPerStore, totalPaymentByStore } from "../models/payment";
+import { countServicesByStore } from "../models/Services";
 
 const storeURLGenration = (name: string) => {
   const store_name = slugify(name, { lower: true, strict: true });
@@ -17,15 +19,14 @@ const storeURLGenration = (name: string) => {
 
 const createNewStore = async (request: Request, response: Response) => {
   const { name, address, description } = request.body;
-  console.log(response.locals.user.id);
-  const owner_id = response.locals.user.id;
+  const userId = response.locals.user.id;
   const storeUrl = storeURLGenration(name);
   try {
     const data = await createStore({
       name,
       address,
       description,
-      owner_id,
+      userId,
       storeUrl,
     });
     return response.status(201).json(data);
@@ -48,7 +49,7 @@ const getAllStores = async (request: Request, response: Response) => {
 const getStoreByID = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
   try {
-    const storeData = await getStoreID({ id: id });
+    const storeData = await getStoreID(id);
     return response.status(200).json(storeData);
   } catch (err) {
     console.log(err);
@@ -61,7 +62,7 @@ const getStoreByID = async (request: Request, response: Response) => {
 const deleteStoreData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
   try {
-    const deletedStore = await deleteStore({ id: id });
+    const deletedStore = await deleteStore(id);
     return response.status(200).json(deletedStore);
   } catch (error) {
     console.log(error);
@@ -71,12 +72,9 @@ const deleteStoreData = async (request: Request, response: Response) => {
 
 const updateStoreData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
-  const { names, address, description } = request.body;
+  const { name, address, description } = request.body;
   try {
-    const updatedStore = await updateStore(
-      { names, address, description },
-      { id: id },
-    );
+    const updatedStore = await updateStore({ name, address, description }, id);
     return response.status(200).json(updatedStore);
   } catch (error) {
     console.log(error);
@@ -87,14 +85,24 @@ const updateStoreData = async (request: Request, response: Response) => {
 };
 
 const getStoreByOwner = async (request: Request, response: Response) => {
-  const id = Number(request.headers["id"]);
+  const id = response.locals.user.id;
   try {
-    const storeByowner = await getStoreOwner({ owner_id: id });
-    console.log(storeByowner);
+    const storeByowner = await getStoreOwner(id);
     return response.status(200).json(storeByowner);
   } catch (error) {
     console.log(error);
     return response.status(500).json({ error: error });
+  }
+};
+
+const getStoreByOwnerForPayment = async (userId: number) => {
+  const id = userId;
+  try {
+    const storeByowner = await getStoreOwner(id);
+    return storeByowner;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 };
 
@@ -110,6 +118,19 @@ const showAvailableShops = async (request: Request, response: Response) => {
   }
 };
 
+const getStoreCardData = async (request: Request, response: Response) => {
+  const { storeId } = request.body;
+  try {
+    const revenue = await totalPaymentByStore(storeId);
+    const services = await countServicesByStore(storeId);
+    const serviceSold = await countPaymentsPerStore(storeId);
+    return response.status(200).json({ revenue, services, serviceSold });
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json(error);
+  }
+};
+
 export {
   createNewStore,
   getAllStores,
@@ -118,4 +139,6 @@ export {
   updateStoreData,
   getStoreByOwner,
   showAvailableShops,
+  getStoreByOwnerForPayment,
+  getStoreCardData,
 };
