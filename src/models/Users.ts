@@ -1,61 +1,58 @@
-import { DataTypes, Sequelize, Model, Optional, Op } from "sequelize";
+import {
+  DataTypes,
+  Sequelize,
+  Model,
+  Op,
+  InferCreationAttributes,
+  InferAttributes,
+  CreationOptional,
+  CreationAttributes,
+} from "sequelize";
 
-interface UserAttributes {
-  id: number;
-  names: string;
-  email: string;
-  password: string;
-  role: string;
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare id: CreationOptional<number>;
+  declare names: string;
+  declare email: string;
+  declare password: string;
+  declare role: string;
 }
-
-interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
-
-class User
-  extends Model<UserAttributes, UserCreationAttributes>
-  implements UserAttributes
-{
-  public id!: number;
-  public names!: string;
-  public email!: string;
-  public password!: string;
-  public role!: string;
-}
-
-const userSchema = {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  names: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  role: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: "customer",
-  },
-};
 
 const initializeUser = (sequelize: Sequelize) => {
-  User.init(userSchema, {
-    sequelize,
-    modelName: "user",
-    timestamps: false,
-  });
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      names: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "customer",
+      },
+    },
+    {
+      sequelize,
+      modelName: "user",
+      timestamps: false,
+    },
+  );
 };
 
-const createUser = async (user: UserCreationAttributes) => {
+const createUser = async (user: CreationAttributes<User>) => {
   return await User.create(user);
 };
 
@@ -90,7 +87,7 @@ const deleteUser = async (id: number) => {
   });
 };
 
-const updateUser = async (data: UserAttributes, id: number) => {
+const updateUser = async (data: NonNullable<unknown>, id: number) => {
   return await User.update(data, {
     where: {
       id: id,
@@ -98,11 +95,11 @@ const updateUser = async (data: UserAttributes, id: number) => {
   });
 };
 
-const searchCustomerByName = async (searchString: string) => {
+const searchCustomerByName = async (search_string: string) => {
   const customers = await User.findAll({
     where: {
       names: {
-        [Op.like]: `%${searchString}%`,
+        [Op.like]: `%${search_string}%`,
       },
       role: "customer",
     },
