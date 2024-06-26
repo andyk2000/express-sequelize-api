@@ -85,6 +85,7 @@ const getAllUsers = async (request: Request, response: Response) => {
 
 const getUserByID = async (request: Request, response: Response) => {
   const id = response.locals.user.id;
+  console.log(response.locals.user);
   try {
     const userData = await getUserID(id);
     return response.status(200).json(userData);
@@ -109,10 +110,7 @@ const updateUserData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
   const { names, email, password, role } = request.body;
   try {
-    const updatedUser = await updateUser(
-      { names, email, password, role },
-      { id: id },
-    );
+    const updatedUser = await updateUser({ names, email, password, role }, id);
     return response.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);

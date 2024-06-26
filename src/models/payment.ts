@@ -1,4 +1,11 @@
-import { DataTypes, Sequelize, Model, Optional, Op } from "sequelize";
+import {
+  DataTypes,
+  Sequelize,
+  Model,
+  Optional,
+  Op,
+  NonAttribute,
+} from "sequelize";
 // import { Store } from "./Stores";
 import { User } from "./Users";
 import { Store } from "./Stores";
@@ -26,6 +33,8 @@ class Payment
   public userId!: number;
   public amount!: number;
   public date!: Date;
+
+  declare store: NonAttribute<Store>;
 }
 
 const paymentSchema = {
@@ -241,26 +250,24 @@ const paymentByStoreOwner = async (userId: number) => {
 };
 
 const totalPaymentByOwnedStores = async (userId: number) => {
-  const stores = await Store.findAll({
-    where: {
-      userId: userId,
-    },
-    attributes: ["id"],
-  });
-
-  const storeIds = stores.map((store) => store.id);
-
-  if (storeIds.length === 0) {
-    return 0;
-  }
-  const totalAmount = await Payment.sum("amount", {
-    where: {
-      storeId: {
-        [Op.in]: storeIds,
+  const sum = await Payment.findOne({
+    attributes: [[Sequelize.fn("SUM", Sequelize.col("amount")), "totalAmount"]],
+    raw: true,
+    include: [
+      {
+        model: Store,
+        attributes: [],
+        where: {
+          userId,
+        },
       },
-    },
+    ],
   });
-  return totalAmount;
+
+  console.log("Sum:: ", sum);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (sum as any).totalAmount;
 };
 
 const getUserRecurrence = async (storeId: number) => {
