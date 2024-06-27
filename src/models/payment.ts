@@ -264,8 +264,6 @@ const totalPaymentByOwnedStores = async (userId: number) => {
     ],
   });
 
-  console.log("Sum:: ", sum);
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (sum as any).totalAmount;
 };
