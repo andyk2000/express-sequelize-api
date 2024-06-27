@@ -18,8 +18,8 @@ interface Config {
 }
 
 const config: Config = {
-  email: process.env.EMAIL_ADDRESS || "localhost",
-  password: process.env.EMAIL_PASSWORD || "",
+  email: process.env.EMAIL_ADDRESS || "andyirimbere@gmail.com",
+  password: process.env.EMAIL_PASSWORD || "cykvvsvmijvpqxwr",
   secretKey: process.env.SECRET_KEY || "zero",
 };
 
@@ -43,29 +43,32 @@ const confirmationEmail = async (email: string) => {
       user: config.email,
       pass: config.password,
     },
+    debug: true,
+    logger: true,
   });
 
   const newMail = {
     from: config.email,
     to: email,
-    subject: "welcome to urubuto",
+    subject: "welcome to our online shop",
     text: "Welcome to Our Online Shopping app, the best platform to connect you with your customers and stores across Rwanda",
   };
 
   sender.sendMail(newMail, (error, info) => {
     if (error) {
       console.log("Error sending email:", error);
+      throw error;
     } else {
       console.log("Email sent:", info.response);
     }
   });
+  console.log(config.email, config.password);
 };
 
 const createNewUser = async (request: Request, response: Response) => {
   const { names, email, password, role } = request.body;
   try {
     const data = await createUser({ names, email, password, role });
-    console.log(data);
     return response.status(201).json(data);
   } catch (error) {
     console.error(error);
@@ -85,7 +88,6 @@ const getAllUsers = async (request: Request, response: Response) => {
 
 const getUserByID = async (request: Request, response: Response) => {
   const id = response.locals.user.id;
-  console.log(response.locals.user);
   try {
     const userData = await getUserID(id);
     return response.status(200).json(userData);
@@ -136,7 +138,9 @@ const signUp = async (request: Request, response: Response) => {
     return response.status(200).json(newUser);
   } catch (error) {
     console.log(error);
-    return response.status(500).json({ error: "could not creat the new user" });
+    return response
+      .status(500)
+      .json({ error: "could not create the new user" });
   }
 };
 
