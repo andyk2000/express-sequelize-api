@@ -1,5 +1,7 @@
-import express, { Express } from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express, { Express } from "express";
 import { Sequelize } from "sequelize";
 import { User, initializeUser } from "./models/Users";
 import { Store, initializeStore } from "./models/Stores";
@@ -17,7 +19,6 @@ import cors from "cors";
 import { paymentRoutes } from "./routes/dashboardRoutes";
 
 const router = express.Router();
-dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -53,7 +54,6 @@ app.use(
 const sequelize = new Sequelize(config.database, config.user, config.password, {
   host: config.host,
   dialect: "postgres",
-  logging: false,
 });
 
 initializeUser(sequelize);
