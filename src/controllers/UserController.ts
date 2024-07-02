@@ -25,10 +25,10 @@ interface Config {
 }
 
 const config: Config = {
-  email: process.env.EMAIL_ADDRESS || "andyirimbere@gmail.com",
-  password: process.env.EMAIL_PASSWORD || "cykvvsvmijvpqxwr",
-  secretKey: process.env.SECRET_KEY || "zero",
-  frontendLink: process.env.FRONTEND_LINK || "http://localhost:3000",
+  email: process.env.EMAIL_ADDRESS || "",
+  password: process.env.EMAIL_PASSWORD || "",
+  secretKey: process.env.SECRET_KEY || "",
+  frontendLink: process.env.FRONTEND_LINK || "",
 };
 
 const generateAccessToken = (email: string, id: number) => {
@@ -95,7 +95,7 @@ const confirmationEmail = async (userEmail: string, names: string) => {
     });
   } catch (error) {
     console.error("Error in sending confirmation email:", error);
-    throw error; // Ensure errors are propagated
+    throw error;
   }
 };
 
