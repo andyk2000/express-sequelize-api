@@ -7,6 +7,9 @@ interface StoreAttributes {
   description: string;
   userId: number;
   storeUrl: string;
+  logo: string;
+  phone: string;
+  email: string;
 }
 
 interface StoreCreationAttributes extends Optional<StoreAttributes, "id"> {}
@@ -21,6 +24,9 @@ class Store
   public description!: string;
   public userId!: number;
   public storeUrl!: string;
+  public logo!: string;
+  public phone!: string;
+  public email!: string;
 }
 
 const storeSchema = {
@@ -53,6 +59,15 @@ const storeSchema = {
     type: DataTypes.STRING,
     unique: true,
     allowNull: false,
+  },
+  logo: {
+    type: DataTypes.STRING,
+  },
+  phone: {
+    type: DataTypes.STRING,
+  },
+  email: {
+    type: DataTypes.STRING,
   },
 };
 

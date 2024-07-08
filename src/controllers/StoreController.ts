@@ -11,6 +11,19 @@ import { Request, Response } from "express";
 import slugify from "slugify";
 import { countPaymentsPerStore, totalPaymentByStore } from "../models/payment";
 import { countServicesByStore } from "../models/Services";
+import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
+
+interface Config {
+  api_secret: string;
+  cloud_name: string;
+  api_key: string;
+}
+
+const config: Config = {
+  api_secret: process.env.CLOUDINARY_SECRET_KEY || "",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "",
+  api_key: process.env.CLOUDINARY_API_KEY || "",
+};
 
 const storeURLGenration = (name: string) => {
   const store_name = slugify(name, { lower: true, strict: true });
@@ -18,21 +31,34 @@ const storeURLGenration = (name: string) => {
 };
 
 const createNewStore = async (request: Request, response: Response) => {
-  const { name, address, description } = request.body;
+  const { name, address, description, email, phone, logo } = request.body;
   const userId = response.locals.user.id;
   const storeUrl = storeURLGenration(name);
-  try {
-    const data = await createStore({
-      name,
-      address,
-      description,
-      userId,
-      storeUrl,
-    });
-    return response.status(201).json(data);
-  } catch (error) {
-    console.error(error);
-    return response.status(500).json({ error: "Internal Server Error" });
+  if (logo) {
+    const base64Data = logo.split(";base64,").pop();
+    const imageBuffer = Buffer.from(base64Data, "base64");
+    const logoResponse = await uploadLogoToDb(imageBuffer);
+    if (logoResponse) {
+      const logo2 = logoResponse;
+      try {
+        const data = await createStore({
+          name,
+          address,
+          description,
+          userId,
+          storeUrl,
+          logo: logo2,
+          email,
+          phone,
+        });
+        return response.status(201).json(data);
+      } catch (error) {
+        console.error(error);
+        return response.status(500).json({ error: "Internal Server Error" });
+      }
+    }
+  } else {
+    return response.status(400).json({ error: "no file uploaded" });
   }
 };
 
@@ -51,8 +77,8 @@ const getStoreByID = async (request: Request, response: Response) => {
   try {
     const storeData = await getStoreID(id);
     return response.status(200).json(storeData);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
     return response
       .status(500)
       .json({ error: `failed to get store with id${id}` });
@@ -129,6 +155,21 @@ const getStoreCardData = async (request: Request, response: Response) => {
     console.log(error);
     return response.status(500).json(error);
   }
+};
+
+const uploadLogoToDb = async (uploadFile: Buffer) => {
+  cloudinary.config(config);
+  const uploadResult: UploadApiResponse = await new Promise((resolve) => {
+    cloudinary.uploader
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      .upload_stream((error, uploadResult) => {
+        if (uploadResult !== undefined) {
+          return resolve(uploadResult);
+        }
+      })
+      .end(uploadFile);
+  });
+  return uploadResult.secure_url;
 };
 
 export {

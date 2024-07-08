@@ -17,8 +17,7 @@ import { errors } from "celebrate";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { paymentRoutes } from "./routes/dashboardRoutes";
-
-const router = express.Router();
+import fileUpload from "express-fileupload";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -39,21 +38,22 @@ const config: Config = {
   frontend: process.env.FRONTEND_LINK || "urubuto",
 };
 
-app.use(bodyParser.json());
+// Middleware
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(cors({ origin: "*" }));
 app.use(
-  cors({
-    origin: "*",
-  }),
-);
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+    limits: { fileSize: 50 * 1024 * 1024 },
   }),
 );
 
 const sequelize = new Sequelize(config.database, config.user, config.password, {
   host: config.host,
   dialect: "postgres",
+  logging: false,
 });
 
 initializeUser(sequelize);
@@ -78,14 +78,16 @@ Cart.hasMany(CartItem);
 CartItem.belongsTo(Store);
 Store.hasMany(CartItem);
 
-router.use("/user", userRouter);
-router.use("/store", storeRouter);
-router.use("/service", serviceRouter);
-router.use("/cart", cartRouter);
-router.use("/payment", paymentRoutes);
+// Routes
+app.use("/user", userRouter);
+app.use("/store", storeRouter);
+app.use("/service", serviceRouter);
+app.use("/cart", cartRouter);
+app.use("/payment", paymentRoutes);
 
-app.use(router);
 app.use(errors());
+
+// Server initialization
 app.listen(port, async () => {
   await sequelize.sync({ alter: true });
   console.log("Server Listening on PORT:", port);
