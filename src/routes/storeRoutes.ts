@@ -19,11 +19,15 @@ storeRouter.post(
   [check, ownerCheck, storeDataValidation, storeVerification],
   createNewStore,
 );
-storeRouter.delete("/:id", [check, ownerCheck], deleteStoreData);
-storeRouter.put("/", [check, ownerCheck], updateStoreData);
+storeRouter.delete(
+  "/:id",
+  [check, ownerCheck, storeOwnerCheck],
+  deleteStoreData,
+);
+storeRouter.put("/:id", [check, ownerCheck, storeOwnerCheck], updateStoreData);
 storeRouter.post("/card/data", [check, ownerCheck], getStoreCardData);
 storeRouter.post(
-  "/storeData/",
+  "/storeData/:id",
   [check, ownerCheck, storeOwnerCheck],
   getStoreByID,
 );

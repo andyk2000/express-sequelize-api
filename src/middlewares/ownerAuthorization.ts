@@ -41,7 +41,7 @@ const storeOwnerCheck = async (
   next: () => void,
 ) => {
   const ownerId = response.locals.user.id;
-  const { id } = request.body;
+  const id = parseInt(request.params.id);
   try {
     const store = await getStoreID(id);
     if (store) {
