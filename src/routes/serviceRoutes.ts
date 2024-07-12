@@ -6,7 +6,7 @@ import {
 } from "../controllers/ServiceController";
 import check from "../middlewares/authentication";
 import { serviceDataValidation } from "../middlewares/dataValidation";
-import ownerCheck from "../middlewares/ownerAuthorization";
+import { ownerCheck } from "../middlewares/ownerAuthorization";
 import express from "express";
 const serviceRouter = express.Router();
 

@@ -1,6 +1,6 @@
 import express from "express";
 import check from "../middlewares/authentication";
-import ownerCheck from "../middlewares/ownerAuthorization";
+import { ownerCheck, storeOwnerCheck } from "../middlewares/ownerAuthorization";
 import { storeDataValidation } from "../middlewares/dataValidation";
 import {
   getStoreByOwner,
@@ -8,6 +8,7 @@ import {
   deleteStoreData,
   updateStoreData,
   getStoreCardData,
+  getStoreByID,
 } from "../controllers/StoreController";
 import { storeVerification } from "../middlewares/storeValidation";
 
@@ -19,7 +20,12 @@ storeRouter.post(
   createNewStore,
 );
 storeRouter.delete("/:id", [check, ownerCheck], deleteStoreData);
-storeRouter.put("/:id", [check, ownerCheck], updateStoreData);
+storeRouter.put("/", [check, ownerCheck], updateStoreData);
 storeRouter.post("/card/data", [check, ownerCheck], getStoreCardData);
+storeRouter.post(
+  "/storeData/",
+  [check, ownerCheck, storeOwnerCheck],
+  getStoreByID,
+);
 
 export { storeRouter };

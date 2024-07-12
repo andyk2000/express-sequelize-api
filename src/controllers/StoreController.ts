@@ -75,7 +75,7 @@ const getAllStores = async (request: Request, response: Response) => {
 };
 
 const getStoreByID = async (request: Request, response: Response) => {
-  const id = parseInt(request.params.id);
+  const { id } = request.body;
   try {
     const storeData = await getStoreID(id);
     return response.status(200).json(storeData);
