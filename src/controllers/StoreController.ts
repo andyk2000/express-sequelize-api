@@ -185,9 +185,12 @@ const showAvailableShops = async (request: Request, response: Response) => {
 const getStoreCardData = async (request: Request, response: Response) => {
   const { storeId } = request.body;
   try {
-    const revenue = await totalPaymentByStore(storeId);
+    let revenue = await totalPaymentByStore(storeId);
     const services = await countServicesByStore(storeId);
     const serviceSold = await countPaymentsPerStore(storeId);
+    if (revenue === null) {
+      revenue = 0;
+    }
     return response.status(200).json({ revenue, services, serviceSold });
   } catch (error) {
     console.log(error);
