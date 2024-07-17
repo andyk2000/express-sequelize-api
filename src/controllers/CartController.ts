@@ -43,7 +43,6 @@ const updateCartData = async (
     });
     return finalCart;
   } catch (error) {
-    console.log("couldn't update the cart", error);
     throw error;
   }
 };

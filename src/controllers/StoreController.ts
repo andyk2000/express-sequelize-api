@@ -75,7 +75,7 @@ const getAllStores = async (request: Request, response: Response) => {
 };
 
 const getStoreByID = async (request: Request, response: Response) => {
-  const { id } = request.body;
+  const id = parseInt(request.params.id);
   try {
     const storeData = await getStoreID(id);
     return response.status(200).json(storeData);
@@ -100,9 +100,45 @@ const deleteStoreData = async (request: Request, response: Response) => {
 
 const updateStoreData = async (request: Request, response: Response) => {
   const id = parseInt(request.params.id);
-  const { name, address, description } = request.body;
+  const { name, address, description, phone, email, logo, imageChange } =
+    request.body;
+  let logoResponse = logo;
+  if (imageChange) {
+    const base64Data = logo.split(";base64,").pop();
+    const imageBuffer = Buffer.from(base64Data, "base64");
+    logoResponse = await uploadLogoToDb(imageBuffer);
+    try {
+      const logo2 = logoResponse;
+      const updatedStore = await updateStore(
+        {
+          name,
+          address,
+          description,
+          phone,
+          email,
+          logo: logo2,
+        },
+        id,
+      );
+      return response.status(200).json(updatedStore);
+    } catch (error) {
+      console.log(error);
+      response
+        .status(500)
+        .json({ error: `failed to update the store with id${id}` });
+    }
+  }
   try {
-    const updatedStore = await updateStore({ name, address, description }, id);
+    const updatedStore = await updateStore(
+      {
+        name,
+        address,
+        description,
+        phone,
+        email,
+      },
+      id,
+    );
     return response.status(200).json(updatedStore);
   } catch (error) {
     console.log(error);
