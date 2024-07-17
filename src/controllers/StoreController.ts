@@ -191,6 +191,7 @@ const getStoreCardData = async (request: Request, response: Response) => {
     if (revenue === null) {
       revenue = 0;
     }
+    console.log({ revenue, services, serviceSold });
     return response.status(200).json({ revenue, services, serviceSold });
   } catch (error) {
     console.log(error);
