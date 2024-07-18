@@ -71,7 +71,7 @@ const getAllStores = async (request: Request, response: Response) => {
     const data = await getStores();
     return response.status(200).json(data);
   } catch (error) {
-    logger.error("Error getting all stores");
+    logger.error("Error getting all stores", error);
     return response.status(500).json({ error: "failed to get the data" });
   }
 };
@@ -82,7 +82,7 @@ const getStoreByID = async (request: Request, response: Response) => {
     const storeData = await getStoreID(id);
     return response.status(200).json(storeData);
   } catch (error) {
-    logger.error(`Error getting store by ${id}`);
+    logger.error(`Error getting store by ${id}`, error);
     return response
       .status(500)
       .json({ error: `failed to get store with id${id}` });
@@ -95,7 +95,7 @@ const deleteStoreData = async (request: Request, response: Response) => {
     const deletedStore = await deleteStore(id);
     return response.status(200).json(deletedStore);
   } catch (error) {
-    logger.error(`Error deleting store with id: ${id}`);
+    logger.error(`Error deleting store with id: ${id}`, error);
     response.status(500).json({ error: `failed to delete store with id${id}` });
   }
 };
@@ -124,7 +124,7 @@ const updateStoreData = async (request: Request, response: Response) => {
       );
       return response.status(200).json(updatedStore);
     } catch (error) {
-      logger.error(`Error updating new store: ${id}`);
+      logger.error(`Error updating new store: ${id}`, error);
       response
         .status(500)
         .json({ error: `failed to update the store with id${id}` });
@@ -143,7 +143,7 @@ const updateStoreData = async (request: Request, response: Response) => {
     );
     return response.status(200).json(updatedStore);
   } catch (error) {
-    logger.error(`Error updating new store: ${id}`);
+    logger.error(`Error updating new store: ${id}`, error);
     response
       .status(500)
       .json({ error: `failed to update the store with id${id}` });
@@ -156,7 +156,7 @@ const getStoreByOwner = async (request: Request, response: Response) => {
     const storeByowner = await getStoreOwner(id);
     return response.status(200).json(storeByowner);
   } catch (error) {
-    logger.error(`Error getting store by owner with: ${id}`);
+    logger.error(`Error getting store by owner with: ${id}`, error);
     return response.status(500).json({ error: error });
   }
 };
@@ -180,7 +180,7 @@ const showAvailableShops = async (request: Request, response: Response) => {
     const availablestores = await getstoresForCustomer();
     return response.status(200).json(availablestores);
   } catch (error) {
-    logger.error("Error getting all store");
+    logger.error("Error getting all store", error);
     return response
       .status(500)
       .json({ error: "there is a problem with the server" });

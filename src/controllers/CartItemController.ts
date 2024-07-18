@@ -15,7 +15,10 @@ const createNewCartItem = async (newCartItem: {
     const data = await createCartItem({ cartId, item_name, price, storeId });
     return data;
   } catch (error) {
-    logger.error(`Error creating new cart item for cart with Id: ${cartId}`);
+    logger.error(
+      `Error creating new cart item for cart with Id: ${cartId}`,
+      error,
+    );
     throw error;
   }
 };
@@ -26,7 +29,7 @@ const getCartItemBycart = async (Cart: number) => {
     const results = await getCartCustomer(cartId);
     return results;
   } catch (error) {
-    logger.error(`Error getting cartitem by cart with Id: ${Cart}`);
+    logger.error(`Error getting cartitem by cart with Id: ${Cart}`, error);
     throw error;
   }
 };

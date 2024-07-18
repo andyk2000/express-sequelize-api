@@ -26,6 +26,7 @@ const createNewCart = async (
   } catch (error) {
     logger.error(
       `Error creating new cart for customer with Id: ${data.userId}`,
+      error,
     );
     throw error;
   }
@@ -46,7 +47,7 @@ const updateCartData = async (
     });
     return finalCart;
   } catch (error) {
-    logger.error(`Error updating cart with: ${cart.id}`);
+    logger.error(`Error updating cart with: ${cart.id}`, error);
     throw error;
   }
 };
@@ -84,6 +85,7 @@ const addItemsToCart = async (request: Request, response: Response) => {
     } catch (error) {
       logger.error(
         `Error adding item with Id: ${serviceId} to cart by owner: ${userId}`,
+        error,
       );
       return response.status(500).json({ error: "Failed to add item to cart" });
     }
@@ -104,7 +106,7 @@ const getCartByCustomer = async (request: Request, response: Response) => {
     const results = { cart, cartItem };
     return response.status(200).json(results);
   } catch (error) {
-    logger.error(`Error getting cart by customer with Id: ${customer}`);
+    logger.error(`Error getting cart by customer with Id: ${customer}`, error);
   }
 };
 
@@ -113,7 +115,7 @@ const findStoreItem = async (id: number) => {
     const service = await getServiceID(id);
     return service;
   } catch (error) {
-    logger.error(`Error getting service with Id: ${id}`);
+    logger.error(`Error getting service with Id: ${id}`, error);
     throw error;
   }
 };

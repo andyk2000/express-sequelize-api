@@ -27,7 +27,7 @@ const findAllStorePayments = async (request: Request, response: Response) => {
       serviceCount,
     });
   } catch (error) {
-    logger.error(`Error getting payments by user ID: ${userId}`);
+    logger.error(`Error getting payments by user ID: ${userId}`, error);
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -38,7 +38,7 @@ const getAllTransactions = async (request: Request, response: Response) => {
     const payments = await paymentByStoreOwner(userId);
     return response.status(200).json(payments);
   } catch (error) {
-    logger.error(`Error getting all transactions by user ID: ${userId}`);
+    logger.error(`Error getting all transactions by user ID: ${userId}`, error);
     return response.status(500).json(error);
   }
 };
@@ -49,7 +49,7 @@ const findServiceSold = async (request: Request, response: Response) => {
     const payments = await getAllPaymentStore(storeId);
     return response.status(200).json(payments);
   } catch (error) {
-    logger.error(`Error finding service sold by store ID: ${storeId}`);
+    logger.error(`Error finding service sold by store ID: ${storeId}`, error);
     return response.status(500).json(error);
   }
 };
@@ -67,6 +67,7 @@ const searchPayments = async (request: Request, response: Response) => {
   } catch (error) {
     logger.error(
       `Error searching payment with search string: ${search_string} for store with id: ${storeId}`,
+      error,
     );
   }
 };
@@ -79,6 +80,7 @@ const filterDate = async (request: Request, response: Response) => {
   } catch (error) {
     logger.error(
       `Error to filter by date start Date: ${start_date} and end Date: ${end_date}`,
+      error,
     );
     return response.status(500).json(error);
   }
@@ -102,8 +104,10 @@ const statRetrieval = async (request: Request, response: Response) => {
     }));
     response.status(200).json({ users, services });
   } catch (error) {
-    logger.error(`Error to retrieve stats for store with id: ${storeId}`);
-    console.error(error);
+    logger.error(
+      `Error to retrieve stats for store with id: ${storeId}`,
+      error,
+    );
     return response.status(500).json({ message: "There was an error" });
   }
 };
