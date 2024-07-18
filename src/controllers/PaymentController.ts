@@ -9,9 +9,9 @@ import {
   searchPaymentByUser,
   totalPaymentByOwnedStores,
 } from "../models/payment";
-import { getStoreByOwnerForPayment } from "./StoreController";
 import { countServiceByOwner } from "../models/Services";
 import { logger } from "../../logger";
+import { getStoreByOwnerForPayment } from "../helpers/StoreHelper";
 
 const findAllStorePayments = async (request: Request, response: Response) => {
   const userId = response.locals.user.id;

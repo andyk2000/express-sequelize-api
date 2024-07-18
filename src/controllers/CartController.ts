@@ -4,10 +4,13 @@ import {
   Cart,
   updateCartTotalPrice,
 } from "../models/cart";
-import { createNewCartItem, getCartItemBycart } from "./CartItemController";
 import { Request, Response } from "express";
 import { getServiceID } from "../models/Services";
 import { logger } from "../../logger";
+import {
+  createNewCartItem,
+  getCartItemBycart,
+} from "../helpers/CartItemHelper";
 
 const createNewCart = async (
   data: { total_price: number; userId: number; storeId: number },
