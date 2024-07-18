@@ -12,6 +12,7 @@ import slugify from "slugify";
 import { countPaymentsPerStore, totalPaymentByStore } from "../models/payment";
 import { countServicesByStore } from "../models/Services";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
+import { logger } from "../../logger";
 
 interface Config {
   api_secret: string;
@@ -55,11 +56,12 @@ const createNewStore = async (request: Request, response: Response) => {
         });
         return response.status(201).json(data);
       } catch (error) {
-        console.error(error);
+        logger.error("Error creating new store");
         return response.status(500).json({ error: "Internal Server Error" });
       }
     }
   } else {
+    logger.error("no logo file uploaded");
     return response.status(400).json({ error: "no file uploaded" });
   }
 };
@@ -69,7 +71,7 @@ const getAllStores = async (request: Request, response: Response) => {
     const data = await getStores();
     return response.status(200).json(data);
   } catch (error) {
-    console.log(error);
+    logger.error("Error getting all stores");
     return response.status(500).json({ error: "failed to get the data" });
   }
 };
@@ -80,7 +82,7 @@ const getStoreByID = async (request: Request, response: Response) => {
     const storeData = await getStoreID(id);
     return response.status(200).json(storeData);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error getting store by ${id}`);
     return response
       .status(500)
       .json({ error: `failed to get store with id${id}` });
@@ -93,7 +95,7 @@ const deleteStoreData = async (request: Request, response: Response) => {
     const deletedStore = await deleteStore(id);
     return response.status(200).json(deletedStore);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error deleting store with id: ${id}`);
     response.status(500).json({ error: `failed to delete store with id${id}` });
   }
 };
@@ -122,7 +124,7 @@ const updateStoreData = async (request: Request, response: Response) => {
       );
       return response.status(200).json(updatedStore);
     } catch (error) {
-      console.log(error);
+      logger.error(`Error updating new store: ${id}`);
       response
         .status(500)
         .json({ error: `failed to update the store with id${id}` });
@@ -141,7 +143,7 @@ const updateStoreData = async (request: Request, response: Response) => {
     );
     return response.status(200).json(updatedStore);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error updating new store: ${id}`);
     response
       .status(500)
       .json({ error: `failed to update the store with id${id}` });
@@ -154,7 +156,7 @@ const getStoreByOwner = async (request: Request, response: Response) => {
     const storeByowner = await getStoreOwner(id);
     return response.status(200).json(storeByowner);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error getting store by owner with: ${id}`);
     return response.status(500).json({ error: error });
   }
 };
@@ -165,7 +167,10 @@ const getStoreByOwnerForPayment = async (userId: number) => {
     const storeByowner = await getStoreOwner(id);
     return storeByowner;
   } catch (error) {
-    console.log(error);
+    logger.error(
+      `Error getting store and payment information by owner with: ${id}`,
+      error,
+    );
     throw error;
   }
 };
@@ -175,7 +180,7 @@ const showAvailableShops = async (request: Request, response: Response) => {
     const availablestores = await getstoresForCustomer();
     return response.status(200).json(availablestores);
   } catch (error) {
-    console.log(error);
+    logger.error("Error getting all store");
     return response
       .status(500)
       .json({ error: "there is a problem with the server" });
@@ -193,7 +198,10 @@ const getStoreCardData = async (request: Request, response: Response) => {
     }
     return response.status(200).json({ revenue, services, serviceSold });
   } catch (error) {
-    console.log(error);
+    logger.error(
+      `Error getting store card data for store with id: ${storeId}`,
+      error,
+    );
     return response.status(500).json(error);
   }
 };

@@ -7,6 +7,7 @@ import {
 import { createNewCartItem, getCartItemBycart } from "./CartItemController";
 import { Request, Response } from "express";
 import { getServiceID } from "../models/Services";
+import { logger } from "../../logger";
 
 const createNewCart = async (
   data: { total_price: number; userId: number; storeId: number },
@@ -23,7 +24,9 @@ const createNewCart = async (
     });
     return results;
   } catch (error) {
-    console.error(error);
+    logger.error(
+      `Error creating new cart for customer with Id: ${data.userId}`,
+    );
     throw error;
   }
 };
@@ -43,6 +46,7 @@ const updateCartData = async (
     });
     return finalCart;
   } catch (error) {
+    logger.error(`Error updating cart with: ${cart.id}`);
     throw error;
   }
 };
@@ -78,7 +82,9 @@ const addItemsToCart = async (request: Request, response: Response) => {
       }
       return response.status(200).json(cart);
     } catch (error) {
-      console.error(error);
+      logger.error(
+        `Error adding item with Id: ${serviceId} to cart by owner: ${userId}`,
+      );
       return response.status(500).json({ error: "Failed to add item to cart" });
     }
   }
@@ -89,11 +95,17 @@ const getCartByCustomer = async (request: Request, response: Response) => {
 
   const cart = await findCartOwner(customer);
   if (!cart) {
-    return response.status(200).json(cart);
+    return response
+      .status(200)
+      .json({ message: `no cart found for user with Id: ${customer}` });
   }
-  const cartItem = await getCartItemBycart(cart.id);
-  const results = { cart, cartItem };
-  return response.status(200).json(results);
+  try {
+    const cartItem = await getCartItemBycart(cart.id);
+    const results = { cart, cartItem };
+    return response.status(200).json(results);
+  } catch (error) {
+    logger.error(`Error getting cart by customer with Id: ${customer}`);
+  }
 };
 
 const findStoreItem = async (id: number) => {
@@ -101,7 +113,7 @@ const findStoreItem = async (id: number) => {
     const service = await getServiceID(id);
     return service;
   } catch (error) {
-    console.log(error);
+    logger.error(`Error getting service with Id: ${id}`);
     throw error;
   }
 };

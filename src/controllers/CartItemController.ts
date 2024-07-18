@@ -1,4 +1,5 @@
 import { getCartCustomer, createCartItem } from "../models/CartItem";
+import { logger } from "../../logger";
 
 const createNewCartItem = async (newCartItem: {
   cartId: number;
@@ -14,8 +15,8 @@ const createNewCartItem = async (newCartItem: {
     const data = await createCartItem({ cartId, item_name, price, storeId });
     return data;
   } catch (error) {
-    console.error(error);
-    return null;
+    logger.error(`Error creating new cart item for cart with Id: ${cartId}`);
+    throw error;
   }
 };
 
@@ -25,7 +26,7 @@ const getCartItemBycart = async (Cart: number) => {
     const results = await getCartCustomer(cartId);
     return results;
   } catch (error) {
-    console.error(error);
+    logger.error(`Error getting cartitem by cart with Id: ${Cart}`);
     throw error;
   }
 };

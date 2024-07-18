@@ -14,6 +14,7 @@ import fs from "fs";
 import { promisify } from "util";
 import ejs from "ejs";
 import path from "path";
+import { logger } from "../../logger";
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -87,14 +88,14 @@ const confirmationEmail = async (userEmail: string, names: string) => {
 
     sender.sendMail(newMail, (error, info) => {
       if (error) {
-        console.log("Error sending email:", error);
+        console.log("Error sending email:");
         throw error;
       } else {
         console.log("Email sent:", info.response);
       }
     });
   } catch (error) {
-    console.error("Error in sending confirmation email:", error);
+    logger.error("email not sent on sign-up");
     throw error;
   }
 };
@@ -111,7 +112,7 @@ const createNewUser = async (request: Request, response: Response) => {
     });
     return response.status(201).json(newUser);
   } catch (error) {
-    console.error("Error creating new user:", error);
+    logger.error("Error creating user");
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -121,7 +122,7 @@ const getAllUsers = async (request: Request, response: Response) => {
     const data = await getUsers();
     return response.status(200).json(data);
   } catch (error) {
-    console.error("Error getting all users:", error);
+    logger.error("Error getting all users");
     return response.status(500).json({ error: "Failed to get the data" });
   }
 };
@@ -131,8 +132,8 @@ const getUserByID = async (request: Request, response: Response) => {
   try {
     const userData = await getUserID(id);
     return response.status(200).json(userData);
-  } catch (err) {
-    console.error("Error getting user by ID:", err);
+  } catch (error) {
+    logger.error("Error getting user by ID");
     return response
       .status(500)
       .json({ error: `Failed to get user with id ${id}` });
@@ -145,7 +146,7 @@ const deleteUserData = async (request: Request, response: Response) => {
     const deletedUser = await deleteUser(id);
     return response.status(200).json(deletedUser);
   } catch (error) {
-    console.error("Error deleting user:", error);
+    logger.error("Error deleting user");
     return response
       .status(500)
       .json({ error: `Failed to delete user with id ${id}` });
@@ -159,7 +160,7 @@ const updateUserData = async (request: Request, response: Response) => {
     const updatedUser = await updateUser({ names, email, password, role }, id);
     return response.status(200).json(updatedUser);
   } catch (error) {
-    console.error("Error updating user:", error);
+    logger.error("Error updating user");
     return response
       .status(500)
       .json({ error: `Failed to update user with id ${id}` });
@@ -181,7 +182,7 @@ const signUp = async (request: Request, response: Response) => {
     confirmationEmail(email, names);
     return response.status(200).json(newUser);
   } catch (error) {
-    console.error("Error signing up user:", error);
+    logger.error("Error signing up user");
     return response
       .status(500)
       .json({ error: "Could not create the new user" });
@@ -201,7 +202,7 @@ const logIn = async (request: Request, response: Response) => {
     const token = generateAccessToken(user.email, user.id);
     return response.status(200).json({ token });
   } catch (error) {
-    console.error("Error logging in user:", error);
+    logger.error("Error loggingin");
     return response.status(500).json({ error: "Failed to login" });
   }
 };

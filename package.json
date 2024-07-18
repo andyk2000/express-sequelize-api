@@ -37,7 +37,8 @@
     "sequelize": "^6.37.3",
     "sequelize-typescript": "^2.1.6",
     "slugify": "^1.6.6",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

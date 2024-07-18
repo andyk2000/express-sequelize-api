@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getUserEmail, getUserID } from "../models/Users";
+import { logger } from "../../logger";
 
 const customerCheck = async (
   request: Request,
@@ -27,8 +28,7 @@ const customerCheck = async (
       });
     }
   } catch (error) {
-    console.log(userId);
-    console.log(error);
+    logger.error(`error checking customer with Id: ${userId}`);
     return response
       .status(500)
       .json({ error: "there was an error with this user" });

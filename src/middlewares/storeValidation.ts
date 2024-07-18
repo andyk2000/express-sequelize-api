@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getStoreByName } from "../models/Stores";
+import { logger } from "../../logger";
 
 const storeVerification = async (
   request: Request,
@@ -15,7 +16,7 @@ const storeVerification = async (
       response.status(400).json({ error: "store already exist" });
     }
   } catch (error) {
-    console.log(error);
+    logger.error(`error checking existing store with name: ${name}`);
     throw error;
   }
 };

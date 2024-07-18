@@ -11,6 +11,7 @@ import {
 } from "../models/payment";
 import { getStoreByOwnerForPayment } from "./StoreController";
 import { countServiceByOwner } from "../models/Services";
+import { logger } from "../../logger";
 
 const findAllStorePayments = async (request: Request, response: Response) => {
   const userId = response.locals.user.id;
@@ -26,7 +27,7 @@ const findAllStorePayments = async (request: Request, response: Response) => {
       serviceCount,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(`Error getting payments by user ID: ${userId}`);
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -37,7 +38,7 @@ const getAllTransactions = async (request: Request, response: Response) => {
     const payments = await paymentByStoreOwner(userId);
     return response.status(200).json(payments);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error getting all transactions by user ID: ${userId}`);
     return response.status(500).json(error);
   }
 };
@@ -48,7 +49,7 @@ const findServiceSold = async (request: Request, response: Response) => {
     const payments = await getAllPaymentStore(storeId);
     return response.status(200).json(payments);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error finding service sold by store ID: ${storeId}`);
     return response.status(500).json(error);
   }
 };
@@ -63,7 +64,11 @@ const searchPayments = async (request: Request, response: Response) => {
       payments = await searchPaymentByUser(search_string, storeId);
     }
     return response.status(200).json(payments);
-  } catch (error) {}
+  } catch (error) {
+    logger.error(
+      `Error searching payment with search string: ${search_string} for store with id: ${storeId}`,
+    );
+  }
 };
 
 const filterDate = async (request: Request, response: Response) => {
@@ -72,7 +77,9 @@ const filterDate = async (request: Request, response: Response) => {
     const payments = await getPaymentDateFilter(storeId, start_date, end_date);
     return response.status(200).json(payments);
   } catch (error) {
-    console.log(error);
+    logger.error(
+      `Error to filter by date start Date: ${start_date} and end Date: ${end_date}`,
+    );
     return response.status(500).json(error);
   }
 };
@@ -95,8 +102,9 @@ const statRetrieval = async (request: Request, response: Response) => {
     }));
     response.status(200).json({ users, services });
   } catch (error) {
+    logger.error(`Error to retrieve stats for store with id: ${storeId}`);
     console.error(error);
-    return response.status(500).json({ message: "There was an error", error });
+    return response.status(500).json({ message: "There was an error" });
   }
 };
 
