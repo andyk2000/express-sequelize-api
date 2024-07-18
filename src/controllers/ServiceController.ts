@@ -5,10 +5,10 @@ import {
   deleteService,
   updateService,
   getServicesByStore,
-  getServiceByStoreID,
 } from "../models/Services";
 import { getStoreByUrl } from "../models/Stores";
 import { Request, Response } from "express";
+import { logger } from "../../logger";
 
 const createNewService = async (request: Request, response: Response) => {
   const { name, price, storeId } = request.body;
@@ -16,7 +16,7 @@ const createNewService = async (request: Request, response: Response) => {
     const data = await createService({ name, price, storeId });
     return response.status(201).json(data);
   } catch (error) {
-    console.error(error);
+    logger.error("Error creating new service", error);
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -26,7 +26,7 @@ const getAllServices = async (request: Request, response: Response) => {
     const data = await getServices();
     return response.status(200).json(data);
   } catch (error) {
-    console.log(error);
+    logger.error("Error getting all services", error);
     return response.status(500).json({ error: "faild to get the data" });
   }
 };
@@ -36,8 +36,8 @@ const getServiceByID = async (request: Request, response: Response) => {
   try {
     const storeData = await getServiceID(id);
     return response.status(200).json(storeData);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    logger.error(`Error getting services with: ${id}`, error);
     response.status(500).json({ error: `failed to get service with id${id}` });
   }
 };
@@ -48,7 +48,7 @@ const deleteServiceData = async (request: Request, response: Response) => {
     const deletedService = await deleteService(id);
     return response.status(200).json(deletedService);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error deleting user with id: ${id}`, error);
     response
       .status(500)
       .json({ error: `failed to delete service with id${id}` });
@@ -62,7 +62,7 @@ const updateServiceData = async (request: Request, response: Response) => {
     const updatedService = await updateService({ name, price, storeId }, id);
     return response.status(200).json(updatedService);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error getting store by owner with: ${id}`, error);
     response
       .status(500)
       .json({ error: `failed to update the service with id${id}` });
@@ -82,20 +82,10 @@ const getStoreService = async (request: Request, response: Response) => {
     });
     return response.status(200).json(services);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error getting service of store : ${url}`, error);
     return response
       .status(500)
       .json({ error: "failed to load the store requested" });
-  }
-};
-
-const getServiceCountByStoreID = async (id: number) => {
-  try {
-    const services = await getServiceByStoreID(id);
-    return services.length;
-  } catch (error) {
-    console.log(error);
-    return 0;
   }
 };
 
@@ -106,5 +96,4 @@ export {
   deleteServiceData,
   updateServiceData,
   getStoreService,
-  getServiceCountByStoreID,
 };
