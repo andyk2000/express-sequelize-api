@@ -79,7 +79,7 @@ const confirmationEmail = async (userEmail: string, names: string) => {
 
     sender.sendMail(newMail, (error, info) => {
       if (error) {
-        console.log("Error sending email:", error);
+        logger.error("Error sending email:", error);
         throw error;
       } else {
         console.log("Email sent:", info.response);
