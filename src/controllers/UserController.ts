@@ -107,8 +107,13 @@ const logIn = async (request: Request, response: Response) => {
         .status(404)
         .json({ error: "Login failed. Please try again." });
     }
-    const token = generateAccessToken(user.email, user.id);
-    return response.status(200).json({ token });
+    if (user.role === "customer") {
+      const token = generateAccessToken(user.email, user.id);
+      return response.status(200).json({ token, role: "customer" });
+    } else if (user.role === "owner") {
+      const token = generateAccessToken(user.email, user.id);
+      return response.status(200).json({ token, role: "owner" });
+    }
   } catch (error) {
     logger.error("Error loggingin", error);
     return response.status(500).json({ error: "Failed to login" });
